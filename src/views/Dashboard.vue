@@ -1,36 +1,32 @@
 <template>
-  <div>
-    <v-container>
-      <app-navigation />
-      <v-row justify="center">
-        <v-tabs color="info" class="dashboard-navigation" :show-arrows="false">
-          <v-tab v-for="item in tabs" :key="item">
-            {{ item }}
-          </v-tab>
-          <v-tab-item v-for="n in 4" :key="n" class="py-5">
-            <NewResult v-if="n === 4" />
-            <Result
-              class="mb-4"
-              v-else
-              v-for="result in results"
-              :key="result.id"
-              :result="result" />
-          </v-tab-item>
-        </v-tabs>
-      </v-row>
-    </v-container>
-  </div>
+  <v-container>
+    <v-row justify="center">
+      <v-tabs color="info" class="dashboard-navigation" :show-arrows="false">
+        <v-tab v-for="item in tabs" :key="item">
+          {{ item }}
+        </v-tab>
+        <v-tab-item v-for="n in 4" :key="n" class="py-5">
+          <NewResult v-if="n === 4" />
+          <Result
+            v-else
+            class="mb-4"
+            v-for="result in results"
+            :key="result.id"
+            :result="result"
+          />
+        </v-tab-item>
+      </v-tabs>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
 import Result from "../components/cards/Result";
 import NewResult from "../components/forms/NewResult";
-import AppNavigation from "../components/navigations/AppNavigation";
 
 export default {
   name: "Dashboard",
   components: {
-    AppNavigation,
     Result,
     NewResult
   },

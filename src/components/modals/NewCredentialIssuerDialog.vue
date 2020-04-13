@@ -6,9 +6,7 @@
         :field="field">
       </form-field>
       <v-col>
-        <div>{{ issues.timestamp }}</div>
-        <div class="mt-2">{{ issues.by }}</div>
-        <v-btn @click="send" class="mt-10 float-right" color="info">
+        <v-btn @click="save" class="mt-10 float-right" color="info">
           Send Credential
         </v-btn>
       </v-col>
@@ -21,29 +19,29 @@ import FormMixin from "../../mixins/FormMixin";
 import FormField from "../inputs/FormField";
 
 export default {
-  name: "NewResult",
+  name: "NewCredentialIssuerDialog",
   components: { FormField },
   mixins: [FormMixin],
   data() {
     return {
       fields: [
-        "Full name",
-        "Date of birth",
-        "Health number",
-        "Mobile number",
-        "DID",
-        "Test type",
-        "Test result"
-      ],
-      issues: {
-        timestamp: "Issues timestamp: 1st May 2020",
-        by: "Issued by: SA Pathology, Adelaide City"
-      }
+        "Name",
+        "URL",
+        "Contact Email",
+        "Finance Email",
+        "Street Address 1",
+        "Street Address 2",
+        "City",
+        "State",
+        "Post Code",
+        "Country",
+        "Status"
+      ]
     };
   },
   methods: {
-    send() {
-      console.log("send");
+    save() {
+      console.log("save");
     }
   }
 };

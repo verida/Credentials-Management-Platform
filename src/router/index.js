@@ -1,6 +1,5 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import Login from "../views/Login";
 
 Vue.use(VueRouter);
 
@@ -12,12 +11,20 @@ const routes = [
   {
     path: "/login/:type",
     name: "Login",
-    component: Login
+    component: import("../views/Login"),
+    meta: { guest: true }
   },
   {
     path: "/dashboard",
     name: "Dashboard",
-    component: () => import("../views/Dashboard")
+    component: () => import("../views/Dashboard"),
+    meta: { saPathology: true }
+  },
+  {
+    path: "/issuers",
+    name: "Issuers",
+    component: () => import("../views/Issuers"),
+    meta: { admin: true }
   }
 ];
 

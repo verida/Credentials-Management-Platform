@@ -1,18 +1,11 @@
 <template>
   <v-app-bar app color="success" dense dark>
     <h3 class="v-app-bar font-weight-regular">
-      SA Pathology
+      {{ label() }}
     </h3>
     <v-spacer />
-    <v-text-field
-      class="mx-4 search"
-      dense
-      flat
-      hide-details
-      label="Search"
-      prepend-inner-icon="mdi-magnify"
-      solo-inverted>
-    </v-text-field>
+    <search v-if="mode.saPathology" />
+    <admin-tabs v-if="mode.admin" />
     <v-spacer />
     <v-btn @click="logout" outlined>
       Logout
@@ -21,11 +14,31 @@
 </template>
 
 <script>
+import Search from "../inputs/Search";
+import AdminTabs from "../navigations/AdminTabs";
+
 export default {
   name: "AppNavigation",
+  components: {
+    Search,
+    AdminTabs
+  },
   methods: {
     logout() {
       console.log("logout");
+    },
+    label() {
+      switch (true) {
+        case this.mode.saPathology:
+          return "SA Pathology";
+        case this.mode.admin:
+          return "Admin";
+      }
+    }
+  },
+  computed: {
+    mode() {
+      return this.$route.meta;
     }
   }
 };

@@ -1,21 +1,26 @@
 <template>
   <v-app>
     <v-content>
+      <app-navigation />
       <router-view />
     </v-content>
 
     <sent-dialog />
+    <new-credential-issuer-dialog />
   </v-app>
 </template>
 
 <script>
 import SentDialog from "./components/modals/SentDialog";
+import NewCredentialIssuerDialog from "./components/modals/NewCredentialIssuerDialog";
+import AppNavigation from "./components/navigations/AppNavigation";
 
 export default {
   name: "App",
-  components: {SentDialog},
-  data() {
-    return {};
+  components: {
+    NewCredentialIssuerDialog,
+    SentDialog,
+    AppNavigation
   }
 };
 </script>
