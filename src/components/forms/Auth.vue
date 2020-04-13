@@ -1,7 +1,7 @@
 <template>
   <v-form ref="auth-form">
     <h1 class="display-2 font-weight-bold text-center">
-      SA Pathology
+      {{ title() }}
     </h1>
     <div class="auth-form__body">
       <v-text-field v-model="email" label="Email" color="success" required />
@@ -23,6 +23,15 @@ export default {
     };
   },
   methods: {
+    title() {
+      const { type } = this.$route.params;
+      switch (type) {
+        case "admin":
+          return "Admin";
+        case "sa-pathology":
+          return "SA Pathology";
+      }
+    },
     submit() {
       console.log("submit");
     }
