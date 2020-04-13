@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-content>
-      <app-navigation />
+      <app-navigation v-if="!$route.meta.guest" />
       <router-view />
     </v-content>
 

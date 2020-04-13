@@ -1,5 +1,5 @@
 <template>
-  <v-card :key="result.id">
+  <v-card>
     <v-card-text>
       <v-row>
         <v-col>

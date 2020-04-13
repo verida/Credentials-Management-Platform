@@ -1,6 +1,6 @@
 <template>
   <v-dialog v-model="dialog" max-width="400">
-    <v-card class="modal text-center" v-if="modal">
+    <v-card class="modal text-center" v-if="dialog">
       <small class="modal-receiver">
         {{ modal.data.patient }} ({{ modal.data.number }})
       </small>
@@ -25,27 +25,10 @@
 </template>
 
 <script>
-import { createNamespacedHelpers } from "vuex";
-const {
-  mapState: mapSystemState,
-  mapMutations: mapSystemMutations
-} = createNamespacedHelpers("system");
+import ModalMixin from "../../mixins/ModalMixin";
 
 export default {
   name: "SentDialog",
-  computed: {
-    ...mapSystemState(["modal"]),
-    dialog: {
-      get() {
-        return this.modal && this.modal.type === "SentDialog";
-      },
-      set() {
-        this.closeModal();
-      }
-    }
-  },
-  methods: {
-    ...mapSystemMutations(["closeModal"])
-  }
+  mixins: [ModalMixin]
 };
 </script>
