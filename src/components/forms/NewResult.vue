@@ -2,7 +2,18 @@
   <v-card class="px-8 py-4">
     <v-row>
       <v-col cols="12" v-for="field in fields" :key="field">
-        <v-text-field v-model="form[field]" :label="field" />
+        <v-text-field
+          v-if="el(field) === 'text-field'"
+          v-model="form[field]"
+          :label="field"
+        />
+        <v-select
+          v-if="el(field) === 'select'"
+          v-model="form[field]"
+          :items="items(field)"
+          :label="field"
+          chips
+        />
       </v-col>
       <v-col>
         <div>{{ issues.timestamp }}</div>
