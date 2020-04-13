@@ -1,0 +1,23 @@
+.modal-contour {
+  border: 2px solid #4caf50;
+}
+
+.modal {
+  padding: 10px;
+}
+
+.modal-receiver {
+  position: absolute;
+  left: 20px;
+  padding: 2px 10px;
+  top: 0;
+  background: #fff;
+}
+
+.modal-body {
+  max-width: 80%;
+  left: 50%;
+  position: relative;
+  transform: translateX(-50%);
+  margin: 30px 0 20px;
+}

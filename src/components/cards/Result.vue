@@ -19,12 +19,26 @@
 </template>
 
 <script>
+import { createNamespacedHelpers } from "vuex";
+const { mapMutations: mapSystemMutations } = createNamespacedHelpers("system");
+
 export default {
   name: "Result",
   props: ["result"],
   methods: {
-    send(id) {
-      console.log(id);
+    ...mapSystemMutations(["openModal"]),
+    send() {
+      const { value: number } = this.result.info.find(
+        ({ field }) => field === "Health Number"
+      );
+
+      this.openModal({
+        type: "SentDialog",
+        data: {
+          number,
+          patient: this.result.patient
+        }
+      });
     }
   }
 };
