@@ -1,3 +1,7 @@
 .auth-form__body {
   margin: 50px 0;
+
+  @media (min-width: 700px) {
+    width: 500px;
+  }
 }

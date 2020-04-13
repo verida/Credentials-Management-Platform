@@ -1,6 +1,6 @@
 <template>
   <v-form ref="auth-form">
-    <h1 class="display-2 font-weight-bold">
+    <h1 class="display-2 font-weight-bold text-center">
       SA Pathology
     </h1>
     <div class="auth-form__body">
