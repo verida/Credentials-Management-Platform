@@ -2,14 +2,16 @@
   <v-col cols="12">
     <v-text-field
       v-if="type === 'text-field'"
-      v-model="model"
+      v-model="value"
       :label="label"
+      :readonly="readonly"
     />
     <v-select
       v-if="type === 'select'"
-      v-model="model"
+      v-model="value"
       :items="options"
       :label="label"
+      :readonly="readonly"
       chips
     />
   </v-col>
@@ -33,7 +35,8 @@ export default {
   data() {
     return {
       type: null,
-      options: null
+      options: null,
+      value: this.model
     };
   },
   beforeMount() {
@@ -57,6 +60,11 @@ export default {
         case "Test result":
           return ["COVID-19 Negative"];
       }
+    }
+  },
+  watch: {
+    value() {
+      this.$emit("update", this.value);
     }
   }
 };

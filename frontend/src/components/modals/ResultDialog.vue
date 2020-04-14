@@ -1,16 +1,17 @@
 <template>
   <v-dialog v-model="dialog" max-width="500">
-    <v-card class="modal text-center">
+    <v-card class="modal text-center" v-if="dialog">
       <small class="modal-receiver">
         {{ title }}
       </small>
       <div class="modal-contour">
         <form-field
-          v-for="field in data"
+          v-for="field in form"
           :key="field.label"
           :label="field.label"
           :model="field.model"
           :readonly="field.readonly"
+          @update="value => (field.model = value)"
         />
         <v-col>
           <div>{{ issues.timestamp }}</div>
@@ -31,13 +32,17 @@ import FormMixin from "../../mixins/FormMixin";
 import FormField from "../inputs/FormField";
 import ModalMixin from "../../mixins/ModalMixin";
 
+import { createNamespacedHelpers } from "vuex";
+const { mapGetters: mapResultGetters } = createNamespacedHelpers("result");
+const { mapMutations: mapSystemMutations } = createNamespacedHelpers("system");
+
 export default {
   name: "ResultDialog",
   components: { FormField },
   mixins: [FormMixin, ModalMixin],
   data() {
     return {
-      data() {},
+      form: {},
       title: null,
       fields: [
         "Full name",
@@ -54,28 +59,42 @@ export default {
       }
     };
   },
+  computed: {
+    ...mapResultGetters(["find"])
+  },
   methods: {
+    ...mapSystemMutations(["openModal", "closeModal"]),
     send() {
-      console.log("send");
-      this.dialog = false;
+      const { fullName, healthNumber } = this.form;
+      this.openModal({
+        type: "SentDialog",
+        patient: fullName.value,
+        number: healthNumber.value
+      });
     },
     init() {
-      if (this.modal && this.modal.edit) {
-        this.title = "Send Result";
-        const editable = ["Test type", "Test result"];
+      let result = this.find(this.modal && this.modal.id);
+      let editable = [];
 
-        this.data = {};
-        this.fields.forEach(field => {
-          const key = this.fieldToKey(field);
-          this.$set(this.data, key, {
-            model: null,
-            readonly: !editable.includes(field),
-            label: field
-          });
-        });
+      this.form = {};
+
+      if (result) {
+        this.title = "Send Result";
+        editable = ["Test type", "Test result"];
       } else {
         this.title = "New Result";
       }
+
+      this.fields.forEach(field => {
+        const key = this.fieldToKey(field);
+        const readonly = editable.length && !editable.includes(field);
+
+        this.$set(this.form, key, {
+          model: (result && result[key]) || null,
+          readonly: Boolean(readonly),
+          label: field
+        });
+      });
     },
     fieldToKey(field) {
       return field

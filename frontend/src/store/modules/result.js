@@ -6,15 +6,15 @@ const state = {
       dateOfBirth: "22 November 1976",
       healthNumber: "189-679-112 3",
       did: "did:ethr:0x33b92b41b775Ce6ebc0C8bcBdEf19B1e1d8bFd82",
-      mobile: "+361258825528"
+      mobileNumber: "+361258825528"
     },
     {
       id: 2,
       fullName: "Jane Doe",
       dateOfBirth: "22 November 1976",
       healthNumber: "189-679-112 3",
-      did: "did:ethr:0x33b92b41b775Ce6ebc0C8bcBdEf19B1e1d8bFd82",
-      mobile: "+361258825528"
+      mobileNumber: "+361258825528",
+      did: "did:ethr:0x33b92b41b775Ce6ebc0C8bcBdEf19B1e1d8bFd82"
     }
   ]
 };
@@ -29,7 +29,7 @@ const getters = {
         DID: did
       }
     })),
-  find: id => state.list.find(result => result.id === id)
+  find: state => id => state.list.find(result => result.id === id)
 };
 
 const mutations = {

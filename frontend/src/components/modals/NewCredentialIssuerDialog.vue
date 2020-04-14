@@ -8,9 +8,11 @@
         <v-card-title class="mt-5 headline justify-center">
           {{ text }}
         </v-card-title>
-        <form-field v-for="field in fields"
+        <form-field
+          v-for="field in fields"
           :key="field"
-          :field="field">
+          :model="null"
+          :label="field">
         </form-field>
         <v-card-actions class="justify-center">
           <v-btn @click="save" class="ma-5" color="info">
