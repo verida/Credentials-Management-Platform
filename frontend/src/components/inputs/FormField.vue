@@ -3,13 +3,13 @@
     <v-text-field
       v-if="type === 'text-field'"
       v-model="model"
-      :label="field"
+      :label="label"
     />
     <v-select
       v-if="type === 'select'"
       v-model="model"
       :items="options"
-      :label="field"
+      :label="label"
       chips
     />
   </v-col>
@@ -18,12 +18,22 @@
 <script>
 export default {
   name: "FormField",
-  props: ["field"],
+  props: {
+    label: {
+      type: String
+    },
+    model: {
+      required: true
+    },
+    readonly: {
+      type: Boolean,
+      default: false
+    }
+  },
   data() {
     return {
       type: null,
-      options: null,
-      model: null
+      options: null
     };
   },
   beforeMount() {
@@ -32,7 +42,7 @@ export default {
   },
   methods: {
     el() {
-      switch (this.field) {
+      switch (this.label) {
         case "Test type":
         case "Test result":
           return "select";
@@ -41,7 +51,7 @@ export default {
       }
     },
     items() {
-      switch (this.field) {
+      switch (this.label) {
         case "Test type":
           return ["COVID-19 PCR"];
         case "Test result":

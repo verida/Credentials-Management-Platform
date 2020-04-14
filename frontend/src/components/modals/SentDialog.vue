@@ -8,12 +8,10 @@
         <v-card-title class="mt-5 headline justify-center">
           Sent!
         </v-card-title>
-
         <v-card-text class="modal-body">
           The test result credential was successfully sent to
           {{ modal.data.patient }}.
         </v-card-text>
-
         <v-card-actions class="justify-center">
           <v-btn color="green" text @click="closeModal">
             Close

@@ -2,17 +2,28 @@
   <v-container>
     <v-row justify="center">
       <v-tabs color="info" class="dashboard-navigation" :show-arrows="false">
-        <v-tab v-for="item in tabs" :key="item">
-          {{ item }}
-        </v-tab>
-        <v-tab-item v-for="n in 4" :key="n" class="py-5">
-          <NewResult v-if="n === 4" />
+        <v-row justify="space-between">
+          <v-col class="d-flex">
+            <v-tab v-for="item in tabs" :key="item">
+              {{ item }}
+            </v-tab>
+          </v-col>
+          <v-col cols="auto">
+            <v-btn
+              outlined
+              @click="openResultDialog"
+              color="success"
+              class="align-self-center">
+              New Result
+            </v-btn>
+          </v-col>
+        </v-row>
+        <v-tab-item v-for="n in 3" :key="n" class="py-5">
           <Result
-            v-else
             class="mb-4"
-            v-for="result in results"
-            :key="result.id"
-            :result="result"
+            v-for="card in cards"
+            :key="card.id"
+            :result="card"
           />
         </v-tab-item>
       </v-tabs>
@@ -22,56 +33,31 @@
 
 <script>
 import Result from "../components/cards/Result";
-import NewResult from "../components/forms/NewResult";
+import { createNamespacedHelpers } from "vuex";
+
+const { mapGetters: mapResultGetters } = createNamespacedHelpers("result");
+const { mapMutations: mapSystemMutations } = createNamespacedHelpers("system");
 
 export default {
   name: "Dashboard",
   components: {
-    Result,
-    NewResult
+    Result
   },
   data() {
     return {
-      tabs: ["All", "Pending", "Abstract", "New Result"],
-      results: [
-        {
-          id: 1,
-          patient: "John Smith",
-          info: [
-            {
-              field: "DOB",
-              value: "22 November 1976"
-            },
-            {
-              field: "Health Number",
-              value: "189-679-112 3"
-            },
-            {
-              field: "DID",
-              value: "did:ethr:0x33b92b41b775Ce6ebc0C8bcBdEf19B1e1d8bFd82"
-            }
-          ]
-        },
-        {
-          id: 2,
-          patient: "Jane Doe",
-          info: [
-            {
-              field: "DOB",
-              value: "22 November 1976"
-            },
-            {
-              field: "Health Number",
-              value: "189-679-112 3"
-            },
-            {
-              field: "DID",
-              value: "did:ethr:0x33b92b41b775Ce6ebc0C8bcBdEf19B1e1d8bFd82"
-            }
-          ]
-        }
-      ]
+      tabs: ["All", "Pending", "Send"]
     };
+  },
+  computed: {
+    ...mapResultGetters(["cards"])
+  },
+  methods: {
+    ...mapSystemMutations(["openModal"]),
+    openResultDialog() {
+      this.openModal({
+        type: "ResultDialog"
+      });
+    }
   }
 };
 </script>

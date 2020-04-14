@@ -38,8 +38,7 @@ export default {
     ...mapSystemMutations(["openModal"]),
     open() {
       this.openModal({
-        type: "NewCredentialIssuerDialog",
-        data: null
+        type: "NewCredentialIssuerDialog"
       });
     }
   }
