@@ -68,8 +68,8 @@ export default {
       const { fullName, healthNumber } = this.form;
       this.openModal({
         type: "SentDialog",
-        patient: fullName.value,
-        number: healthNumber.value
+        patient: fullName.model,
+        number: healthNumber.model
       });
     },
     init() {
