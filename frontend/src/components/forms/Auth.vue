@@ -24,11 +24,11 @@ export default {
   },
   methods: {
     title() {
-      const { type } = this.$route.params;
-      switch (type) {
-        case "admin":
+      const { name } = this.$route;
+      switch (name) {
+        case "AdminLogin":
           return "Admin";
-        case "sa-pathology":
+        case "Login":
           return "SA Pathology";
       }
     },

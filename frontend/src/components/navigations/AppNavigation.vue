@@ -5,7 +5,6 @@
     </h3>
     <v-spacer />
     <search v-if="mode.saPathology" />
-    <admin-tabs v-if="mode.admin" />
     <v-spacer />
     <v-btn @click="logout" outlined>
       Logout
@@ -15,13 +14,11 @@
 
 <script>
 import Search from "../inputs/Search";
-import AdminTabs from "../navigations/AdminTabs";
 
 export default {
   name: "AppNavigation",
   components: {
-    Search,
-    AdminTabs
+    Search
   },
   methods: {
     logout() {

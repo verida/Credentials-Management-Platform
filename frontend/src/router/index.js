@@ -15,6 +15,12 @@ const routes = [
     meta: { guest: true }
   },
   {
+    path: "/admin/login",
+    name: "AdminLogin",
+    component: () => import("../views/Login"),
+    meta: { guest: true }
+  },
+  {
     path: "/dashboard",
     name: "Dashboard",
     component: () => import("../views/Dashboard"),
