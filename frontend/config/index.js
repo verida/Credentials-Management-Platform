@@ -1,3 +1,3 @@
 module.exports = {
-  API_URL: "https://web-api.verida.io/"
+  API_URL: "http://localhost:3001/"
 };
