@@ -20,9 +20,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 // routes
-app.use('/users', require('./controllers/user'));
-app.use('/results', require('./controllers/result'));
-app.use('/issuers', require('./controllers/issuer'));
+app.use('/users', require('./models/user'));
+app.use('/results', require('./models/result'));
+app.use('/issuers', require('./models/issuer'));
 
 const PORT = process.env.PORT ? process.env.PORT : 5020;
 app.listen(PORT, () => {

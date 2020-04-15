@@ -1,17 +1,20 @@
+import mongoose from 'mongoose';
 
-const mongoose = require('mongoose')
-
-
-const ResultSchema = mongoose.Schema({
-    firstName: String,
-    lastName: String,
-    dateOfBirth: Date,
-    healthNumber: String,
-    mobileNumber: String,
-    did: String,
-    testType: String
-}, {
-    timestamps: true
+const Schema = mongoose.Schema;
+const schema = new Schema({
+  userId: {
+    type: String,
+    unique: true,
+    required: true
+  },
+  testId: {
+    type: String,
+    required: true
+  },
+  result: {
+    type: Boolean,
+    required: true
+  }
 });
 
-module.exports = mongoose.model('User', UserSchema);
+module.exports = mongoose.model('Patient', schema);
