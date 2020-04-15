@@ -2,9 +2,17 @@ import mongoose from 'mongoose';
 
 const Schema = mongoose.Schema;
 const schema = new Schema({
-  name: {
+  userId: {
     type: String,
     unique: true,
+    required: true
+  },
+  testId: {
+    type: String,
+    required: true
+  },
+  result: {
+    type: Boolean,
     required: true
   }
 });

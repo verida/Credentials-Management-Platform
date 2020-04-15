@@ -1,21 +1,28 @@
+require('rootpath')();
+
 import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
-import router from './routes.js';
 
-// Set up the express app
+import jwt from 'helpers/jwt';
+
 const app = express();
 
 let corsConfig = {};
 if (process.env.CORS_HOST) {
     corsConfig.origin = process.env.CORS_HOST;
-};
+}
 
-// Parse incoming requests data
+app.use(jwt());
 app.use(cors(corsConfig));
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(router);
+
+// routes
+app.use('/users', require('./controllers/user'));
+app.use('/results', require('./controllers/result'));
+app.use('/issuers', require('./controllers/issuer'));
 
 const PORT = process.env.PORT ? process.env.PORT : 5020;
 app.listen(PORT, () => {
