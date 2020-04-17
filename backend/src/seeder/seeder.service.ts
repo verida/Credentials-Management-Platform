@@ -3,7 +3,7 @@ import {Injectable, Logger} from "@nestjs/common";
 import { SuperAdminService } from '../modules/super-admin/super-admin.service';
 
 @Injectable()
-export class Seeder {
+export class SeederService {
     constructor(
         private readonly logger: Logger,
         private readonly superAdminService: SuperAdminService,
