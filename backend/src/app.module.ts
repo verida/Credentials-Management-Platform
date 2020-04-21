@@ -11,6 +11,6 @@ import { SuperAdminModule } from './modules/super-admin/super-admin.module';
     MongooseModule.forRoot(process.env.DB_URL),
     UserModule,
     SuperAdminModule
-  ],
+  ]
 })
 export class AppModule {}

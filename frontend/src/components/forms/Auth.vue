@@ -1,11 +1,11 @@
 <template>
   <v-form ref="auth-form">
     <h1 class="display-2 font-weight-bold text-center">
-      {{ title() }}
+      {{ isAdmin ? "Admin" : "SA Pathology" }}
     </h1>
     <div class="auth-form__body">
-      <v-text-field v-model="email" label="Email" color="success" required />
-      <v-text-field v-model="password" label="Password" color="success" required />
+      <v-text-field v-model="data.email" label="Email" color="success" required />
+      <v-text-field v-model="data.password" label="Password" color="success" required />
     </div>
     <v-btn color="success" @click="submit" class="float-right">
       Login
@@ -18,22 +18,21 @@ export default {
   name: "Auth",
   data() {
     return {
-      email: null,
-      password: null
+      data: {
+        email: null,
+        password: null
+      }
     };
   },
-  methods: {
-    title() {
+  computed: {
+    isAdmin() {
       const { name } = this.$route;
-      switch (name) {
-        case "AdminLogin":
-          return "Admin";
-        case "Login":
-          return "SA Pathology";
-      }
-    },
+      return name === "AdminLogin";
+    }
+  },
+  methods: {
     submit() {
-      console.log("submit");
+      this.login(this.data);
     }
   }
 };
