@@ -1,0 +1,23 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "/pathology/tests/covid19-pcr.json",
+    "name": "pathology/tests/covid19-pcr",
+    "title": "COVID19 PCR Test",
+    "titlePlural": "COVID19 PCR Tests",
+    "type": "object",
+    "database": {
+        "name": "credential"
+    },
+    "allOf": [
+        {"$ref": "../../identifiable/schema.json"},
+        {
+            "properties": {
+                "result": {
+                    "title": "Test result",
+                    "type": "string",
+                    "enum": ["positive", "negative"]
+                }
+            }
+        }
+    ]
+  }
