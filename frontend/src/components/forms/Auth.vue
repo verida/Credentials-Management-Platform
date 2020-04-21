@@ -7,20 +7,26 @@
       <v-text-field v-model="data.email" label="Email" color="success" required />
       <v-text-field v-model="data.password" label="Password" color="success" required />
     </div>
-    <v-btn color="success" @click="submit" class="float-right">
+    <v-btn color="success" class="float-right"
+      @click="submit"
+      :disabled="processing">
       Login
     </v-btn>
   </v-form>
 </template>
 
 <script>
+import { createNamespacedHelpers } from "vuex";
+const { mapActions: mapAuthActions } = createNamespacedHelpers("auth");
+
 export default {
   name: "Auth",
   data() {
     return {
+      processing: false,
       data: {
-        email: null,
-        password: null
+        email: "admin@verida.com",
+        password: "admin"
       }
     };
   },
@@ -31,8 +37,11 @@ export default {
     }
   },
   methods: {
-    submit() {
-      this.login(this.data);
+    ...mapAuthActions(["login"]),
+    async submit() {
+      this.processing = true;
+      await this.login(this.data);
+      this.processing = false;
     }
   }
 };

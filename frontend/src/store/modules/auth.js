@@ -10,14 +10,9 @@ const mutations = {
 
 const actions = {
   async login(store, payload) {
-    const data = {
-      username: payload.email,
-      password: payload.password
-    };
-
-    const response = await this._vm.$axios.get("user", data);
-    console.log(response);
-/*
+    const response = await this._vm.axios.get("/auth", payload.data);
+    console.log(response, "response");
+    /*
     if (!response.data.error) {
       store.commit("setAuth", response.data);
     } else {
