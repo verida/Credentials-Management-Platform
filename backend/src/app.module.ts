@@ -5,6 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { UserModule } from './modules/user/user.module';
 import { SuperAdminModule } from './modules/super-admin/super-admin.module';
 import { CredentialModule } from './modules/credential/credential.module';
+import { IssuerModule } from './modules/issuer/issuer.module';
 
 @Module({
   imports: [
@@ -12,7 +13,8 @@ import { CredentialModule } from './modules/credential/credential.module';
     MongooseModule.forRoot(process.env.DB_URL),
     UserModule,
     SuperAdminModule,
-    CredentialModule
+    CredentialModule,
+    IssuerModule
   ],
 })
 export class AppModule {}
