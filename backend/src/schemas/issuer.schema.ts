@@ -5,5 +5,10 @@ export const IssuerSchema =  new Schema({
         type: String,
         unique: true,
         required: true
+    },
+
+    seed: {
+        type: String,
+        required: false
     }
 });
