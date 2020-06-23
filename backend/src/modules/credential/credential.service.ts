@@ -31,7 +31,7 @@ export class CredentialService {
 
         console.log(fetchUrl);
         
-        // @todo Send SMS to user with a link to the retrievable credential
+        // Send SMS to user with a link to the retrievable credential
         const twilioClient = twilio(TWILIO_SID, TWILIO_TOKEN, { 
             lazyLoading: true 
         });
