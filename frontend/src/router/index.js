@@ -11,13 +11,13 @@ const routes = [
   {
     path: "/login/:type",
     name: "Login",
-    component: () => import("../views/Login"),
+    component: () => import("../views/login/Login"),
     meta: { guest: true }
   },
   {
     path: "/admin/login",
     name: "AdminLogin",
-    component: () => import("../views/Login"),
+    component: () => import("../views/login/AdminLogin"),
     meta: { guest: true }
   },
   {

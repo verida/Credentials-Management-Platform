@@ -6,6 +6,7 @@ import { UserModule } from './modules/user/user.module';
 import { SuperAdminModule } from './modules/super-admin/super-admin.module';
 import { CredentialModule } from './modules/credential/credential.module';
 import { IssuerModule } from './modules/issuer/issuer.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -14,7 +15,8 @@ import { IssuerModule } from './modules/issuer/issuer.module';
     UserModule,
     SuperAdminModule,
     CredentialModule,
-    IssuerModule
+    IssuerModule,
+    AuthModule
   ],
 })
 export class AppModule {}

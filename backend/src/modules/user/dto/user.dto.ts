@@ -1,8 +1,7 @@
-import * as mongoose from 'mongoose';
 import { Role } from '../../../models/User';
 
 export class UserDto {
-    _id: mongoose.Schema.Types.ObjectId;
+    _id: string;
     email: string;
     role: Role;
     issuerId: string;

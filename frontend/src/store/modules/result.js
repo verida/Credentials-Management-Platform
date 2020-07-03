@@ -20,7 +20,8 @@ const state = {
 };
 
 const getters = {
-  cards: state => state.list.map(({id, fullName, dateOfBirth, healthNumber, did}) => ({
+  cards: state =>
+    state.list.map(({ id, fullName, dateOfBirth, healthNumber, did }) => ({
       id,
       patient: fullName,
       info: {
@@ -32,9 +33,7 @@ const getters = {
   find: state => id => state.list.find(result => result.id === id)
 };
 
-const mutations = {
-
-};
+const mutations = {};
 
 export default {
   namespaced: true,

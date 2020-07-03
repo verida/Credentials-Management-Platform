@@ -1,12 +1,12 @@
 import * as mongoose from 'mongoose';
 
-export const UserSchema = new mongoose.Schema({
+const SavedUserSchema = new mongoose.Schema({
     email: {
         type: String,
         unique: true,
         required: true
     },
-    password: {
+    passwordHash: {
         type: String,
         required: true
     },
@@ -20,3 +20,10 @@ export const UserSchema = new mongoose.Schema({
         required: true
     }
 });
+
+export interface SavedUserDocument extends mongoose.Document {
+    email: string;
+    role: string;
+}
+
+export const UserSchema = mongoose.model<SavedUserDocument>('saveduser', SavedUserSchema);
