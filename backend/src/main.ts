@@ -1,3 +1,5 @@
+import "regenerator-runtime/runtime";
+
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 
