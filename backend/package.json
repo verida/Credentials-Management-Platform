@@ -10,7 +10,7 @@
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
-    "start:dev": "nest start --watch",
+    "start:dev": "NODE_TLS_REJECT_UNAUTHORIZED=0 nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
@@ -30,11 +30,13 @@
     "@verida/datastore": "git+https://github.com/verida/datastore.git",
     "class-validator": "^0.11.1",
     "ethers": "^5.0.2",
+    "lodash": "^4.17.15",
     "mongoose": "^5.9.9",
     "reflect-metadata": "^0.1.13",
     "regenerator-runtime": "^0.13.5",
     "rimraf": "^3.0.2",
     "rxjs": "^6.5.5",
+    "tweetnacl-util": "^0.15.1",
     "twilio": "^3.46.0"
   },
   "devDependencies": {
