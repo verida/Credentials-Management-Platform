@@ -4,4 +4,5 @@ export class IssuerDto {
     _id: mongoose.Schema.Types.ObjectId;
     name: string;
     seed: string;
+    did: string;
 }

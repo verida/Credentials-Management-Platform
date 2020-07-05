@@ -1,7 +1,11 @@
-import { IssueCredentialDto } from './dto';
-import { BaseHelper } from '../../helpers/BaseHelper';
-import Verida from '@verida/datastore';
-import * as twilio from 'twilio';
+import { IssueCredentialDto } from './dto'
+import { BaseHelper } from '../../helpers/BaseHelper'
+import { CredentialHelper } from '../../helpers/CredentialHelper'
+import Verida from '@verida/datastore'
+import { utils } from "ethers"
+import { decodeUTF8 } from "tweetnacl-util";
+
+const twilio = require('twilio')
 
 export class CredentialService {
 
@@ -12,53 +16,94 @@ export class CredentialService {
             TWILIO_TOKEN
         } = process.env;
 
-        // @todo: Locate issuer based on current logged in user
+        const did = 'did:ethr:0xa8a065143Bb45eA5b5be8F0C176A8c10D58360B8'
+
+        // dob = (yyyymmdd)
+        const dob = cred.data['dob']
 
         // Generate a password for the credential that combines a
+        
         // 6 digit alpha string + credential DOB
+        const randomKey = Verida.Helpers.encryption.randomKey(24)
+        const randomKeyHex = Buffer.from(randomKey).toString('hex')
+        const dobHex = Buffer.from(dob).toString('hex')
 
-        const key = Verida.Helpers.encryption.randomKey(6);
-        const keyHex = Buffer.from(key).toString('hex');
+        const encryptionKey = new Uint8Array(Buffer.from(randomKeyHex + dobHex, 'hex'))
+        const encryptionKeyHex = Buffer.from(encryptionKey).toString('hex')
+        const result = await CredentialService._issueVeridaCredential(cred, encryptionKey)
+        const credentialId = result['result'].id
+        const vid = result['vid']
 
-        // const dob = Buffer.from(cred.dateOfBirth);
-        // const encryptionKey = key + dob; // will this work?
+        const uniqueId = BaseHelper.convertBase(credentialId.replace(/\-/g,""), 16, 64) // --- = 16 char string
+        const keyShortened = BaseHelper.convertBase(randomKeyHex, 16, 64)
+        const fetchUrl = CREDENTIAL_DOWNLOAD_URL + "?vid=" + vid + "&c=" + uniqueId + "&k=" + keyShortened
 
-        //const credentialId = this._issueVerifiedCredential(cred, encryptionKey);
-        const credentialId = "1ef1a15220a6125b2f6c5d9b";
-
-        const uniqueId = BaseHelper.convertBase(credentialId, 16, 64) // --- = 16 char string
-        const keyShortened = BaseHelper.convertBase(keyHex, 16, 64)
-        const fetchUrl = CREDENTIAL_DOWNLOAD_URL + "?id=" + uniqueId + "&k=" + keyShortened;
-
-        console.log(fetchUrl);
-
-        // Send SMS to user with a link to the retrievable credential
-        const twilioClient = twilio(TWILIO_SID, TWILIO_TOKEN, {
-            lazyLoading: true
-        });
-
-        const message = await twilioClient.messages
-            .create({body: 'Please download your credential: ' + fetchUrl, from: '+15005550006', to: '+61421000000'})
-
-        console.log(message);
+        //this._sendSmsCredential(fetchUrl, TWILIO_SID, TWILIO_TOKEN)
 
         return "done";
     }
 
-    async _issueVeridaCredential(cred: IssueCredentialDto, encryptionKey: string) {
-        /*Verida.setConfig({
+    static async _issueVeridaCredential(cred: IssueCredentialDto, encryptionKey: Uint8Array): Promise<object> {
+        Verida.setConfig({
             environment: "local"
-        });
+        })
 
-        // @todo: initialise verida server user using issuer seed key
+        // @todo: Locate issuer based on current logged in user
 
-        // initilaise verida
-        const verida = new Verida()
+        const seed = '0x22d060c258d129b98f0ac72de5ba1343'
+        const did = 'did:ethr:0xa8a065143Bb45eA5b5be8F0C176A8c10D58360B8'
+        const node = utils.HDNode.fromSeed(seed)
+        const privateKeyHex = node.privateKey
+        const address = '0xa8a065143Bb45eA5b5be8F0C176A8c10D58360B8'
+
+        // initialise verida server user using issuer seed key
+        const app = new Verida({
+            chain: 'ethr',
+            address: address,
+            privateKey: privateKeyHex
+        })
+
+        await app.connect(true)
 
         // @todo: issue a new public, encrypted verida credential
-        Verida.Helpers.credential....
+        const now = new Date()
+        const credIssuer = await Verida.Helpers.credentials.createIssuer(app.user)
+        const credential = {
+            "@context": [
+                "https://www.w3.org/2018/credentials/v1",
+                "https://www.w3.org/2018/credentials/examples/v1"
+            ],
+            "id": "",
+            "type": ["VerifiableCredential"],
+            "issuer": did,
+            "issuanceDate": now.toISOString(),
+            "credentialSubject": {
+                ...cred.data
+            }
+        }
 
-        // return credentialId
-        */
+        const didJwtVc = await Verida.Helpers.credentials.createVerifiableCredential(credential, credIssuer)
+        const item = {
+            didJwtVc: didJwtVc,
+            ...cred.data
+        }
+
+        const result = await CredentialHelper.issuePublicCredential(app, item, {
+            key: encryptionKey
+        })
+
+        return result
+    }
+
+    async _sendSmsCredential(fetchUrl, TWILIO_SID, TWILIO_TOKEN) {
+        // Send SMS to user with a link to the retrievable credential
+        const twilioClient = twilio(TWILIO_SID, TWILIO_TOKEN, { 
+            lazyLoading: true 
+        });
+
+        const message = await twilioClient.messages
+            .create({body: 'Please download your credential: ' + fetchUrl, from: '+15005550006', to: '+61421000000'})
+        
+        console.log(message);
     }
 }

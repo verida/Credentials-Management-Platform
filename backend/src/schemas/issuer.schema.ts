@@ -10,5 +10,10 @@ export const IssuerSchema =  new Schema({
     seed: {
         type: String,
         required: false
+    },
+
+    did: {
+        type: String,
+        required: false
     }
 });

@@ -8,4 +8,7 @@ export class CreateIssuerDto {
 
     @Length(34)
     seed: string;
+
+    @Length(34)
+    did: string;
 }
