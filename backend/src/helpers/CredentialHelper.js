@@ -49,14 +49,19 @@ export class CredentialHelper {
         }
     }
 
-    let result = await publicCredentials.save(item)
-    let vid = await app.user.getAppVid()
+    try {
+      let result = await publicCredentials.save(item)
 
-    return {
-      item: item,
-      result: result,
-      vid: vid,
-      uri: CredentialHelper.getCredentialUri(vid, result.id, { key: options.key })
+      let vid = await app.user.getAppVid()
+
+      return {
+        item: item,
+        result: result,
+        vid: vid,
+        uri: CredentialHelper.getCredentialUri(vid, result.id, { key: options.key })
+      }
+    } catch (err) {
+      console.log(err)
     }
   }
 

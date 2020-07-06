@@ -3,13 +3,12 @@ import { BaseHelper } from '../../helpers/BaseHelper'
 import { CredentialHelper } from '../../helpers/CredentialHelper'
 import Verida from '@verida/datastore'
 import { utils } from "ethers"
-import { decodeUTF8 } from "tweetnacl-util";
 
 const twilio = require('twilio')
 
 export class CredentialService {
 
-    async issue(cred: IssueCredentialDto): Promise<string> {
+    async issue(cred: IssueCredentialDto): Promise<object> {
         const {
             CREDENTIAL_DOWNLOAD_URL,
             TWILIO_SID,
@@ -40,12 +39,14 @@ export class CredentialService {
 
         //this._sendSmsCredential(fetchUrl, TWILIO_SID, TWILIO_TOKEN)
 
-        return "done";
+        return {
+            url: fetchUrl
+        }
     }
 
     static async _issueVeridaCredential(cred: IssueCredentialDto, encryptionKey: Uint8Array): Promise<object> {
         Verida.setConfig({
-            environment: "local"
+            //environment: "local"
         })
 
         // @todo: Locate issuer based on current logged in user
@@ -83,6 +84,7 @@ export class CredentialService {
         }
 
         const didJwtVc = await Verida.Helpers.credentials.createVerifiableCredential(credential, credIssuer)
+
         const item = {
             didJwtVc: didJwtVc,
             ...cred.data

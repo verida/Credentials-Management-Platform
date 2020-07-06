@@ -9,7 +9,7 @@ export class CredentialController {
     constructor(private credentialService: CredentialService) {}
 
     @Post('issue')
-    async issue(@Body() data: IssueCredentialDto): Promise<string> {
+    async issue(@Body() data: IssueCredentialDto): Promise<object> {
         await validate(data).then(errors => { // errors is an array of validation errors
             if (errors.length > 0) {
                 console.log("validation failed. errors: ", errors);
