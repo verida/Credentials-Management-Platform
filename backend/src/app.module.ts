@@ -16,7 +16,7 @@ import { AuthModule } from './modules/auth/auth.module';
     SuperAdminModule,
     CredentialModule,
     IssuerModule,
-    AuthModule
+    // AuthModule
   ],
 })
 export class AppModule {}

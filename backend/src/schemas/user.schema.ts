@@ -1,6 +1,6 @@
-import * as mongoose from 'mongoose';
+import { Schema } from 'mongoose';
 
-const SavedUserSchema = new mongoose.Schema({
+export const UserSchema = new Schema({
     email: {
         type: String,
         unique: true,
@@ -16,14 +16,8 @@ const SavedUserSchema = new mongoose.Schema({
         required: true
     },
     issuerId: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         required: true
     }
 });
 
-export interface SavedUserDocument extends mongoose.Document {
-    email: string;
-    role: string;
-}
-
-export const UserSchema = mongoose.model<SavedUserDocument>('saveduser', SavedUserSchema);

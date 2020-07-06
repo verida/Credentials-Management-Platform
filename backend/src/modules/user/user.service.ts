@@ -1,13 +1,12 @@
 import { Model } from 'mongoose';
-import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { Injectable } from '@nestjs/common';
 import { User } from './interfaces/user.interface';
-import { ReturnModelType } from '@typegoose/typegoose';
 import { CreateUserDto } from './dto';
 
 @Injectable()
 export class UserService {
-    constructor(@InjectModel('User') private readonly userModel: ReturnModelType<typeof User>) {}
+    constructor(@InjectModel('User') private readonly userModel: Model<User>) {}
 
     async create(createCatDto: CreateUserDto): Promise<User> {
         const record = new this.userModel(createCatDto);
