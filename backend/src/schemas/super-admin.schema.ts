@@ -6,7 +6,7 @@ export const SuperAdminSchema = new mongoose.Schema({
         unique: true,
         required: true
     },
-    password: {
+    passwordHash: {
         type: String,
         required: true
     }

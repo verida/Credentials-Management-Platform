@@ -1,5 +1,4 @@
-import {Injectable, Logger} from "@nestjs/common";
-
+import { Injectable, Logger } from "@nestjs/common";
 import { SuperAdminService } from '../modules/super-admin/super-admin.service';
 
 @Injectable()
@@ -18,9 +17,13 @@ export class SeederService {
         }
     }
     async init() {
-        await this.superAdminService.create({
-            email: 'admin@verida.com',
-            password: 'admin'
-        })
+        try {
+            await this.superAdminService.create({
+                email: 'admin@verida.com',
+                password: 'admin'
+            })
+        } catch (e) {
+            console.log(`Error! ${e.message}`)
+        }
     }
 }

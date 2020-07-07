@@ -19,22 +19,10 @@ export class SuperAdminController {
     findAll(): Promise<SuperAdmin[]> {
         return this.superAdminService.findAll();
     }
-    
+
     async findOne(@Body() data: CreateSuperAdminDto, @Res() response): Promise<any> {
         const { email, password } = data;
 
-        const user = await this.superAdminService.findOne(email);
-        if (!user) {
-            response.send({
-                error: "Invalid email or password"
-            });
-        }
-
-        const passwordHash = bcrypt.hashSync(password, process.env.SALT);
-        if (passwordHash !== user.password) {
-            return response.send({ error: "Invalid email or password" });
-        }
-
-        return response.send({data : user });
+        return response.send({ data });
     }
 }

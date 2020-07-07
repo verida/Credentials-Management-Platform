@@ -7,11 +7,15 @@ import { SeederService } from './seeder.service';
 import { SuperAdminModule } from '../modules/super-admin/super-admin.module';
 import { SuperAdminSchema } from '../schemas/super-admin.schema';
 
+import { DB_URL } from "../configs";
+
 @Module({
     imports: [
         ConfigModule.forRoot(),
-        MongooseModule.forRoot(process.env.DB_URL),
-        MongooseModule.forFeature([{ name: 'SuperAdmin', schema: SuperAdminSchema }]),
+        MongooseModule.forRoot(DB_URL),
+        MongooseModule.forFeature([
+            { name: 'SuperAdmin', schema: SuperAdminSchema }
+        ]),
         SuperAdminModule
     ],
     providers: [

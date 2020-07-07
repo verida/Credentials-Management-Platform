@@ -14,15 +14,11 @@ export class UserService {
         return record.save();
     }
 
-    async findOne(email): Promise<User> {
-        return this.userModel.findOne(email)
+    async findOne(email: string): Promise<User | undefined> {
+        return this.userModel.findOne({ email })
     }
 
     async findAll(): Promise<User[]> {
         return this.userModel.find().exec();
-    }
-
-    async findOne(email: string): Promise<SuperAdmin> {
-        return this.userModel.findOne({ email })
     }
 }

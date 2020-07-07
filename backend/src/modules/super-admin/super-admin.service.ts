@@ -5,16 +5,18 @@ import { SuperAdmin } from './interfaces/super-admin.interface';
 import { CreateSuperAdminDto } from './dto';
 
 import * as bcrypt from 'bcrypt';
+import { SALT } from "../../configs";
 
 @Injectable()
 export class SuperAdminService {
     constructor(@InjectModel('SuperAdmin') private userModel: Model<SuperAdmin>) {}
 
     async create(createSADto: CreateSuperAdminDto): Promise<SuperAdmin> {
-        const password = bcrypt.hashSync(createSADto.password, process.env.SALT);
-
-        const data = {...createSADto, password };
-        const record = new this.userModel(data);
+        const passwordHash = bcrypt.hashSync(createSADto.password, SALT);
+        const record = new this.userModel({
+            email: createSADto.email,
+            passwordHash
+        });
         return record.save();
     }
 

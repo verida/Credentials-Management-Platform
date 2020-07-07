@@ -9,7 +9,7 @@ const mutations = {
 
 const actions = {
   async login({ commit }, payload) {
-    const result = await this._vm.axios("/login", payload);
+    const result = await this._vm.axios.post("/login", payload);
     commit("login", result);
   },
   closeModal() {
