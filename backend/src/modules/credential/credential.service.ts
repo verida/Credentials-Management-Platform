@@ -6,6 +6,10 @@ import { utils } from "ethers"
 
 const twilio = require('twilio')
 
+Verida.setConfig({
+    environment: process.env.VERIDA_ENVIRONMENT
+})
+
 export class CredentialService {
 
     async issue(cred: IssueCredentialDto): Promise<object> {
@@ -15,29 +19,38 @@ export class CredentialService {
             TWILIO_TOKEN
         } = process.env;
 
+        // @todo: validate the credential (cred.data)
+        // validate schema
+
+        // @todo: Use current user's issuer DID
         const did = 'did:ethr:0xa8a065143Bb45eA5b5be8F0C176A8c10D58360B8'
 
-        // dob = (yyyymmdd)
+        // dob = (YYYYMMDD)
         const dob = cred.data['dob']
+        const mobile = cred.data['mobile']
 
-        // Generate a password for the credential that combines a
+        // Generate an encryption key for the credential that combines a
+        // partial random key with the user's date of birth
         
         // 6 digit alpha string + credential DOB
         const randomKey = Verida.Helpers.encryption.randomKey(24)
         const randomKeyHex = Buffer.from(randomKey).toString('hex')
         const dobHex = Buffer.from(dob).toString('hex')
-
         const encryptionKey = new Uint8Array(Buffer.from(randomKeyHex + dobHex, 'hex'))
-        const encryptionKeyHex = Buffer.from(encryptionKey).toString('hex')
+
+        // Issue an encrypted credential
         const result = await CredentialService._issueVeridaCredential(cred, encryptionKey)
         const credentialId = result['result'].id
         const vid = result['vid']
 
-        const uniqueId = BaseHelper.convertBase(credentialId.replace(/\-/g,""), 16, 64) // --- = 16 char string
+        // Generate a URL that combines the issuer VID, credentialId and partial encryption key
+        // BASE64 encode values to save space
+        const uniqueId = BaseHelper.convertBase(credentialId.replace(/\-/g,""), 16, 64)
         const keyShortened = BaseHelper.convertBase(randomKeyHex, 16, 64)
         const fetchUrl = CREDENTIAL_DOWNLOAD_URL + "?vid=" + vid + "&c=" + uniqueId + "&k=" + keyShortened
 
-        //this._sendSmsCredential(fetchUrl, TWILIO_SID, TWILIO_TOKEN)
+        // @todo SMS crednetial to the recipient 
+        //this._sendSmsCredential(fetchUrl, mobile, TWILIO_SID, TWILIO_TOKEN)
 
         return {
             url: fetchUrl
@@ -45,21 +58,18 @@ export class CredentialService {
     }
 
     static async _issueVeridaCredential(cred: IssueCredentialDto, encryptionKey: Uint8Array): Promise<object> {
-        Verida.setConfig({
-            //environment: "local"
-        })
-
         // @todo: Locate issuer based on current logged in user
 
         const seed = '0x22d060c258d129b98f0ac72de5ba1343'
         const did = 'did:ethr:0xa8a065143Bb45eA5b5be8F0C176A8c10D58360B8'
+        const chain = 'ethr'
         const node = utils.HDNode.fromSeed(seed)
         const privateKeyHex = node.privateKey
         const address = '0xa8a065143Bb45eA5b5be8F0C176A8c10D58360B8'
 
         // initialise verida server user using issuer seed key
         const app = new Verida({
-            chain: 'ethr',
+            chain: chain,
             address: address,
             privateKey: privateKeyHex
         })
@@ -80,7 +90,11 @@ export class CredentialService {
             "issuanceDate": now.toISOString(),
             "credentialSubject": {
                 ...cred.data
-            }
+            },
+            "credentialSchema": {
+                "id": cred.data['schema'],
+                "type": "JsonSchemaValidator2018"
+            },
         }
 
         const didJwtVc = await Verida.Helpers.credentials.createVerifiableCredential(credential, credIssuer)
@@ -97,14 +111,14 @@ export class CredentialService {
         return result
     }
 
-    async _sendSmsCredential(fetchUrl, TWILIO_SID, TWILIO_TOKEN) {
+    async _sendSmsCredential(fetchUrl, mobile, TWILIO_SID, TWILIO_TOKEN) {
         // Send SMS to user with a link to the retrievable credential
         const twilioClient = twilio(TWILIO_SID, TWILIO_TOKEN, { 
             lazyLoading: true 
         });
 
         const message = await twilioClient.messages
-            .create({body: 'Please download your credential: ' + fetchUrl, from: '+15005550006', to: '+61421000000'})
+            .create({body: 'Please download your credential: ' + fetchUrl, from: '+15005550006', to: mobile})
         
         console.log(message);
     }
