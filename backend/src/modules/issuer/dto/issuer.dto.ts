@@ -5,4 +5,6 @@ export class IssuerDto {
     name: string;
     seed: string;
     did: string;
+    chain: string;
+    address: string;
 }

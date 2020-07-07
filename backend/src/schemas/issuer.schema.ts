@@ -15,5 +15,15 @@ export const IssuerSchema =  new Schema({
     did: {
         type: String,
         required: false
+    },
+
+    chain: {
+        type: String,
+        required: false
+    },
+
+    address: {
+        type: String,
+        required: false
     }
 });
