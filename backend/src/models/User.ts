@@ -3,7 +3,8 @@ export enum Role {
     user,
 }
 
-export class AuthUser {
+export class Identity {
     email: string;
     password: string;
+    isAdmin?: boolean;
 }

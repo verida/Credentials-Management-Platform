@@ -1,24 +1,35 @@
-import { Injectable } from '@nestjs/common';
+import { Body, Injectable, Req } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
-import { SuperAdminService } from "../super-admin/super-admin.service";
+import { AdminService } from "../admin/admin.service";
+import { UserService } from "../user/user.service";
 
 import * as bcrypt from 'bcrypt';
+import { Identity } from "../../models/User";
 
 @Injectable()
 export class AuthService {
-    constructor(private superAdminService: SuperAdminService, private jwtService: JwtService) {}
+    constructor(
+        private adminService: AdminService,
+        private userService: UserService,
+        private jwtService: JwtService
+    ) {}
 
-    async validateUser(email: string, password: string): Promise<any> {
-        const user = await this.superAdminService.findOne(email);
-        return user && bcrypt.compareSync(password, user.passwordHash);
+    async find (admin: boolean, email) {
+        const service = (admin && this.adminService) || this.userService;
+        return service.findOne(email);
     }
 
-    async login(email: string) {
-        const user = await this.superAdminService.findOne(email);
+    async validateUser(@Body() identity: Identity): Promise<any> {
+        const user = await this.find(identity.isAdmin, identity.email);
+        return user && bcrypt.compareSync(identity.password, user.passwordHash);
+    }
+
+    async login(@Body() identity) {
+        const user = await this.find(identity.isAdmin, identity.email);
         return {
-            data: { email, id: user._id },
-            access_token: this.jwtService.sign({ email, sub: user._id }),
+            data: { email: user.email, id: user._id },
+            access_token: this.jwtService.sign({ email: user.email, sub: user._id }),
         };
     }
 }

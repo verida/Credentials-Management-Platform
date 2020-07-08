@@ -1,17 +1,17 @@
 import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { SuperAdmin } from './interfaces/super-admin.interface';
-import { CreateSuperAdminDto } from './dto';
+import { Admin } from './interfaces/admin.interface';
+import { CreateAdminDto } from './dto';
 
 import * as bcrypt from 'bcrypt';
 import { SALT } from "../../configs";
 
 @Injectable()
-export class SuperAdminService {
-    constructor(@InjectModel('SuperAdmin') private userModel: Model<SuperAdmin>) {}
+export class AdminService {
+    constructor(@InjectModel('Admin') private userModel: Model<Admin>) {}
 
-    async create(createSADto: CreateSuperAdminDto): Promise<SuperAdmin> {
+    async create(createSADto: CreateAdminDto): Promise<Admin> {
         const passwordHash = bcrypt.hashSync(createSADto.password, SALT);
         const record = new this.userModel({
             email: createSADto.email,
@@ -20,11 +20,11 @@ export class SuperAdminService {
         return record.save();
     }
 
-    async findAll(): Promise<SuperAdmin[]> {
+    async findAll(): Promise<Admin[]> {
         return this.userModel.find().exec();
     }
 
-    async findOne(email: string): Promise<SuperAdmin> {
+    async findOne(email: string): Promise<Admin> {
         return this.userModel.findOne({ email })
     }
 }

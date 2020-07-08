@@ -57,7 +57,14 @@ import { DASHBOARD } from "../../constants/route";
 
 export default {
   name: "Auth",
-  props: ["title"],
+  props: {
+    title: {
+      required: true
+    },
+    isAdmin: {
+      default: false
+    }
+  },
   data() {
     return {
       user: {
@@ -78,7 +85,7 @@ export default {
         return;
       }
 
-      await this.login(this.user);
+      await this.login({ ...this.user, admin: this.isAdmin });
       this.processing = false;
       await this.$router.push({ name: DASHBOARD });
     }

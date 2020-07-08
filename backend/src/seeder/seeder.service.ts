@@ -1,11 +1,11 @@
 import { Injectable, Logger } from "@nestjs/common";
-import { SuperAdminService } from '../modules/super-admin/super-admin.service';
+import { AdminService } from '../modules/admin/admin.service';
 
 @Injectable()
 export class SeederService {
     constructor(
         private readonly logger: Logger,
-        private readonly superAdminService: SuperAdminService,
+        private readonly adminService: AdminService,
     ) {}
     async seed() {
         try {
@@ -18,7 +18,7 @@ export class SeederService {
     }
     async init() {
         try {
-            await this.superAdminService.create({
+            await this.adminService.create({
                 email: 'admin@verida.com',
                 password: 'admin'
             })

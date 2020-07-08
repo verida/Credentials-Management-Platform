@@ -1,6 +1,6 @@
 import * as mongoose from "mongoose";
 
-export interface SuperAdmin extends mongoose.Document {
+export interface Admin extends mongoose.Document {
     email: string;
     passwordHash: string;
 }

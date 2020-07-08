@@ -14,7 +14,6 @@
 
 <script>
 import Search from "../inputs/Search";
-import { LOGIN } from "../../constants/route";
 
 export default {
   name: "AppNavigation",

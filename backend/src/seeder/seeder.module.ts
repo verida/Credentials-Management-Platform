@@ -2,10 +2,10 @@ import { Logger, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 
-import { SuperAdminService } from '../modules/super-admin/super-admin.service';
+import { AdminService } from '../modules/admin/admin.service';
 import { SeederService } from './seeder.service';
-import { SuperAdminModule } from '../modules/super-admin/super-admin.module';
-import { SuperAdminSchema } from '../schemas/super-admin.schema';
+import { AdminModule } from '../modules/admin/admin.module';
+import { AdminSchema } from '../schemas/admin.schema';
 
 import { DB_URL } from "../configs";
 
@@ -14,14 +14,14 @@ import { DB_URL } from "../configs";
         ConfigModule.forRoot(),
         MongooseModule.forRoot(DB_URL),
         MongooseModule.forFeature([
-            { name: 'SuperAdmin', schema: SuperAdminSchema }
+            { name: 'Admin', schema: AdminSchema }
         ]),
-        SuperAdminModule
+        AdminModule
     ],
     providers: [
         Logger,
         SeederService,
-        SuperAdminService
+        AdminService
     ],
 })
 export class SeederModule {}
