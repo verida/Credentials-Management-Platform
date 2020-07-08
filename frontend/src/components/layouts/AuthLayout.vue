@@ -53,14 +53,16 @@
 import { createNamespacedHelpers } from "vuex";
 const { mapActions: mapAuthActions } = createNamespacedHelpers("auth");
 
+import { DASHBOARD } from "../../constants/route";
+
 export default {
   name: "Auth",
   props: ["title"],
   data() {
     return {
       user: {
-        email: "test@gmail.com",
-        password: "334444"
+        email: null,
+        password: null
       },
       processing: false
     };
@@ -78,6 +80,7 @@ export default {
 
       await this.login(this.user);
       this.processing = false;
+      await this.$router.push({ name: DASHBOARD });
     }
   }
 };

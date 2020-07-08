@@ -1,6 +1,9 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 
+import { isAuth } from "../helpers/RouteGuard";
+import { DASHBOARD } from "../constants/route";
+
 Vue.use(VueRouter);
 
 const routes = [
@@ -22,7 +25,7 @@ const routes = [
   },
   {
     path: "/dashboard",
-    name: "Dashboard",
+    name: DASHBOARD,
     component: () => import("../views/Dashboard"),
     meta: { saPathology: true }
   },

@@ -1,6 +1,5 @@
 <template>
   <div>
-    <app-navigation v-if="!$route.meta.guest" />
     <v-container>
       <v-row justify="center">
         <v-tabs color="info" class="dashboard-navigation" :show-arrows="false">

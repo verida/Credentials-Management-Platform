@@ -14,6 +14,7 @@
 
 <script>
 import Search from "../inputs/Search";
+import { LOGIN } from "../../constants/route";
 
 export default {
   name: "AppNavigation",
@@ -22,7 +23,8 @@ export default {
   },
   methods: {
     logout() {
-      console.log("logout");
+      localStorage.removeItem(process.env.VUE_APP_TOKEN);
+      this.$router.push("/admin/login");
     },
     label() {
       switch (true) {
