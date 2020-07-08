@@ -1,4 +1,4 @@
-import { Body, Injectable, Req } from '@nestjs/common';
+import {Body, Headers, Injectable} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
 import { AdminService } from "../admin/admin.service";
@@ -28,8 +28,22 @@ export class AuthService {
     async login(@Body() identity) {
         const user = await this.find(identity.isAdmin, identity.email);
         return {
-            data: { email: user.email, id: user._id },
-            access_token: this.jwtService.sign({ email: user.email, sub: user._id }),
+            user: { email: user.email, id: user._id },
+            access_token: this.jwtService.sign({
+                email: user.email,
+                sub: user._id,
+                isAdmin: identity.isAdmin
+            }),
         };
+    }
+
+    async restore(@Headers() headers) {
+        const token = headers.authorization.replace('Bearer ', '');
+        const data = await this.jwtService.verifyAsync(token);
+        const user = await this.find(data.isAdmin, data.email);
+        return {
+            email: user.email,
+            id: user._id
+        }
     }
 }

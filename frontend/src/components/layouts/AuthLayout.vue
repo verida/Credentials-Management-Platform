@@ -26,6 +26,7 @@
               v-slot="{ errors }"
             >
               <v-text-field
+                type="password"
                 v-model="user.password"
                 label="Password"
                 color="success"

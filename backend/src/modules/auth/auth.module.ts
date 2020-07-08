@@ -8,8 +8,8 @@ import { UserService } from "../user/user.service";
 import { AdminService } from "../admin/admin.service";
 import { AuthController } from "./auth.controller";
 
-import { JwtStrategy } from "./strategy/jwt.strategy";
-import { LocalStrategy } from "./strategy/local.strategy";
+import { JwtStrategy } from "../../strategies/jwt.strategy";
+import { LocalStrategy } from "../../strategies/local.strategy";
 
 import { UserSchema } from "../../schemas/user.schema";
 import { AdminSchema } from "../../schemas/admin.schema";

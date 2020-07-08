@@ -40,6 +40,7 @@ import { createNamespacedHelpers } from "vuex";
 
 const { mapGetters: mapResultGetters } = createNamespacedHelpers("result");
 const { mapMutations: mapSystemMutations } = createNamespacedHelpers("system");
+const { mapActions: mapAuthActions } = createNamespacedHelpers("auth");
 
 export default {
   name: "Dashboard",
@@ -51,10 +52,14 @@ export default {
       tabs: ["All", "Pending", "Send"]
     };
   },
+  async beforeMount() {
+    await this.fetchUser();
+  },
   computed: {
     ...mapResultGetters(["cards"])
   },
   methods: {
+    ...mapAuthActions(["fetchUser"]),
     ...mapSystemMutations(["openModal"]),
     openResultDialog() {
       this.openModal({
