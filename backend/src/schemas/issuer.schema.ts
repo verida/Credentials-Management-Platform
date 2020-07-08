@@ -7,7 +7,7 @@ export const IssuerSchema =  new Schema({
         required: true
     },
 
-    seed: {
+    privateKey: {
         type: String,
         required: false
     },

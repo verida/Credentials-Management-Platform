@@ -7,7 +7,7 @@ export class CreateIssuerDto {
     name: string;
 
     @Length(34)
-    seed: string;
+    privateKey: string;
 
     @Length(34)
     did: string;

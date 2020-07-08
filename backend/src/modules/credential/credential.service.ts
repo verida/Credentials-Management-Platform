@@ -2,7 +2,6 @@ import { IssueCredentialDto } from './dto'
 import { BaseHelper } from '../../helpers/BaseHelper'
 import { CredentialHelper } from '../../helpers/CredentialHelper'
 import Verida from '@verida/datastore'
-import { utils } from "ethers"
 
 const twilio = require('twilio')
 
@@ -58,20 +57,14 @@ export class CredentialService {
     }
 
     static async _issueVeridaCredential(cred: IssueCredentialDto, encryptionKey: Uint8Array): Promise<object> {
-        // @todo: Locate issuer based on current logged in user
-
-        const seed = '0x22d060c258d129b98f0ac72de5ba1343'
-        const did = 'did:ethr:0xa8a065143Bb45eA5b5be8F0C176A8c10D58360B8'
-        const chain = 'ethr'
-        const node = utils.HDNode.fromSeed(seed)
-        const privateKeyHex = node.privateKey
-        const address = '0xa8a065143Bb45eA5b5be8F0C176A8c10D58360B8'
+        const issuer = await CredentialService._getIssuer()
+        const did = issuer['did']
 
         // initialise verida server user using issuer seed key
         const app = new Verida({
-            chain: chain,
-            address: address,
-            privateKey: privateKeyHex
+            chain: issuer['chain'],
+            address: issuer['address'],
+            privateKey: issuer['privateKey']
         })
 
         await app.connect(true)
@@ -111,7 +104,20 @@ export class CredentialService {
         return result
     }
 
-    async _sendSmsCredential(fetchUrl, mobile, TWILIO_SID, TWILIO_TOKEN) {
+    /**
+     * @todo: Replace this with getting the issuer of the current logged in user
+     */
+    static async _getIssuer(): Promise<object> {
+        return {
+            "name": "KH - Test",
+            "privateKey": "0x57de8c069ba247ae23b6ceb752e24a64a971fa53957f2a2e9e7d068821ed2477",
+            "chain": "vechain",
+            "address": "0xa9cf50dc2c6ad08bb97c769d96055f1cfab29f80",
+            "did": "did:vechain:0xa9cf50dc2c6ad08bb97c769d96055f1cfab29f80"
+          }
+    }
+
+    async _sendSmsCredential(fetchUrl: string, mobile: string, TWILIO_SID: string, TWILIO_TOKEN: string) {
         // Send SMS to user with a link to the retrievable credential
         const twilioClient = twilio(TWILIO_SID, TWILIO_TOKEN, { 
             lazyLoading: true 
