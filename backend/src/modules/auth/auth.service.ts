@@ -14,10 +14,11 @@ export class AuthService {
         return user && bcrypt.compareSync(password, user.passwordHash);
     }
 
-    async login(email: string, password: string) {
-        const payload = { email, sub: password };
+    async login(email: string) {
+        const user = await this.superAdminService.findOne(email);
         return {
-            access_token: this.jwtService.sign(payload),
+            data: { email, id: user._id },
+            access_token: this.jwtService.sign({ email, sub: user._id }),
         };
     }
 }

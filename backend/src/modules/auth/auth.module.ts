@@ -14,6 +14,8 @@ import { LocalStrategy } from "./strategy/local.strategy";
 import { UserSchema } from "../../schemas/user.schema";
 import { SuperAdminSchema } from "../../schemas/super-admin.schema";
 
+import { JWT_SECRET } from "../../configs";
+
 @Module({
   providers: [
     JwtStrategy,
@@ -31,7 +33,7 @@ import { SuperAdminSchema } from "../../schemas/super-admin.schema";
     ]),
     PassportModule,
     JwtModule.register({
-      secret: process.env.JWT_SECRET,
+      secret: JWT_SECRET,
       signOptions: { expiresIn: '3600s' },
     })
   ]
