@@ -69,7 +69,8 @@ export default {
     return {
       user: {
         email: null,
-        password: null
+        password: null,
+        isAdmin: true
       },
       processing: false
     };
@@ -85,7 +86,7 @@ export default {
         return;
       }
 
-      await this.login({ ...this.user, admin: this.isAdmin });
+      await this.login(this.user);
       this.processing = false;
       await this.$router.push({ name: DASHBOARD });
     }
