@@ -1,12 +1,12 @@
-import * as mongoose from 'mongoose';
+import { Schema } from 'mongoose';
 
-export const UserSchema = new mongoose.Schema({
+export const UserSchema = new Schema({
     email: {
         type: String,
         unique: true,
         required: true
     },
-    password: {
+    passwordHash: {
         type: String,
         required: true
     },
@@ -16,7 +16,8 @@ export const UserSchema = new mongoose.Schema({
         required: true
     },
     issuerId: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         required: true
     }
 });
+

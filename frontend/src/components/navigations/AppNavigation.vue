@@ -22,7 +22,8 @@ export default {
   },
   methods: {
     logout() {
-      console.log("logout");
+      localStorage.removeItem(process.env.VUE_APP_TOKEN);
+      this.$router.push("/admin/login");
     },
     label() {
       switch (true) {

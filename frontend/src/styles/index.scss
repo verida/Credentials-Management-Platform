@@ -1,5 +1,10 @@
 @import "forms";
 @import "tabs";
+@import "fonts";
 @import "inputs";
 @import "modals";
 @import "cards";
+
+.v-application {
+  font-family: "Titillium", sans-serif;
+}

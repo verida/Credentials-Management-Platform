@@ -1,12 +1,12 @@
 import * as mongoose from 'mongoose';
 
-export const SuperAdminSchema = new mongoose.Schema({
+export const AdminSchema = new mongoose.Schema({
     email: {
         type: String,
         unique: true,
         required: true
     },
-    password: {
+    passwordHash: {
         type: String,
         required: true
     }

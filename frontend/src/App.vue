@@ -1,9 +1,9 @@
 <template>
   <v-app>
-    <v-content>
+    <v-main>
       <app-navigation v-if="!$route.meta.guest" />
       <router-view />
-    </v-content>
+    </v-main>
 
     <sent-dialog />
     <new-credential-issuer-dialog />

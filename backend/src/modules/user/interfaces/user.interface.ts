@@ -1,9 +1,9 @@
-import * as mongoose from "mongoose";
+import { Document } from 'mongoose';
+import { Role } from "../../../models/User";
 
-export interface User extends mongoose.Document {
-    _id: mongoose.Schema.Types.ObjectId;
+export interface User extends Document {
     email: string;
-    password: string;
-    role: string;
+    passwordHash: string;
+    role: Role;
     issuerId: string;
 }

@@ -1,16 +1,24 @@
 import { Model } from 'mongoose';
-import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { Injectable } from '@nestjs/common';
 import { User } from './interfaces/user.interface';
 import { CreateUserDto } from './dto';
 
+import * as bcrypt from 'bcrypt';
+import { SALT } from "../../configs";
+
 @Injectable()
 export class UserService {
-    constructor(@InjectModel('User') private userModel: Model<User>) {}
+    constructor(@InjectModel('User') private readonly userModel: Model<User>) {}
 
-    async create(createCatDto: CreateUserDto): Promise<User> {
-        const record = new this.userModel(createCatDto);
+    async create(user: CreateUserDto): Promise<User> {
+        const record = new this.userModel(user);
+        record.passwordHash = bcrypt.hashSync(user.password, SALT);
         return record.save();
+    }
+
+    async findOne(email: string): Promise<User | undefined> {
+        return this.userModel.findOne({ email })
     }
 
     async findAll(): Promise<User[]> {

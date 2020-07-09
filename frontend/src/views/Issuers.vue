@@ -17,11 +17,10 @@
 </template>
 
 <script>
-import { createNamespacedHelpers } from "vuex";
 import Issue from "../components/cards/Issue";
-const {
-  mapMutations: mapSystemMutations
-} = createNamespacedHelpers("system");
+
+import { createNamespacedHelpers } from "vuex";
+const { mapMutations: mapSystemMutations } = createNamespacedHelpers("system");
 
 export default {
   name: "Issuers",

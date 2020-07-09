@@ -6,7 +6,8 @@
     hide-details
     label="Search"
     prepend-inner-icon="mdi-magnify"
-    solo-inverted/>
+    solo-inverted
+  />
 </template>
 
 <script>

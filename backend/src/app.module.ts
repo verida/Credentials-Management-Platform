@@ -3,18 +3,25 @@ import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 
 import { UserModule } from './modules/user/user.module';
-import { SuperAdminModule } from './modules/super-admin/super-admin.module';
+import { AdminModule } from './modules/admin/admin.module';
 import { CredentialModule } from './modules/credential/credential.module';
 import { IssuerModule } from './modules/issuer/issuer.module';
+import { AuthModule } from './modules/auth/auth.module';
+
+import { DB_URL } from "./configs";
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    MongooseModule.forRoot(process.env.DB_URL),
+    MongooseModule.forRoot(DB_URL, {
+      useUnifiedTopology: true,
+      useNewUrlParser: true
+    }),
     UserModule,
-    SuperAdminModule,
+    AdminModule,
     CredentialModule,
-    IssuerModule
+    IssuerModule,
+    AuthModule
   ],
 })
 export class AppModule {}

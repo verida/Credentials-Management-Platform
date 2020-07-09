@@ -12,7 +12,8 @@
           v-for="field in fields"
           :key="field"
           :model="null"
-          :label="field">
+          :label="field"
+        >
         </form-field>
         <v-card-actions class="justify-center">
           <v-btn @click="save" class="ma-5" color="info">
