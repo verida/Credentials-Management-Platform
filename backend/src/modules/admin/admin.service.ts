@@ -5,14 +5,13 @@ import { Admin } from './interfaces/admin.interface';
 import { CreateAdminDto } from './dto';
 
 import * as bcrypt from 'bcrypt';
-import { SALT } from "../../configs";
 
 @Injectable()
 export class AdminService {
     constructor(@InjectModel('Admin') private userModel: Model<Admin>) {}
 
     async create(createSADto: CreateAdminDto): Promise<Admin> {
-        const passwordHash = bcrypt.hashSync(createSADto.password, SALT);
+        const passwordHash = bcrypt.hashSync(createSADto.password, process.env.SALT);
         const record = new this.userModel({
             email: createSADto.email,
             passwordHash

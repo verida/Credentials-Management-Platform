@@ -1,8 +1,10 @@
 <template>
   <v-container fluid class="auth" fill-height>
-    <v-row align-content="center" class="flex-column">
-      <img src="../../assets/img/medical-logo.png" width="80" />
-      <v-form ref="auth-form" class="auth-form">
+    <v-row justify="center">
+      <v-form ref="auth-form" class="auth-form text-center">
+        <div class="auth-form__title">
+          {{ title }}
+        </div>
         <div class="auth-form__body">
           <ValidationObserver ref="validator">
             <ValidationProvider
@@ -13,7 +15,7 @@
               <v-text-field
                 v-model="user.email"
                 label="Email"
-                color="success"
+                color="white"
                 :error="Boolean(errors.length)"
                 :error-messages="errors"
               />
@@ -25,24 +27,25 @@
             >
               <v-text-field
                 type="password"
+                autocomplete="new-password"
                 v-model="user.password"
                 label="Password"
-                color="success"
+                color="white"
                 :error="Boolean(errors.length)"
                 :error-messages="errors"
               />
             </ValidationProvider>
           </ValidationObserver>
+          <v-btn
+            text
+            class="auth-form__submit"
+            @click="submit"
+            :loading="processing"
+            :disabled="processing"
+          >
+            <img src="../../assets/img/medical-logo.png" width="30" />
+          </v-btn>
         </div>
-        <v-btn
-          color="success"
-          @click="submit"
-          class="float-right"
-          :loading="processing"
-          :disabled="processing"
-        >
-          Login
-        </v-btn>
       </v-form>
     </v-row>
   </v-container>

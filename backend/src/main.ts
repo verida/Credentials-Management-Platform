@@ -1,4 +1,5 @@
-import "regenerator-runtime/runtime";
+import 'regenerator-runtime/runtime';
+import 'dotenv/config';
 
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
@@ -10,4 +11,6 @@ async function bootstrap() {
 
   await app.listen(PORT as string || 5020);
 }
+
 bootstrap();
+

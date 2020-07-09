@@ -8,12 +8,13 @@ import { CredentialModule } from './modules/credential/credential.module';
 import { IssuerModule } from './modules/issuer/issuer.module';
 import { AuthModule } from './modules/auth/auth.module';
 
-import { DB_URL } from "./configs";
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
-    MongooseModule.forRoot(DB_URL, {
+    ConfigModule.forRoot({
+      isGlobal: true
+    }),
+    MongooseModule.forRoot(process.env.DB_URL, {
       useUnifiedTopology: true,
       useNewUrlParser: true
     }),
