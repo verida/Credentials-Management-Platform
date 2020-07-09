@@ -1,5 +1,5 @@
 <template>
-  <auth-layout title="Admin" :is-admin="true" />
+  <auth-layout title="admin" :is-admin="true" />
 </template>
 
 <script>

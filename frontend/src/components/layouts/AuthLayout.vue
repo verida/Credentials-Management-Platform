@@ -1,12 +1,10 @@
 <template>
-  <v-container fluid fill-height>
-    <v-row justify="center" align-items="center">
+  <v-container fluid class="auth" fill-height>
+    <v-row align-content="center" class="flex-column">
+      <img src="../../assets/img/medical-logo.png" width="80" />
       <v-form ref="auth-form" class="auth-form">
-        <h1 class="text-center auth-form__title success--text text--darken-1">
-          {{ title }}
-        </h1>
         <div class="auth-form__body">
-          <ValidationObserver ref="validator" slo>
+          <ValidationObserver ref="validator">
             <ValidationProvider
               name="Email"
               rules="email|required"
