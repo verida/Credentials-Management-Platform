@@ -3,6 +3,7 @@ import VueRouter from "vue-router";
 
 import { isAuth } from "../helpers/RouteGuard";
 import { DASHBOARD } from "../constants/route";
+import {token} from "../constants/token";
 
 Vue.use(VueRouter);
 
@@ -21,7 +22,10 @@ const routes = [
     path: "/admin/login",
     name: "AdminLogin",
     component: () => import("../views/login/AdminLogin"),
-    meta: { guest: true }
+    meta: { guest: true },
+    // beforeEnter: (from, to, next) => {
+      // return token() ?
+    //}
   },
   {
     path: "/dashboard",
