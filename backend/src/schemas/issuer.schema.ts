@@ -10,5 +10,20 @@ export const IssuerSchema =  new Schema({
     seed: {
         type: String,
         required: false
+    },
+
+    did: {
+        type: String,
+        required: false
+    },
+
+    chain: {
+        type: String,
+        required: false
+    },
+
+    address: {
+        type: String,
+        required: false
     }
 });
