@@ -1,4 +1,12 @@
+import { IsObject, IsString, Length, IsNotEmpty, IsDefined, Contains } from 'class-validator';
+
 export class IssueCredentialDto {
-    _id: string;
+    @IsString()
+    @Length(8)
+    @IsNotEmpty()
+    dob: string;
+
+    @IsNotEmpty()
+    @IsObject()
     data: object;
 }
