@@ -1,9 +1,11 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import {Controller, Post, Body, UseGuards} from '@nestjs/common';
 import { validate } from 'class-validator';
 import { CredentialService } from './credential.service';
 
 import { IssueCredentialDto } from './dto';
+import { AuthGuard } from "@nestjs/passport";
 
+@UseGuards(AuthGuard('jwt'))
 @Controller('credential')
 export class CredentialController {
     constructor(private credentialService: CredentialService) {}
@@ -15,7 +17,7 @@ export class CredentialController {
                 console.log("validation failed. errors: ", errors);
             }
         });
-        
+
         return this.credentialService.issue(data)
     }
 }

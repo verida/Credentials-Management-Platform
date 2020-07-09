@@ -1,9 +1,11 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import {Controller, Get, Post, Body, UseGuards} from '@nestjs/common';
 import { IssuerService } from './issuer.service';
 
 import { CreateIssuerDto } from './dto';
 import { Issuer } from './interfaces/issuer.interface';
+import { AuthGuard } from "@nestjs/passport";
 
+@UseGuards(AuthGuard('jwt'))
 @Controller('issuer')
 export class IssuerController {
     constructor(private issuerService: IssuerService) {}
