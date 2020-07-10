@@ -49,7 +49,7 @@ export default {
   },
   data() {
     return {
-      tabs: ["All", "Pending", "Send"]
+      tabs: ["Sent"]
     };
   },
   async beforeMount() {
