@@ -6,6 +6,11 @@ export const CredentialSchema =  new Schema({
         required: true
     },
 
+    mobile: {
+        type: String,
+        required: true
+    },
+
     issuerId: {
         type: Schema.Types.ObjectId,
         required: true
