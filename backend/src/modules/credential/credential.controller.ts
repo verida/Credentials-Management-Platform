@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, UseGuards, Req } from '@nestjs/common';
+import { Controller, Post, Body, Get, UseGuards, Req, Headers } from '@nestjs/common';
 import { validate } from 'class-validator';
 import { CredentialService } from './credential.service';
 import { Credential } from './interfaces/credential.interface';
@@ -8,11 +8,16 @@ import { AuthGuard } from "@nestjs/passport";
 
 import { UserService } from '../user/user.service';
 import { IssuerService } from '../issuer/issuer.service';
+import { AuthService } from "../auth/auth.service";
 
 @UseGuards(AuthGuard('jwt'))
 @Controller('credential')
 export class CredentialController {
-    constructor(private credentialService: CredentialService, private userService: UserService, private issuerService: IssuerService) {}
+    constructor(
+        private credentialService: CredentialService,
+        private userService: UserService,
+        private issuerService: IssuerService,
+        private authService: AuthService) {}
 
     @Post('issue')
     async issue(@Body() data: IssueCredentialDto, @Req() request): Promise<object> {
@@ -22,16 +27,15 @@ export class CredentialController {
             }
         });
 
-        const user = await this.userService.findOneById(request.user.userId)
-        const issuer = await this.issuerService.findOne(user.issuerId)
+        const user = await this.userService.findOneById(request.user.userId);
+        const issuer = await this.issuerService.findOne(user.issuerId);
         return this.credentialService.issue(issuer, data)
     }
 
     @Get()
-    async findAll(@Req() request): Promise<Credential[]> {
-        const user = await this.userService.findOneById(request.user.userId)
-        const issuer = await this.issuerService.findOne(user.issuerId)
-
+    async findAll(@Headers() headers): Promise<Credential[]> {
+        const user = await this.authService.userByToken(headers);
+        const issuer = await this.issuerService.findOne(user.issuerId);
         return this.credentialService.findAll(issuer)
     }
 }

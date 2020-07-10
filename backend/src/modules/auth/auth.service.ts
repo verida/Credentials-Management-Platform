@@ -7,6 +7,9 @@ import { UserService } from "../user/user.service";
 import * as bcrypt from 'bcrypt';
 import { Identity } from "../../models/User";
 
+import { User } from "../user/interfaces/user.interface";
+import { Admin } from "../admin/interfaces/admin.interface";
+
 @Injectable()
 export class AuthService {
     constructor(
@@ -25,6 +28,12 @@ export class AuthService {
         return user && bcrypt.compareSync(identity.password, user.passwordHash);
     }
 
+    async userByToken(@Headers() headers) {
+        const token = headers.authorization.replace('Bearer ', '');
+        const data = await this.jwtService.verifyAsync(token);
+        return this.find(data.isAdmin, data.email) as Promise<User>;
+    }
+
     async login(@Body() identity) {
         const user = await this.find(identity.isAdmin, identity.email);
         let response = {
@@ -35,7 +44,7 @@ export class AuthService {
                 isAdmin: identity.isAdmin
             }),
         };
-        
+
         if (!identity.isAdmin) {
             response.user['issuerId'] = user['issuerId']
         }
@@ -44,9 +53,7 @@ export class AuthService {
     }
 
     async restore(@Headers() headers) {
-        const token = headers.authorization.replace('Bearer ', '');
-        const data = await this.jwtService.verifyAsync(token);
-        const user = await this.find(data.isAdmin, data.email);
+        const user = await this.userByToken(headers);
         return {
             email: user.email,
             id: user._id

@@ -12,9 +12,9 @@
           </div>
         </v-col>
         <v-col cols="auto">
-          <v-btn @click="send" color="info">
+          <!--<v-btn @click="send" color="info">
             Send Result
-          </v-btn>
+          </v-btn>-->
         </v-col>
       </v-row>
     </v-card-text>
