@@ -6,6 +6,10 @@ export class IssueCredentialDto {
     @IsNotEmpty()
     dob: string;
 
+    @IsString()
+    @IsNotEmpty()
+    mobile: string;
+
     @IsNotEmpty()
     @IsObject()
     data: object;
