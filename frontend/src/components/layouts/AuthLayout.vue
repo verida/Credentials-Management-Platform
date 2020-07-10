@@ -1,7 +1,26 @@
 <template>
   <v-container fluid class="auth" fill-height>
     <v-row justify="center">
-      <v-form ref="auth-form" class="auth-form text-center" @keyup.native.enter="submit">
+      <v-snackbar
+        :timeout="-1"
+        v-model="error.shown"
+        absolute
+        center
+        top
+        color="error"
+      >
+        {{ this.error.msg }}
+        <template v-slot:action="{ attrs }">
+          <v-btn icon dark text v-bind="attrs" @click="error.shown = false">
+            <v-icon>close</v-icon>
+          </v-btn>
+        </template>
+      </v-snackbar>
+      <v-form
+        ref="auth-form"
+        class="auth-form text-center"
+        @keyup.native.enter="submit"
+      >
         <div class="auth-form__title">
           {{ title }}
         </div>
@@ -36,6 +55,9 @@
               />
             </ValidationProvider>
           </ValidationObserver>
+          <ValidationProvider name="Common" v-slot="{ errors }">
+            <v-messages :value="errors" class="error--text mt-2" />
+          </ValidationProvider>
           <v-btn
             text
             class="auth-form__submit"
@@ -55,8 +77,6 @@
 import { createNamespacedHelpers } from "vuex";
 const { mapActions: mapAuthActions } = createNamespacedHelpers("auth");
 
-import { DASHBOARD, ISSUERS } from "../../constants/route";
-
 export default {
   name: "Auth",
   props: {
@@ -70,15 +90,20 @@ export default {
   data() {
     return {
       user: {
-        email: null,
-        password: null
+        email: "admin@verida.com",
+        password: "test"
       },
-      processing: false
+      processing: false,
+      error: {
+        shown: false,
+        msg: "Incorrect email or password"
+      }
     };
   },
   methods: {
     ...mapAuthActions(["login"]),
     async submit() {
+      this.error.shown = false;
       this.processing = true;
       const validated = await this.$refs.validator.validate();
 
@@ -87,9 +112,23 @@ export default {
         return;
       }
 
-      await this.login({ ...this.user, isAdmin: this.isAdmin });
-      this.processing = false;
-      await this.$router.push({ name: this.$route.meta.go });
+      try {
+        await this.login({ ...this.user, isAdmin: this.isAdmin });
+        this.processing = false;
+        await this.$router.push({ name: this.$route.meta.go });
+      } catch (e) {
+        this.processing = false;
+
+        this.error.msg = (() => {
+          switch (e.response.status) {
+            case 401:
+              return "Incorrect email or password";
+            default:
+              return "Something went wrong. Please, try again"
+          }
+        })();
+        this.error.shown = true;
+      }
     }
   }
 };

@@ -23,7 +23,8 @@ export default {
   methods: {
     logout() {
       localStorage.removeItem(process.env.VUE_APP_TOKEN);
-      this.$router.push({ name: this.$route.meta.home });
+      const params = !this.mode.admin && { type: "sa-pathology" };
+      this.$router.push({ name: this.$route.meta.home, params: params || {} });
     },
     label() {
       switch (true) {

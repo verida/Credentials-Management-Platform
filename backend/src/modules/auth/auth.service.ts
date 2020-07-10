@@ -7,7 +7,6 @@ import { UserService } from '../user/user.service';
 import { AdminIdentity, Identity, UserIdentity } from '../../models/User';
 
 import * as bcrypt from 'bcrypt';
-import * as _ from 'underscore';
 
 @Injectable()
 export class AuthService {
@@ -19,11 +18,15 @@ export class AuthService {
 
     async find (admin: boolean, email): Promise<UserIdentity|AdminIdentity> {
         const service = (admin && this.adminService) || this.userService;
-        const user = await service.findOne(email) as (UserIdentity|AdminIdentity);
+        let user = await service.findOne(email) as (UserIdentity|AdminIdentity);
 
-        const data = user.toObject();
-        data['isAdmin'] = Boolean(admin);
-        return data;
+        if (user) {
+            const data = user.toObject();
+            data['isAdmin'] = Boolean(admin);
+            user = data;
+        }
+
+        return user;
     }
 
     async validateUser(@Body() identity: Identity) {
