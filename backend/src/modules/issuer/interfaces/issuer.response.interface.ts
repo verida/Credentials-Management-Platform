@@ -1,8 +1,7 @@
 import * as mongoose from "mongoose";
 
-export interface Issuer extends mongoose.Document {
+export interface IssuerResponse extends mongoose.Document {
     name: string;
-    privateKey: string;
     publicKey: string;
     did: string;
     chain: string;

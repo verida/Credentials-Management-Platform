@@ -1,14 +1,9 @@
 import { Schema } from 'mongoose';
 
-export const IssuerSchema =  new Schema({
+export const IssuerResponseSchema =  new Schema({
     name: {
         type: String,
         unique: true,
-        required: true
-    },
-
-    privateKey: {
-        type: String,
         required: true
     },
 

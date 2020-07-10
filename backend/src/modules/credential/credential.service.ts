@@ -2,7 +2,9 @@ import { IssueCredentialDto } from './dto'
 import { BaseHelper } from '../../helpers/BaseHelper'
 import { CredentialHelper } from '../../helpers/CredentialHelper'
 import Verida from '@verida/datastore'
-import { utils } from "ethers"
+import utils from '@verida/wallet-utils'
+
+import { Issuer } from '../issuer/interfaces/issuer.interface';
 
 const twilio = require('twilio')
 
@@ -12,7 +14,7 @@ Verida.setConfig({
 
 export class CredentialService {
 
-    async issue(cred: IssueCredentialDto): Promise<object> {
+    async issue(issuer: Issuer, cred: IssueCredentialDto): Promise<object> {
         const {
             CREDENTIAL_DOWNLOAD_URL,
             TWILIO_SID,
@@ -39,7 +41,7 @@ export class CredentialService {
         const encryptionKey = new Uint8Array(Buffer.from(randomKeyHex + dobHex, 'hex'))
 
         // Issue an encrypted credential
-        const result = await CredentialService._issueVeridaCredential(cred, encryptionKey)
+        const result = await CredentialService._issueVeridaCredential(issuer, cred, encryptionKey)
         const credentialId = result['result'].id
         const vid = result['vid']
 
@@ -57,10 +59,11 @@ export class CredentialService {
         }
     }
 
-    static async _issueVeridaCredential(cred: IssueCredentialDto, encryptionKey: Uint8Array): Promise<object> {
+    static async _issueVeridaCredential(issuer: Issuer, cred: IssueCredentialDto, encryptionKey: Uint8Array): Promise<object> {
         // @todo: Locate issuer based on current logged in user
+        const app = await CredentialService._getVerida(issuer)
 
-        const seed = '0x22d060c258d129b98f0ac72de5ba1343'
+        /*const seed = '0x22d060c258d129b98f0ac72de5ba1343'
         const did = 'did:ethr:0xa8a065143Bb45eA5b5be8F0C176A8c10D58360B8'
         const chain = 'ethr'
         const node = utils.HDNode.fromSeed(seed)
@@ -74,7 +77,7 @@ export class CredentialService {
             privateKey: privateKeyHex
         })
 
-        await app.connect(true)
+        await app.connect(true)*/
 
         // @todo: issue a new public, encrypted verida credential
         const now = new Date()
@@ -86,7 +89,7 @@ export class CredentialService {
             ],
             "id": "",
             "type": ["VerifiableCredential"],
-            "issuer": did,
+            "issuer": issuer.did,
             "issuanceDate": now.toISOString(),
             "credentialSubject": {
                 ...cred.data
@@ -121,5 +124,28 @@ export class CredentialService {
             .create({body: 'Please download your credential: ' + fetchUrl, from: '+15005550006', to: mobile})
         
         console.log(message);
+    }
+
+    async findAll(issuer: Issuer, filter: object, options: object) {
+        return []
+    }
+
+    static async _getVerida(issuer: Issuer) {
+        /*const seed = '0x22d060c258d129b98f0ac72de5ba1343'
+        const did = 'did:ethr:0xa8a065143Bb45eA5b5be8F0C176A8c10D58360B8'
+        const chain = 'ethr'
+        const node = utils.HDNode.fromSeed(seed)
+        const privateKeyHex = node.privateKey
+        const address = '0xa8a065143Bb45eA5b5be8F0C176A8c10D58360B8'*/
+
+        // initialise verida server user using issuer
+        const app = new Verida({
+            chain: issuer.chain,
+            address: issuer.address,
+            privateKey: issuer.privateKey
+        })
+
+        await app.connect(true)
+        return app
     }
 }

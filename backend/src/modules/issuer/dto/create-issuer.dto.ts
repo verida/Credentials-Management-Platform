@@ -6,15 +6,6 @@ export class CreateIssuerDto {
     @Unique({ message: "This issuer name is already in use" })
     name: string;
 
-    @Length(34)
-    seed: string;
-
-    @Length(34)
-    did: string;
-
     @Length(10)
     chain: string;
-
-    @Length(50)
-    address: string;
 }
