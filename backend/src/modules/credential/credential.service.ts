@@ -27,8 +27,7 @@ export class CredentialService {
         // @todo: Use current user's issuer DID
         const did = 'did:ethr:0xa8a065143Bb45eA5b5be8F0C176A8c10D58360B8'
 
-        // dob = (YYYYMMDD)
-        const dob = cred.data['dob']
+        const dob = cred.dob.replace(/\-/g, "")
         const mobile = cred.data['mobile']
 
         // Generate an encryption key for the credential that combines a
@@ -106,6 +105,8 @@ export class CredentialService {
             didJwtVc: didJwtVc,
             ...cred.data
         }
+
+        console.log(encryptionKey, encryptionKey.length)
 
         const result = await CredentialHelper.issuePublicCredential(app, item, {
             key: encryptionKey
