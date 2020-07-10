@@ -1,18 +1,23 @@
+import { Model } from 'mongoose';
+import { InjectModel } from '@nestjs/mongoose';
 import { IssueCredentialDto } from './dto'
+import { Credential } from './interfaces/credential.interface';
+import { Issuer } from '../issuer/interfaces/issuer.interface';
+
 import { BaseHelper } from '../../helpers/BaseHelper'
 import { CredentialHelper } from '../../helpers/CredentialHelper'
 import Verida from '@verida/datastore'
-import utils from '@verida/wallet-utils'
-
-import { Issuer } from '../issuer/interfaces/issuer.interface';
 
 const twilio = require('twilio')
 
+const { VERIDA_ENVIRONMENT } = process.env
+
 Verida.setConfig({
-    environment: process.env.VERIDA_ENVIRONMENT
+    environment: VERIDA_ENVIRONMENT
 })
 
 export class CredentialService {
+    constructor(@InjectModel('Credential') private readonly credentialModel: Model<Credential>) {}
 
     async issue(issuer: Issuer, cred: IssueCredentialDto): Promise<object> {
         const {
@@ -40,7 +45,7 @@ export class CredentialService {
         const encryptionKey = new Uint8Array(Buffer.from(randomKeyHex + dobHex, 'hex'))
 
         // Issue an encrypted credential
-        const result = await CredentialService._issueVeridaCredential(issuer, cred, encryptionKey)
+        const result = await this._issueVeridaCredential(issuer, cred, encryptionKey)
         const credentialId = result['result'].id
         const vid = result['vid']
 
@@ -58,27 +63,11 @@ export class CredentialService {
         }
     }
 
-    static async _issueVeridaCredential(issuer: Issuer, cred: IssueCredentialDto, encryptionKey: Uint8Array): Promise<object> {
+    async _issueVeridaCredential(issuer: Issuer, cred: IssueCredentialDto, encryptionKey: Uint8Array): Promise<object> {
         // @todo: Locate issuer based on current logged in user
         const app = await CredentialService._getVerida(issuer)
 
-        /*const seed = '0x22d060c258d129b98f0ac72de5ba1343'
-        const did = 'did:ethr:0xa8a065143Bb45eA5b5be8F0C176A8c10D58360B8'
-        const chain = 'ethr'
-        const node = utils.HDNode.fromSeed(seed)
-        const privateKeyHex = node.privateKey
-        const address = '0xa8a065143Bb45eA5b5be8F0C176A8c10D58360B8'
-
-        // initialise verida server user using issuer seed key
-        const app = new Verida({
-            chain: chain,
-            address: address,
-            privateKey: privateKeyHex
-        })
-
-        await app.connect(true)*/
-
-        // @todo: issue a new public, encrypted verida credential
+        // Issue a new public, encrypted verida credential
         const now = new Date()
         const credIssuer = await Verida.Helpers.credentials.createIssuer(app.user)
         const credential = {
@@ -106,11 +95,18 @@ export class CredentialService {
             ...cred.data
         }
 
-        console.log(encryptionKey, encryptionKey.length)
-
         const result = await CredentialHelper.issuePublicCredential(app, item, {
             key: encryptionKey
         })
+
+        // Save the credential to the local database
+        const record = new this.credentialModel()
+        record.name = cred.data['name']
+        record.issuerId = issuer._id
+        record.credentialId = result['result'].id
+        record.revoked = false
+        record.data = cred.data
+        await record.save();
 
         return result
     }
@@ -127,18 +123,13 @@ export class CredentialService {
         console.log(message);
     }
 
-    async findAll(issuer: Issuer, filter: object, options: object) {
-        return []
+    async findAll(issuer: Issuer): Promise<Credential[]> {
+        return this.credentialModel.find({
+            issuerId: issuer._id
+        }).exec();
     }
 
     static async _getVerida(issuer: Issuer) {
-        /*const seed = '0x22d060c258d129b98f0ac72de5ba1343'
-        const did = 'did:ethr:0xa8a065143Bb45eA5b5be8F0C176A8c10D58360B8'
-        const chain = 'ethr'
-        const node = utils.HDNode.fromSeed(seed)
-        const privateKeyHex = node.privateKey
-        const address = '0xa8a065143Bb45eA5b5be8F0C176A8c10D58360B8'*/
-
         // initialise verida server user using issuer
         const app = new Verida({
             chain: issuer.chain,

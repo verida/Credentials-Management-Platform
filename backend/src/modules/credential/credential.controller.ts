@@ -1,8 +1,9 @@
 import { Controller, Post, Body, Get, UseGuards, Req } from '@nestjs/common';
 import { validate } from 'class-validator';
 import { CredentialService } from './credential.service';
+import { Credential } from './interfaces/credential.interface';
 
-import { IssueCredentialDto, FetchCredentialDto } from './dto';
+import { IssueCredentialDto } from './dto';
 import { AuthGuard } from "@nestjs/passport";
 
 import { UserService } from '../user/user.service';
@@ -27,13 +28,10 @@ export class CredentialController {
     }
 
     @Get()
-    async findAll(@Body() data: FetchCredentialDto, @Req() request): Promise<Credential[]> {
+    async findAll(@Req() request): Promise<Credential[]> {
         const user = await this.userService.findOneById(request.user.userId)
         const issuer = await this.issuerService.findOne(user.issuerId)
-        return this.credentialService.findAll(issuer, data.filter, data.options)
-    }
 
-    async _getIssuer(userId: string) {
-        
+        return this.credentialService.findAll(issuer)
     }
 }
