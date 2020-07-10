@@ -4,7 +4,7 @@
       {{ label() }}
     </h3>
     <v-spacer />
-    <search v-if="mode.saPathology" />
+    <search v-if="!mode.admin" />
     <v-spacer />
     <v-btn @click="logout" outlined>
       Logout
@@ -23,11 +23,11 @@ export default {
   methods: {
     logout() {
       localStorage.removeItem(process.env.VUE_APP_TOKEN);
-      this.$router.push("/admin/login");
+      this.$router.push({ name: this.$route.meta.home });
     },
     label() {
       switch (true) {
-        case this.mode.saPathology:
+        case this.mode.user:
           return "SA Pathology";
         case this.mode.admin:
           return "Admin";

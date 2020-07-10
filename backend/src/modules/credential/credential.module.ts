@@ -7,7 +7,7 @@ import { UserModule } from '../user/user.module';
 import { IssuerModule } from '../issuer/issuer.module';
 import { AuthService } from "../auth/auth.service";
 import { AdminService } from "../admin/admin.service";
-import { JwtModule, JwtService } from "@nestjs/jwt";
+import { JwtModule } from "@nestjs/jwt";
 
 import { CredentialSchema } from '../../schemas/credential.schema';
 import { AdminSchema } from "../../schemas/admin.schema";

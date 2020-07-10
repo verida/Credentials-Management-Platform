@@ -22,7 +22,6 @@ const actions = {
     commit("setToken", token);
   },
   async fetchUser({ commit }) {
-    console.log("test")
     const result = await this._vm.axios.get("/restore");
     commit("login", result.data);
   },

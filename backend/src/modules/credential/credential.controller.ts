@@ -35,7 +35,7 @@ export class CredentialController {
     @Get()
     async findAll(@Headers() headers): Promise<Credential[]> {
         const user = await this.authService.userByToken(headers);
-        const issuer = await this.issuerService.findOne(user.issuerId);
+        const issuer = await this.issuerService.findOne(user["issuerId"]);
         return this.credentialService.findAll(issuer)
     }
 }

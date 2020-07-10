@@ -1,7 +1,7 @@
 <template>
   <v-container fluid class="auth" fill-height>
     <v-row justify="center">
-      <v-form ref="auth-form" class="auth-form text-center">
+      <v-form ref="auth-form" class="auth-form text-center" @keyup.native.enter="submit">
         <div class="auth-form__title">
           {{ title }}
         </div>
@@ -55,7 +55,7 @@
 import { createNamespacedHelpers } from "vuex";
 const { mapActions: mapAuthActions } = createNamespacedHelpers("auth");
 
-import { DASHBOARD } from "../../constants/route";
+import { DASHBOARD, ISSUERS } from "../../constants/route";
 
 export default {
   name: "Auth",
@@ -80,7 +80,7 @@ export default {
     ...mapAuthActions(["login"]),
     async submit() {
       this.processing = true;
-      const validated = this.$refs.validator.validate();
+      const validated = await this.$refs.validator.validate();
 
       if (!validated) {
         this.processing = false;
@@ -89,7 +89,7 @@ export default {
 
       await this.login({ ...this.user, isAdmin: this.isAdmin });
       this.processing = false;
-      await this.$router.push({ name: DASHBOARD });
+      await this.$router.push({ name: this.$route.meta.go });
     }
   }
 };
