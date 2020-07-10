@@ -26,4 +26,6 @@ export const IssuerResponseSchema =  new Schema({
         type: String,
         required: true
     }
+}, {
+    collection: 'issuers'
 });

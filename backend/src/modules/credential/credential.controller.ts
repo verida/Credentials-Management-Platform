@@ -21,19 +21,19 @@ export class CredentialController {
             }
         });
 
-        const issuer = await this._getIssuer(request.user.userId)
-
+        const user = await this.userService.findOneById(request.user.userId)
+        const issuer = await this.issuerService.findOne(user.issuerId)
         return this.credentialService.issue(issuer, data)
     }
 
     @Get()
     async findAll(@Body() data: FetchCredentialDto, @Req() request): Promise<Credential[]> {
-        const issuer = await this._getIssuer(request.user.userId)
+        const user = await this.userService.findOneById(request.user.userId)
+        const issuer = await this.issuerService.findOne(user.issuerId)
         return this.credentialService.findAll(issuer, data.filter, data.options)
     }
 
     async _getIssuer(userId: string) {
-        const user = await this.userService.findOneById(userId)
-        return this.issuerService.findOne(user.issuerId)
+        
     }
 }
