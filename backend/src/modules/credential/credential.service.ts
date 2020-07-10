@@ -7,6 +7,7 @@ import { Issuer } from '../issuer/interfaces/issuer.interface';
 import { BaseHelper } from '../../helpers/BaseHelper'
 import { CredentialHelper } from '../../helpers/CredentialHelper'
 import Verida from '@verida/datastore'
+import { BadRequestException } from '@nestjs/common';
 
 const twilio = require('twilio')
 
@@ -26,14 +27,17 @@ export class CredentialService {
             TWILIO_TOKEN
         } = process.env;
 
-        // @todo: validate the credential (cred.data)
-        // validate schema
+        // Validate the credential
+        const schema = await Verida.getSchema(cred.data['schema'])
+        const valid = await schema.validate(cred.data)
 
-        // @todo: Use current user's issuer DID
-        const did = 'did:ethr:0xa8a065143Bb45eA5b5be8F0C176A8c10D58360B8'
+        if (!valid) {
+            throw new BadRequestException(schema.errors)
+        }
 
+        // Validate the DOB
         const dob = cred.dob.replace(/\-/g, "")
-        const mobile = cred.data['mobile']
+        const mobile = cred.mobile
 
         // Generate an encryption key for the credential that combines a
         // partial random key with the user's date of birth
@@ -102,6 +106,7 @@ export class CredentialService {
         // Save the credential to the local database
         const record = new this.credentialModel()
         record.name = cred.data['name']
+        record.mobile = cred.mobile
         record.issuerId = issuer._id
         record.credentialId = result['result'].id
         record.revoked = false
