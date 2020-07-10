@@ -27,7 +27,7 @@ export class AuthService {
 
     async login(@Body() identity) {
         const user = await this.find(identity.isAdmin, identity.email);
-        return {
+        let response = {
             user: { email: user.email, id: user._id },
             access_token: this.jwtService.sign({
                 email: user.email,
@@ -35,6 +35,12 @@ export class AuthService {
                 isAdmin: identity.isAdmin
             }),
         };
+        
+        if (!identity.isAdmin) {
+            response.user['issuerId'] = user['issuerId']
+        }
+
+        return response
     }
 
     async restore(@Headers() headers) {
