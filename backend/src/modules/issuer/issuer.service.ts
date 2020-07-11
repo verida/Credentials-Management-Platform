@@ -35,4 +35,8 @@ export class IssuerService {
     async findOne(id: string): Promise<Issuer | undefined> {
         return this.issuerModel.findOne({ _id: id })
     }
+
+    async findOneByUrlName(urlName: string): Promise<Issuer | undefined> {
+        return this.issuerModel.findOne({ urlName: urlName })
+    }
 }
