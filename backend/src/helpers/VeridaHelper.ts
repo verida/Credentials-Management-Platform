@@ -12,12 +12,14 @@ import { IssueCredentialDto } from '../modules/credential/dto'
 
 const {
     VERIDA_ENVIRONMENT,
+    VERIDA_APP_NAME,
     CREDENTIAL_DB,
     CREDENTIAL_DOWNLOAD_URL
 } = process.env
 
 Verida.setConfig({
-    environment: VERIDA_ENVIRONMENT
+    environment: VERIDA_ENVIRONMENT,
+    appName: VERIDA_APP_NAME
 })
 
 export default class VeridaHelper {
