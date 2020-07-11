@@ -39,6 +39,7 @@ export default class VeridaHelper {
         issuer.privateKey = account['privateKey']
         issuer.publicKey = account['publicKey']
         issuer.address = account['address']
+        issuer.urlName = createIssuerDto.urlName
 
         return issuer
     }

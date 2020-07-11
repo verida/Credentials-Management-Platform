@@ -7,6 +7,10 @@ export const IssuerResponseSchema =  new Schema({
         required: true
     },
 
+    urlName: {
+        type: String
+    },
+
     publicKey: {
         type: String,
         required: true

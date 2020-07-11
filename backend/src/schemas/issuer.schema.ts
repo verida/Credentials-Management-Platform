@@ -7,6 +7,12 @@ export const IssuerSchema =  new Schema({
         required: true
     },
 
+    urlName: {
+        type: String,
+        unqiue: true,
+        required: true
+    },
+
     privateKey: {
         type: String,
         required: true
