@@ -4,7 +4,7 @@ import Verida from '@verida/datastore'
 /**
  *
  */
-export class CredentialHelper {
+export default class CredentialHelper {
   /**
    * Take an existing database item with an embedded credential
    * and return the URI to a public credential.

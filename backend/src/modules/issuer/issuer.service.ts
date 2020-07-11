@@ -4,26 +4,26 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Issuer } from './interfaces/issuer.interface';
 import { IssuerResponse } from './interfaces/issuer.response.interface';
 import { CreateIssuerDto } from './dto';
-import { IssuerDto } from './dto';
-import utils from '@verida/wallet-utils'
+
+import VeridaHelper from '../../helpers/VeridaHelper';
 
 @Injectable()
 export class IssuerService {
     constructor(@InjectModel('IssuerResponse') private issuerResponse: Model<IssuerResponse>, @InjectModel('Issuer') private issuerModel: Model<Issuer>) {}
 
     async create(createIssuerDto: CreateIssuerDto): Promise<IssuerResponse> {
-        const account = utils.createAccount(createIssuerDto.chain)
+        // Create a new blockchain account for the issuer
+        const issuer = await VeridaHelper.createIssuer(createIssuerDto)
 
-        const issuer = new IssuerDto()
-        issuer.name = createIssuerDto.name
-        issuer.chain = account['chain']
-        issuer.did = account['did']
-        issuer.privateKey = account['privateKey']
-        issuer.publicKey = account['publicKey']
-        issuer.address = account['address']
-
+        // Save the issuer to the database
         const record = new this.issuerModel(issuer);
         const issuerModel = await record.save()
+
+        // Set the public profile name of the issuer to match that of the account
+        // (Do this after saving issuer to local database to ensure unique names)
+        await VeridaHelper.setIssuerName(issuer)
+
+        // Create an issuer response that hides the privateKey
         const issuerResponse = new this.issuerResponse(issuerModel)
         return issuerResponse
     }

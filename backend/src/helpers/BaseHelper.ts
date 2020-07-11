@@ -1,5 +1,5 @@
 
-export class BaseHelper {
+export default class BaseHelper {
 
     // Source: https://stackoverflow.com/a/55011290
     static convertBase(str: String, fromBase: Number, toBase: Number): String {
