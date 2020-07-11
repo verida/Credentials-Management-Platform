@@ -47,7 +47,6 @@
     "regenerator-runtime": "^0.13.5",
     "rimraf": "^3.0.2",
     "rxjs": "^6.5.5",
-    "tweetnacl-util": "^0.15.1",
     "twilio": "^3.46.0",
     "underscore": "^1.10.2"
   },
