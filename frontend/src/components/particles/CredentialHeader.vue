@@ -1,6 +1,11 @@
 <template>
   <ValidationObserver ref="validator">
     <v-col cols="12">
+      <v-phone-number
+        label="Mobile phone"
+        v-model="main.mobile"
+        :disabled="processing"
+      />
       <ValidationProvider
         rules="required"
         name="Document Type"
@@ -14,19 +19,6 @@
           :error="Boolean(errors.length)"
           :error-messages="errors"
           @input="() => $emit('schema-update', schema)"
-        />
-      </ValidationProvider>
-      <ValidationProvider
-        rules="required"
-        name="Mobile Phone"
-        v-slot="{ errors }"
-      >
-        <v-phone-number
-          label="Mobile phone"
-          v-model="main.mobile"
-          :disabled="processing"
-          :error="Boolean(errors.length)"
-          :error-messages="errors"
         />
       </ValidationProvider>
       <v-dialog
