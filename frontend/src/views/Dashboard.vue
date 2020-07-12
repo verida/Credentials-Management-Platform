@@ -26,7 +26,8 @@
                 class="mb-4"
                 v-for="card in cards"
                 :key="card.id"
-                :result="card" />
+                :result="card"
+              />
             </template>
             <template v-else>
               Credential List is empty

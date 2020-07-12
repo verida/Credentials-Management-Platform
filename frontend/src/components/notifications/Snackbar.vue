@@ -1,12 +1,5 @@
 <template>
-  <v-snackbar
-    :timeout="-1"
-    v-model="value"
-    absolute
-    center
-    top
-    color="error"
-  >
+  <v-snackbar :timeout="-1" v-model="value" absolute center top color="error">
     {{ msg }}
     <template v-slot:action="{ attrs }">
       <v-btn icon dark text v-bind="attrs" @click="() => $emit('input', false)">

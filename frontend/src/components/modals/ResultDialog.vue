@@ -5,65 +5,43 @@
         {{ title }}
       </small>
       <div class="modal-contour">
-        <v-col cols="12">
-          <v-autocomplete
-            label="Document Type"
-            v-model="schema"
-            :items="schemas"
-            :disabled="processing"
+        <ValidationObserver ref="validator">
+          <credential-header
+            :schemas="schemas"
+            :processing="processing"
+            ref="credential"
+            @schema-update="(v) => init(v)"
           />
-          <v-text-field label="Mobile phone" v-model="main.mobile" :disabled="processing" />
-          <v-dialog
-            ref="dialog"
-            v-model="datepicker"
-            :return-value.sync="main.dob"
-            persistent
-            width="290px"
-          >
-            <template v-slot:activator="{ on, attrs }">
-              <v-text-field
-                v-model="main.dob"
-                label="Date of Birth"
-                readonly
-                v-bind="attrs"
-                v-on="on"
-                :disabled="processing" />
-            </template>
-            <v-date-picker v-model="main.dob" scrollable>
-              <v-spacer />
-              <v-btn text color="primary" @click="datepicker = false">
-                Cancel
-              </v-btn>
-              <v-btn text color="primary" @click="$refs.dialog.save(main.dob)">
-                OK
-              </v-btn>
-            </v-date-picker>
-          </v-dialog>
-        </v-col>
-        <v-col cols="12">
-          <template >
+          <v-col cols="12">
             <form-field
-              v-for="(field, key) in form"
-              :key="key"
-              :disabled="processing"
-              :attr="attributes[key]"
-              :model="form[key]"
-              @update="value => (form[key] = value)"
+              ref="fields"
+              :fields="fields"
+              :excluded="['dateOfBirth', 'dob']"
             />
-          </template>
-          <v-col>
-            <div>{{ issues.timestamp }}</div>
-            <div class="mt-2">{{ issues.by }}</div>
+            <v-col>
+              <div>{{ issues.timestamp }}</div>
+              <div class="mt-2">{{ issues.by }}</div>
+            </v-col>
+            <v-card-actions class="justify-center mt-10">
+              <v-btn
+                @click="closeModal"
+                color="info"
+                outlined
+                :disabled="processing"
+              >
+                Close
+              </v-btn>
+              <v-btn
+                @click="send"
+                color="info"
+                :disabled="processing"
+                v-if="fields.length"
+              >
+                Send Credential
+              </v-btn>
+            </v-card-actions>
           </v-col>
-          <v-card-actions class="justify-center mt-10">
-            <v-btn @click="closeModal" color="info" outlined :disabled="processing">
-              Close
-            </v-btn>
-            <v-btn @click="send" color="info" :disabled="processing" v-if="schema">
-              Send Credential
-            </v-btn>
-          </v-card-actions>
-        </v-col>
+        </ValidationObserver>
       </div>
     </v-card>
   </v-dialog>
@@ -75,34 +53,26 @@ import FormField from "../inputs/FormField";
 import ModalMixin from "../../mixins/ModalMixin";
 
 import { createNamespacedHelpers } from "vuex";
+import CredentialHeader from "../particles/CredentialHeader";
 const { mapGetters: mapResultGetters } = createNamespacedHelpers("result");
 const { mapMutations: mapSystemMutations } = createNamespacedHelpers("system");
-const { mapActions: mapCredentialActions } = createNamespacedHelpers("credential");
+const { mapActions: mapCredentialActions } = createNamespacedHelpers(
+  "credential"
+);
 const {
   mapGetters: mapSchemaGetters,
   mapActions: mapSchemaActions
 } = createNamespacedHelpers("schema");
 
-const EXCLUDED = ["dateOfBirth", "dob"];
-
 export default {
   name: "ResultDialog",
-  components: { FormField },
+  components: { CredentialHeader, FormField },
   mixins: [FormMixin, ModalMixin],
   data() {
     return {
       title: null,
-      schema: null,
-      datepicker: false,
       processing: false,
       fields: [],
-
-      main: {
-        dob: null,
-        mobile: null
-      },
-      form: {},
-      attributes: {},
 
       issues: {
         timestamp: "Issues timestamp: 1st May 2020",
@@ -123,46 +93,32 @@ export default {
     ...mapCredentialActions(["createCredential"]),
     async send() {
       this.processing = true;
+
+      const form = this.$refs.fields.form;
+      const credentials = this.$refs.credentials;
       const credential = {
-        ...this.data,
+        ...credentials,
         data: {
-          name: this.form.fullName + " " + this.form.testType,
+          name: form.fullName + " " + form.testType,
           schema: this.schemaPath(this.schema),
-          ...this.form
+          ...form
         }
       };
       await this.createCredential(credential);
       this.processing = false;
       this.closeModal();
     },
-    init() {
+    async init(schema) {
       this.title = "New Result";
 
-      this.form = {};
-      this.attributes = {};
-
-      this.fields = this.properties(this.schema);
-      const keys = _.keys(this.fields).filter(k => !EXCLUDED.includes(k));
-
-      _.each(keys, key => {
-        this.$set(this.form, key, null);
-        this.$set(this.attributes, key, this.fields[key]);
-      });
-    },
-    reset() {
-      this.schema = null;
-      const dataKeys = _.keys(this.main);
-      _.each(dataKeys, dk => {
-        this.$set(this.main, dk, null);
-      });
+      this.fields = this.properties(schema);
+      await this.$nextTick();
+      this.$refs.fields && this.$refs.fields.init();
     }
   },
   watch: {
-    schema() {
-      this.init();
-    },
     dialog() {
-      !this.dialog && this.reset();
+      !this.dialog && this.$refs.credential.reset();
     }
   }
 };

@@ -27,9 +27,7 @@ const {
   mapState: mapIssuerState,
   mapActions: mapIssuerActions
 } = createNamespacedHelpers("issuer");
-const {
-  mapMutations: mapSystemMutations
-} = createNamespacedHelpers("system");
+const { mapMutations: mapSystemMutations } = createNamespacedHelpers("system");
 
 export default {
   name: "Issuers",

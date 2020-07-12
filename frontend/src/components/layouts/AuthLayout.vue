@@ -110,7 +110,7 @@ export default {
             case 401:
               return "Incorrect email or password";
             default:
-              return "Something went wrong. Please, try again"
+              return "Something went wrong. Please, try again";
           }
         })();
         this.error.shown = true;
