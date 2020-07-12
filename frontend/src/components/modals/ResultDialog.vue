@@ -10,7 +10,7 @@
             :schemas="schemas"
             :processing="processing"
             ref="credential"
-            @schema-update="(v) => init(v)"
+            @schema-update="v => init(v)"
           />
           <v-col cols="12">
             <form-field
@@ -35,7 +35,7 @@
                 @click="send"
                 color="info"
                 :disabled="processing"
-                v-if="fields.length"
+                v-if="fields"
               >
                 Send Credential
               </v-btn>
@@ -72,7 +72,7 @@ export default {
     return {
       title: null,
       processing: false,
-      fields: [],
+      fields: null,
 
       issues: {
         timestamp: "Issues timestamp: 1st May 2020",
@@ -93,17 +93,27 @@ export default {
     ...mapCredentialActions(["createCredential"]),
     async send() {
       this.processing = true;
+      const validated = await Promise.all([
+        this.$refs.fields.validate(),
+        this.$refs.credential.validate()
+      ]);
+
+      if (validated.includes(false)) {
+        this.processing = false;
+        return;
+      }
 
       const form = this.$refs.fields.form;
-      const credentials = this.$refs.credentials;
+      const data = this.$refs.credential.main;
       const credential = {
-        ...credentials,
+        ...data,
         data: {
           name: form.fullName + " " + form.testType,
-          schema: this.schemaPath(this.schema),
+          schema: this.schemaPath(this.$refs.credential.schema),
           ...form
         }
       };
+
       await this.createCredential(credential);
       this.processing = false;
       this.closeModal();
@@ -118,7 +128,10 @@ export default {
   },
   watch: {
     dialog() {
-      !this.dialog && this.$refs.credential.reset();
+      if (this.dialog) {
+        this.fields = null;
+        this.$refs.credential && this.$refs.credential.reset();
+      }
     }
   }
 };

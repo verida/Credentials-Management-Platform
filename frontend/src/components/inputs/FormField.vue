@@ -58,6 +58,9 @@ export default {
         this.$set(this.form, key, null);
         this.$set(this.attributes, key, this.fields[key]);
       });
+    },
+    async validate() {
+      return this.$refs.validator.validate();
     }
   }
 };
