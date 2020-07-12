@@ -19,6 +19,7 @@
                 v-model="issuer.name"
                 label="Issuer name"
                 placeholder="Please, enter the issuer name"
+                :disabled="processing"
                 :error="Boolean(errors.length)"
                 :error-messages="errors"
               />
@@ -31,6 +32,7 @@
               <v-text-field
                 v-model="issuer.urlName"
                 label="Issuer URL"
+                :disabled="processing"
                 :error="Boolean(errors.length)"
                 :error-messages="errors"
               />
@@ -44,6 +46,7 @@
                 class="mt-7"
                 v-model="admin.email"
                 label="Issuer admin email"
+                :disabled="processing"
                 :error="Boolean(errors.length)"
                 :error-messages="errors"
               />
@@ -59,6 +62,7 @@
                 autocomplete="new-password"
                 v-model="admin.password"
                 label="Specify admin password"
+                :disabled="processing"
                 :error="Boolean(errors.length)"
                 :error-messages="errors"
               />
@@ -73,6 +77,7 @@
                 autocomplete="new-password"
                 v-model="admin.passwordConfirmation"
                 label="Re-enter the password"
+                :disabled="processing"
                 :error="Boolean(errors.length)"
                 :error-messages="errors"
               />

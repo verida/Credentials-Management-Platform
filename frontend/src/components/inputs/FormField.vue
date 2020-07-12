@@ -9,10 +9,16 @@
     <v-select
       v-if="type === 'select'"
       v-model="value"
-      :items="options"
+      :items="items"
       :label="label"
       :readonly="readonly"
       chips
+    />
+    <v-autocomplete
+      v-if="type === 'autocomplete'"
+      v-model="value"
+      :items="items"
+      :label="label"
     />
   </v-col>
 </template>
@@ -30,37 +36,18 @@ export default {
     readonly: {
       type: Boolean,
       default: false
+    },
+    items: {
+      default: []
+    },
+    type: {
+      default: "text-field"
     }
   },
   data() {
     return {
-      type: null,
-      options: null,
       value: this.model
     };
-  },
-  beforeMount() {
-    this.type = this.el();
-    this.options = this.items();
-  },
-  methods: {
-    el() {
-      switch (this.label) {
-        case "Test type":
-        case "Test result":
-          return "select";
-        default:
-          return "text-field";
-      }
-    },
-    items() {
-      switch (this.label) {
-        case "Test type":
-          return ["COVID-19 PCR"];
-        case "Test result":
-          return ["COVID-19 Negative"];
-      }
-    }
   },
   watch: {
     value() {

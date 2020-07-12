@@ -7,6 +7,7 @@ import { AdminModule } from './modules/admin/admin.module';
 import { CredentialModule } from './modules/credential/credential.module';
 import { IssuerModule } from './modules/issuer/issuer.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { SchemaModule } from "./modules/schema/schema.module";
 
 
 @Module({
@@ -18,6 +19,7 @@ import { AuthModule } from './modules/auth/auth.module';
       useUnifiedTopology: true,
       useNewUrlParser: true
     }),
+    SchemaModule,
     UserModule,
     AdminModule,
     CredentialModule,

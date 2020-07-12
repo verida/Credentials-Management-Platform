@@ -4,6 +4,7 @@ import auth from "./auth";
 import issuer from "./issuer";
 import user from "./user";
 import credential from "./credential";
+import schema from "./schema";
 
 export default {
   system,
@@ -11,5 +12,6 @@ export default {
   auth,
   issuer,
   user,
-  credential
+  credential,
+  schema
 };
