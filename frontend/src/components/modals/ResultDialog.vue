@@ -41,7 +41,7 @@
           </v-dialog>
         </v-col>
         <v-col cols="12">
-          <template v-if="schema">
+          <template >
             <form-field
               v-for="(field, key) in form"
               :key="key"
@@ -136,12 +136,6 @@ export default {
       this.closeModal();
     },
     init() {
-      this.schema = null;
-      const dataKeys = _.keys(this.main);
-      _.each(dataKeys, dk => {
-        this.$set(this.main, dk, null);
-      });
-
       this.title = "New Result";
 
       this.form = {};
@@ -154,11 +148,21 @@ export default {
         this.$set(this.form, key, null);
         this.$set(this.attributes, key, this.fields[key]);
       });
+    },
+    reset() {
+      this.schema = null;
+      const dataKeys = _.keys(this.main);
+      _.each(dataKeys, dk => {
+        this.$set(this.main, dk, null);
+      });
     }
   },
   watch: {
     schema() {
-      this.schema && this.init();
+      this.init();
+    },
+    dialog() {
+      !this.dialog && this.reset();
     }
   }
 };
