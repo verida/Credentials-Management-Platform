@@ -31,13 +31,15 @@
         </v-tabs>
       </v-row>
     </v-container>
+    <new-result-dialog />
   </div>
 </template>
 
 <script>
 import Result from "../components/cards/Result";
-import { createNamespacedHelpers } from "vuex";
+import NewResultDialog from "../components/modals/ResultDialog";
 
+import { createNamespacedHelpers } from "vuex";
 const { mapGetters: mapResultGetters } = createNamespacedHelpers("result");
 const { mapMutations: mapSystemMutations } = createNamespacedHelpers("system");
 const { mapActions: mapAuthActions } = createNamespacedHelpers("auth");
@@ -45,6 +47,7 @@ const { mapActions: mapAuthActions } = createNamespacedHelpers("auth");
 export default {
   name: "Dashboard",
   components: {
+    NewResultDialog,
     Result
   },
   data() {

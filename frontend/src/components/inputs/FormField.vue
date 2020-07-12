@@ -1,47 +1,34 @@
 <template>
-  <v-col cols="12">
-    <v-text-field
-      v-if="type === 'text-field'"
-      v-model="value"
-      :label="label"
-      :readonly="readonly"
-    />
-    <v-select
-      v-if="type === 'select'"
-      v-model="value"
-      :items="items"
-      :label="label"
-      :readonly="readonly"
-      chips
-    />
+  <div>
     <v-autocomplete
-      v-if="type === 'autocomplete'"
+      v-if="attr.enum"
       v-model="value"
-      :items="items"
-      :label="label"
+      chips
+      :items="attr.enum"
+      :label="attr.title"
+      :disabled="disabled"
     />
-  </v-col>
+    <v-text-field
+      v-else
+      v-model="value"
+      :disabled="disabled"
+      :label="attr.title"
+    />
+  </div>
 </template>
 
 <script>
 export default {
   name: "FormField",
   props: {
-    label: {
-      type: String
-    },
     model: {
       required: true
     },
-    readonly: {
-      type: Boolean,
+    attr: {
+      default: () => ({})
+    },
+    disabled: {
       default: false
-    },
-    items: {
-      default: []
-    },
-    type: {
-      default: "text-field"
     }
   },
   data() {

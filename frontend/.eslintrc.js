@@ -12,5 +12,8 @@ module.exports = {
     "no-debugger": process.env.NODE_ENV === "production" ? "warn" : "off",
     "no-unused-vars": 0,
     "object-property-newline": 0,
+  },
+  globals: {
+    _: true
   }
 };

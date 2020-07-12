@@ -12,6 +12,7 @@
     "core-js": "^3.6.4",
     "material-design-icons-iconfont": "^5.0.1",
     "roboto-fontface": "*",
+    "underscore": "^1.10.2",
     "vee-validate": "^3.3.7",
     "vue": "^2.6.11",
     "vue-axios": "^2.1.5",

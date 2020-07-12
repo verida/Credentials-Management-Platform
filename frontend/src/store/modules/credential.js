@@ -6,19 +6,19 @@ const mutations = {
   setList(state, list) {
     state.list = list;
   },
-  addIssuer(state, data) {
+  addCredential(state, data) {
     state.list.push(data);
   }
 };
 
 const actions = {
-  async fetchIssuers({ commit }) {
-    const data = await this._vm.axios.get("/issuer");
+  async fetchCredentials({ commit }) {
+    const data = await this._vm.axios.get("/credential");
     commit("setList", data.data);
   },
-  async createIssuer({ commit }, payload) {
-    const data = await this._vm.axios.post("/issuer", payload);
-    commit("addIssuer", data.data);
+  async createCredential({ commit }, payload) {
+    const data = await this._vm.axios.post("/credential/issue", payload);
+    commit("addCredential", data.data);
     return data.data;
   }
 };

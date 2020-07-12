@@ -5,32 +5,60 @@
         {{ title }}
       </small>
       <div class="modal-contour">
-        <form-field
-          type="autocomplete"
-          label="Document Type"
-          :model="schema"
-          :items="schemas"
-          @update="value => (schema = value)"
-        />
-        <template v-if="false">
+        <v-col cols="12">
+          <v-autocomplete
+            label="Document Type"
+            v-model="schema"
+            :items="schemas"
+            :disabled="processing"
+          />
+          <v-text-field label="Mobile phone" v-model="data.mobile" :disabled="processing" />
+          <v-dialog
+            ref="dialog"
+            v-model="datepicker"
+            :return-value.sync="data.dob"
+            persistent
+            width="290px"
+          >
+            <template v-slot:activator="{ on, attrs }">
+              <v-text-field
+                v-model="data.dob"
+                label="Date of Birth"
+                readonly
+                v-bind="attrs"
+                v-on="on"
+                :disabled="processing" />
+            </template>
+            <v-date-picker v-model="data.dob" scrollable>
+              <v-spacer />
+              <v-btn text color="primary" @click="datepicker = false">
+                Cancel
+              </v-btn>
+              <v-btn text color="primary" @click="$refs.dialog.save(data.dob)">
+                OK
+              </v-btn>
+            </v-date-picker>
+          </v-dialog>
+        </v-col>
+        <v-col cols="12" v-if="schema">
           <form-field
-            v-for="field in form"
-            :key="field.label"
-            :label="field.label"
-            :model="field.model"
-            :readonly="field.readonly"
-            @update="value => (field.model = value)"
+            v-for="(field, key) in form"
+            :key="key"
+            :disabled="processing"
+            :attr="attributes[key]"
+            :model="form[key]"
+            @update="value => (form[key] = value)"
           />
           <v-col>
             <div>{{ issues.timestamp }}</div>
             <div class="mt-2">{{ issues.by }}</div>
             <v-card-actions class="justify-center">
-              <v-btn @click="send" class="mt-10 float-right" color="info">
+              <v-btn @click="send" class="mt-10 float-right" color="info" :disabled="processing">
                 Send Credential
               </v-btn>
             </v-card-actions>
           </v-col>
-        </template>
+        </v-col>
       </div>
     </v-card>
   </v-dialog>
@@ -44,10 +72,13 @@ import ModalMixin from "../../mixins/ModalMixin";
 import { createNamespacedHelpers } from "vuex";
 const { mapGetters: mapResultGetters } = createNamespacedHelpers("result");
 const { mapMutations: mapSystemMutations } = createNamespacedHelpers("system");
+const { mapActions: mapCredentialActions } = createNamespacedHelpers("credential");
 const {
   mapGetters: mapSchemaGetters,
   mapActions: mapSchemaActions
 } = createNamespacedHelpers("schema");
+
+const EXCLUDED = ["dateOfBirth", "dob"];
 
 export default {
   name: "ResultDialog",
@@ -55,9 +86,19 @@ export default {
   mixins: [FormMixin, ModalMixin],
   data() {
     return {
-      form: {},
       title: null,
       schema: null,
+      datepicker: false,
+      processing: false,
+      fields: [],
+
+      data: {
+        dob: null,
+        mobile: null
+      },
+      form: {},
+      attributes: {},
+
       issues: {
         timestamp: "Issues timestamp: 1st May 2020",
         by: "Issued by: SA Pathology, Adelaide City"
@@ -69,60 +110,43 @@ export default {
   },
   computed: {
     ...mapResultGetters(["find"]),
-    ...mapSchemaGetters(["schemas", "properties"]),
-    fields() {
-      return this.schema && this.properties(this.schema);
-    }
+    ...mapSchemaGetters(["schemas", "properties", "schemaPath"])
   },
   methods: {
     ...mapSchemaActions(["fetchSchemas"]),
     ...mapSystemMutations(["openModal", "closeModal"]),
-    send() {
-      const { fullName, healthNumber } = this.form;
-      this.openModal({
-        type: "SentDialog",
-        patient: fullName.model,
-        number: healthNumber.model
-      });
+    ...mapCredentialActions(["createCredential"]),
+    async send() {
+      this.processing = true;
+      const credential = {
+        ...this.data,
+        data: {
+          name: this.form.fullName + this.form.testType,
+          schema: this.schemaPath(this.schema),
+          ...this.form
+        }
+      };
+      await this.createCredential(credential);
+      this.processing = false;
     },
     init() {
-      console.log(this.fields, "fields");
-      /* let result = this.find(this.modal && this.modal.id);
-      let editable = [];
+      this.title = "New Result";
 
       this.form = {};
+      this.attributes = {};
 
-      if (result) {
-        this.title = "Send Result";
-        editable = ["Test type", "Test result"];
-      } else {
-        this.title = "New Result";
-      }
+      this.fields = this.properties(this.schema);
+      const keys = _.keys(this.fields).filter(k => !EXCLUDED.includes(k));
 
-      this.fields.forEach(field => {
-        const key = this.fieldToKey(field);
-        const readonly = editable.length && !editable.includes(field);
-
-        this.$set(this.form, key, {
-          model: (result && result[key]) || null,
-          readonly: Boolean(readonly),
-          label: field
-        });
-      }); */
-    },
-    fieldToKey(field) {
-      return field
-        .toLowerCase()
-        .split(/ /)
-        .map((item, index) =>
-          index !== 0 ? item.charAt(0).toUpperCase() + item.slice(1) : item
-        )
-        .join("");
+      _.each(keys, key => {
+        this.$set(this.form, key, null);
+        this.$set(this.attributes, key, this.fields[key]);
+      });
     }
   },
   watch: {
-    fields() {
-      this.init();
+    schema() {
+      this.schema && this.init();
     }
   }
 };

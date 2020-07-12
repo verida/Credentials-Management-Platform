@@ -3,6 +3,8 @@ import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 
+import _ from "underscore";
+
 import "roboto-fontface/css/roboto/roboto-fontface.css";
 import "material-design-icons-iconfont/dist/material-design-icons.css";
 
@@ -11,6 +13,8 @@ import "./plugins/axios";
 import "./plugins/vee-validate";
 
 Vue.config.productionTip = false;
+
+window._ = _;
 
 new Vue({
   router,
