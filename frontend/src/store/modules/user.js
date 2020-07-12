@@ -18,8 +18,8 @@ const actions = {
     return data.data;
   },
   async createUser({ commit }, payload) {
-    const data = await this._vm.axios.post("/user", payload);
-    commit("addUser", data.data);
+    await this._vm.axios.post("/user", payload);
+    // commit("addUser", data.data);
   }
 };
 
