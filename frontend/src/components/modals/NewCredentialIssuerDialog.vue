@@ -1,12 +1,12 @@
 <template>
-  <v-dialog v-model="dialog" max-width="500">
+  <v-dialog v-model="dialog" max-width="500" persistent>
     <v-card class="modal text-center">
       <small class="modal-receiver">
         {{ text }}
       </small>
       <div class="modal-contour">
         <v-form class="pa-6">
-          <v-card-title class="mt-5 headline justify-center">
+          <v-card-title class="headline justify-center">
             {{ text }}
           </v-card-title>
           <ValidationObserver ref="validator">
@@ -82,11 +82,22 @@
                 :error-messages="errors"
               />
             </ValidationProvider>
-            <v-messages v-if="error" :value="[error]" class="error--text mt-2" />
-            <v-card-actions class="justify-center">
+            <v-messages
+              v-if="error"
+              :value="[error]"
+              class="error--text mt-2"
+            />
+            <v-card-actions class="justify-center my-5">
+              <v-btn
+                @click="closeModal"
+                color="info"
+                outlined
+                :disabled="processing"
+              >
+                Close
+              </v-btn>
               <v-btn
                 @click="save"
-                class="ma-5"
                 color="info"
                 :disabled="processing"
                 :loading="processing"

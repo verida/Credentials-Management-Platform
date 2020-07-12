@@ -2,7 +2,7 @@ import Vue from "vue";
 import axios from "axios";
 import VueAxios from "vue-axios";
 
-import { token } from "../constants/token";
+import { token, logout } from "../constants/token";
 
 const service = axios.create({
   baseURL: process.env.VUE_APP_API_URL
@@ -14,6 +14,14 @@ service.interceptors.request.use(
     headers: { Authorization: "Bearer " + token() }
   }),
   error => Promise.reject(error)
+);
+
+service.interceptors.response.use(
+  response => response,
+  error => {
+    error.response.status === 401 && logout();
+    return Promise.reject(error);
+  }
 );
 
 Vue.use(VueAxios, service);

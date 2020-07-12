@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" max-width="500">
+  <v-dialog v-model="dialog" max-width="500" persistent>
     <v-card class="modal text-center" v-if="dialog">
       <small class="modal-receiver">
         {{ title }}
@@ -12,52 +12,57 @@
             :items="schemas"
             :disabled="processing"
           />
-          <v-text-field label="Mobile phone" v-model="data.mobile" :disabled="processing" />
+          <v-text-field label="Mobile phone" v-model="main.mobile" :disabled="processing" />
           <v-dialog
             ref="dialog"
             v-model="datepicker"
-            :return-value.sync="data.dob"
+            :return-value.sync="main.dob"
             persistent
             width="290px"
           >
             <template v-slot:activator="{ on, attrs }">
               <v-text-field
-                v-model="data.dob"
+                v-model="main.dob"
                 label="Date of Birth"
                 readonly
                 v-bind="attrs"
                 v-on="on"
                 :disabled="processing" />
             </template>
-            <v-date-picker v-model="data.dob" scrollable>
+            <v-date-picker v-model="main.dob" scrollable>
               <v-spacer />
               <v-btn text color="primary" @click="datepicker = false">
                 Cancel
               </v-btn>
-              <v-btn text color="primary" @click="$refs.dialog.save(data.dob)">
+              <v-btn text color="primary" @click="$refs.dialog.save(main.dob)">
                 OK
               </v-btn>
             </v-date-picker>
           </v-dialog>
         </v-col>
-        <v-col cols="12" v-if="schema">
-          <form-field
-            v-for="(field, key) in form"
-            :key="key"
-            :disabled="processing"
-            :attr="attributes[key]"
-            :model="form[key]"
-            @update="value => (form[key] = value)"
-          />
+        <v-col cols="12">
+          <template v-if="schema">
+            <form-field
+              v-for="(field, key) in form"
+              :key="key"
+              :disabled="processing"
+              :attr="attributes[key]"
+              :model="form[key]"
+              @update="value => (form[key] = value)"
+            />
+          </template>
           <v-col>
             <div>{{ issues.timestamp }}</div>
             <div class="mt-2">{{ issues.by }}</div>
-            <v-card-actions class="justify-center">
-              <v-btn @click="send" class="mt-10 float-right" color="info" :disabled="processing">
-                Send Credential
-              </v-btn>
-            </v-card-actions>
           </v-col>
+          <v-card-actions class="justify-center mt-10">
+            <v-btn @click="closeModal" color="info" outlined :disabled="processing">
+              Close
+            </v-btn>
+            <v-btn @click="send" color="info" :disabled="processing" v-if="schema">
+              Send Credential
+            </v-btn>
+          </v-card-actions>
         </v-col>
       </div>
     </v-card>
@@ -92,7 +97,7 @@ export default {
       processing: false,
       fields: [],
 
-      data: {
+      main: {
         dob: null,
         mobile: null
       },
@@ -131,6 +136,12 @@ export default {
       this.closeModal();
     },
     init() {
+      this.schema = null;
+      const dataKeys = _.keys(this.main);
+      _.each(dataKeys, dk => {
+        this.$set(this.main, dk, null);
+      });
+
       this.title = "New Result";
 
       this.form = {};

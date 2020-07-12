@@ -76,8 +76,8 @@ export default {
   data() {
     return {
       user: {
-        email: "admin@verida.com",
-        password: "test"
+        email: null,
+        password: null
       },
       processing: false,
       error: {
