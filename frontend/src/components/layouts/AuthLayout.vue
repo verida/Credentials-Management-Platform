@@ -1,21 +1,7 @@
 <template>
   <v-container fluid class="auth" fill-height>
     <v-row justify="center">
-      <v-snackbar
-        :timeout="-1"
-        v-model="error.shown"
-        absolute
-        center
-        top
-        color="error"
-      >
-        {{ this.error.msg }}
-        <template v-slot:action="{ attrs }">
-          <v-btn icon dark text v-bind="attrs" @click="error.shown = false">
-            <v-icon>close</v-icon>
-          </v-btn>
-        </template>
-      </v-snackbar>
+      <snackbar v-model="error.shown" :msg="error.msg" />
       <v-form
         ref="auth-form"
         class="auth-form text-center"
@@ -55,9 +41,6 @@
               />
             </ValidationProvider>
           </ValidationObserver>
-          <ValidationProvider name="Common" v-slot="{ errors }">
-            <v-messages :value="errors" class="error--text mt-2" />
-          </ValidationProvider>
           <v-btn
             text
             class="auth-form__submit"
@@ -74,11 +57,14 @@
 </template>
 
 <script>
+import Snackbar from "../notifications/Snackbar";
+
 import { createNamespacedHelpers } from "vuex";
 const { mapActions: mapAuthActions } = createNamespacedHelpers("auth");
 
 export default {
   name: "Auth",
+  components: { Snackbar },
   props: {
     title: {
       required: true
