@@ -19,7 +19,7 @@
                 v-model="issuer.name"
                 label="Issuer name"
                 placeholder="Please, enter the issuer name"
-                :disabled="processing"
+                :disabled="processing || Boolean(admin.issuerId)"
                 :error="Boolean(errors.length)"
                 :error-messages="errors"
               />
@@ -32,7 +32,7 @@
               <v-text-field
                 v-model="issuer.urlName"
                 label="Issuer URL"
-                :disabled="processing"
+                :disabled="processing || Boolean(admin.issuerId)"
                 :error="Boolean(errors.length)"
                 :error-messages="errors"
               />
@@ -165,8 +165,11 @@ export default {
       }
 
       try {
-        const issuer = await this.createIssuer(this.issuer);
-        this.admin.issuerId = issuer._id;
+        if (!this.admin.issuerId) {
+          const issuer = await this.createIssuer(this.issuer);
+          this.admin.issuerId = issuer._id;
+        }
+
         await this.createUser(this.admin);
         this.processing = false;
         this.closeModal();

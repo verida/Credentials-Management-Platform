@@ -6,7 +6,7 @@ const mutations = {
   setList(state, list) {
     state.list = list;
   },
-  addIssuer(state, data) {
+  addUser(state, data) {
     state.list.push(data);
   }
 };
@@ -19,8 +19,7 @@ const actions = {
   },
   async createUser({ commit }, payload) {
     const data = await this._vm.axios.post("/user", payload);
-    commit("addIssuer", data.data);
-    return data.data;
+    commit("addUser", data.data);
   }
 };
 
