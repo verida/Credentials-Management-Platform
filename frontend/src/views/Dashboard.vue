@@ -21,12 +21,16 @@
             </v-col>
           </v-row>
           <v-tab-item v-for="n in 3" :key="n" class="py-5">
-            <Result
-              class="mb-4"
-              v-for="card in cards"
-              :key="card.id"
-              :result="card"
-            />
+            <template v-if="cards && cards.length">
+              <Result
+                class="mb-4"
+                v-for="card in cards"
+                :key="card.id"
+                :result="card" />
+            </template>
+            <template v-else>
+              Credential List is empty
+            </template>
           </v-tab-item>
         </v-tabs>
       </v-row>
@@ -40,9 +44,12 @@ import Result from "../components/cards/Result";
 import NewResultDialog from "../components/modals/ResultDialog";
 
 import { createNamespacedHelpers } from "vuex";
-const { mapGetters: mapResultGetters } = createNamespacedHelpers("result");
 const { mapMutations: mapSystemMutations } = createNamespacedHelpers("system");
 const { mapActions: mapAuthActions } = createNamespacedHelpers("auth");
+const {
+  mapGetters: mapCredentialGetters,
+  mapActions: mapCredentialActions
+} = createNamespacedHelpers("credential");
 
 export default {
   name: "Dashboard",
@@ -57,11 +64,13 @@ export default {
   },
   async beforeMount() {
     await this.fetchUser();
+    await this.fetchCredentials();
   },
   computed: {
-    ...mapResultGetters(["cards"])
+    ...mapCredentialGetters(["cards"])
   },
   methods: {
+    ...mapCredentialActions(["fetchCredentials"]),
     ...mapAuthActions(["fetchUser"]),
     ...mapSystemMutations(["openModal"]),
     openResultDialog() {

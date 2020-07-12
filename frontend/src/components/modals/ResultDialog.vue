@@ -121,7 +121,7 @@ export default {
       const credential = {
         ...this.data,
         data: {
-          name: this.form.fullName + this.form.testType,
+          name: this.form.fullName + " " + this.form.testType,
           schema: this.schemaPath(this.schema),
           ...this.form
         }

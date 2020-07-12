@@ -11,6 +11,27 @@ const mutations = {
   }
 };
 
+const getters = {
+  cards: ({ list }, getters, rootState, rootGetters) => {
+    return list.map(({ credentialId, mobile, data }) => {
+      const properties = rootGetters["schema/properties"](data.schema, "view");
+
+      const keys = _.keys(properties);
+      const info = _.map(keys, key => ({
+        title: properties[key].title,
+        value: data[key] || "-- // --"
+      }));
+
+      return {
+        id: credentialId,
+        patient: data.fullName,
+        mobile: mobile,
+        info
+      };
+    });
+  }
+};
+
 const actions = {
   async fetchCredentials({ commit }) {
     const data = await this._vm.axios.get("/credential");
@@ -27,5 +48,6 @@ export default {
   namespaced: true,
   state,
   mutations,
-  actions
+  actions,
+  getters
 };

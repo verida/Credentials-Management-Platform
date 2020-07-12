@@ -10,12 +10,14 @@ const getters = {
     const found = list.find(item => item.title === schema);
     return found && found.$id;
   },
-  properties: ({ list }) => selected => {
-    const schema = list.find(schema => schema.title === selected);
+  properties: ({ list }) => (selected, mode = "create") => {
+    const schema = list.find(
+      schema => schema.title === selected || schema.$id === selected
+    );
     if (!schema) return [];
 
-    const { create } = criteria[schema.$id];
-    return _.pick(schema.properties, create);
+    const { [mode]: visible } = criteria[schema.$id];
+    return _.pick(schema.properties, visible);
   }
 };
 

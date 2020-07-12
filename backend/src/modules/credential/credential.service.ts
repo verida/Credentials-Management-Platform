@@ -5,7 +5,6 @@ import { Credential } from './interfaces/credential.interface';
 import { Issuer } from '../issuer/interfaces/issuer.interface';
 
 import VeridaHelper from '../../helpers/VeridaHelper'
-import SmsHelper from '../../helpers/SmsHelper'
 
 export class CredentialService {
     constructor(@InjectModel('Credential') private readonly credentialModel: Model<Credential>) {}
@@ -23,12 +22,10 @@ export class CredentialService {
         record.data = cred.data
         await record.save();
 
-        // SMS credential to the recipient 
+        // SMS credential to the recipient
         //SmsHelper.sendSmsCredential(url, mobile)
 
-        return {
-            url: url
-        }
+        return record
     }
 
     async findAll(issuer: Issuer): Promise<Credential[]> {
