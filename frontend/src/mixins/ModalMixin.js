@@ -18,11 +18,7 @@ export default {
   },
   watch: {
     modal() {
-      const dialog = this.modal && this.modal.type === this.$options.name;
-      this.dialog = dialog;
-    },
-    dialog() {
-      !this.dialog && this.closeModal();
+      this.dialog = this.modal && this.modal.type === this.$options.name;
     }
   }
 };

@@ -128,6 +128,7 @@ export default {
       };
       await this.createCredential(credential);
       this.processing = false;
+      this.closeModal();
     },
     init() {
       this.title = "New Result";
