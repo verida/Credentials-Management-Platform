@@ -36,5 +36,5 @@ export const IssuerSchema =  new Schema({
     address: {
         type: String,
         required: true
-    }
+    },
 });

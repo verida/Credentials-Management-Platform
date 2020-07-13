@@ -26,7 +26,7 @@ const getters = {
 
       info.unshift({
         title: "Inserted at",
-        value: insertedAt || stub
+        value: (insertedAt && moment(insertedAt).format("DD/MM/YYYY")) || stub
       });
 
       return {
