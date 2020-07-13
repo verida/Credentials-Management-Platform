@@ -9,10 +9,10 @@ Vue.use(VueRouter);
 const routes = [
   {
     path: "/",
-    redirect: "login/sa-pathology"
+    redirect: "login"
   },
   {
-    path: "/login/:type",
+    path: "/login/:type?",
     name: LOGIN,
     component: () => import("../views/login/Login"),
     meta: { guest: true, go: DASHBOARD },

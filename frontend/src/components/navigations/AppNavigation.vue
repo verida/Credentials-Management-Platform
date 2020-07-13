@@ -15,6 +15,9 @@
 <script>
 import Search from "../inputs/Search";
 
+import { createNamespacedHelpers } from "vuex";
+const { mapGetters: mapAuthGetters } = createNamespacedHelpers("auth");
+
 export default {
   name: "AppNavigation",
   components: {
@@ -23,8 +26,8 @@ export default {
   methods: {
     logout() {
       localStorage.removeItem(process.env.VUE_APP_TOKEN);
-      const params = !this.mode.admin && { type: "sa-pathology" };
-      this.$router.push({ name: this.$route.meta.home, params: params || {} });
+      const params = this.issuer ? { type: this.issuer.urlName } : {};
+      this.$router.push({ name: this.$route.meta.home, params });
     },
     label() {
       switch (true) {
@@ -36,6 +39,7 @@ export default {
     }
   },
   computed: {
+    ...mapAuthGetters(["issuer"]),
     mode() {
       return this.$route.meta;
     }

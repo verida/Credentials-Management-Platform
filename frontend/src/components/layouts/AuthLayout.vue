@@ -8,7 +8,8 @@
         @keyup.native.enter="submit"
       >
         <div class="auth-form__title">
-          {{ title }}
+          <span v-if="!loading">{{ title }}</span>
+          <beat-loader v-else />
         </div>
         <div class="auth-form__body">
           <ValidationObserver ref="validator">
@@ -58,18 +59,25 @@
 
 <script>
 import Snackbar from "../notifications/Snackbar";
+import BeatLoader from "vue-spinner/src/BeatLoader";
 
 import { createNamespacedHelpers } from "vuex";
 const { mapActions: mapAuthActions } = createNamespacedHelpers("auth");
 
 export default {
   name: "Auth",
-  components: { Snackbar },
+  components: {
+    Snackbar,
+    BeatLoader
+  },
   props: {
     title: {
       required: true
     },
     isAdmin: {
+      default: false
+    },
+    loading: {
       default: false
     }
   },
