@@ -12,7 +12,7 @@ export class UserController {
 
     @Post()
     async create(@Body() data: CreateUserDto): Promise<User> {
-        return this.userService.create(data)
+        return this.userService.create(data);
     }
 
     @Get()

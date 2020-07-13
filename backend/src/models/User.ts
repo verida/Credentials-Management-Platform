@@ -13,8 +13,13 @@ export class Identity {
     isAdmin?: boolean
 }
 
+export interface Issuer {
+    [key: string]: string
+}
+
 export interface UserIdentity extends User {
     isAdmin: boolean;
+    issuer: Issuer
 }
 
 export interface AdminIdentity extends Admin {

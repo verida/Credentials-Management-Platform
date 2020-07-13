@@ -4,7 +4,7 @@
       {{ label() }}
     </h3>
     <v-spacer />
-    <search v-if="!mode.admin" />
+    <search v-if="false" />
     <v-spacer />
     <v-btn @click="logout" outlined>
       Logout

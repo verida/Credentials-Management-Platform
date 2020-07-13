@@ -9,14 +9,12 @@
             <span class="info--text">{{ result.mobile }}</span>
           </div>
           <div
+            class="mb-2"
             v-for="item in result.info"
             :key="`info-${result.id}-${item.title}`"
           >
             {{ item.title }}: &nbsp;
-            <component
-              :color="item.value === 'positive' ? 'error' : 'info'"
-              :is="item.title === 'Test result' ? 'v-chip' : 'span'"
-            >
+            <component :is="item.title === 'Test result' ? 'v-chip' : 'span'">
               {{ item.value }}
             </component>
           </div>

@@ -2,6 +2,7 @@
   <ValidationObserver ref="validator">
     <v-col cols="12">
       <v-phone-number
+        class="mb-5"
         label="Mobile phone"
         v-model="main.mobile"
         :disabled="processing"

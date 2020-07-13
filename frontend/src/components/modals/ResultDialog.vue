@@ -13,7 +13,11 @@
             @schema-update="v => init(v)"
           />
           <v-col cols="12">
-            <form-field ref="fields" :fields="fields" :excluded="excluded" />
+            <form-field ref="fields"
+              :fields="fields"
+              :excluded="excluded"
+              :processing="processing"
+            />
             <v-col>
               <div>{{ issues.timestamp }}</div>
               <div class="mt-2">{{ issues.by }}</div>
@@ -51,6 +55,7 @@ import ModalMixin from "../../mixins/ModalMixin";
 import { createNamespacedHelpers } from "vuex";
 import CredentialHeader from "../particles/CredentialHeader";
 const { mapGetters: mapResultGetters } = createNamespacedHelpers("result");
+const { mapGetters: mapAuthGetters } = createNamespacedHelpers("auth");
 const { mapMutations: mapSystemMutations } = createNamespacedHelpers("system");
 const { mapActions: mapCredentialActions } = createNamespacedHelpers(
   "credential"
@@ -72,16 +77,18 @@ export default {
 
       excluded: ["dateOfBirth", "dob"],
       issues: {
-        timestamp: "Issues timestamp: 1st May 2020",
-        by: "Issued by: SA Pathology, Adelaide City"
+        timestamp: `Issues timestamp: ${moment().format("Do MMM YYYY")}`,
+        by: null
       }
     };
   },
   async beforeMount() {
+    this.issues.by = `Issued by: ${this.issuer && this.issuer.name}`;
     await this.fetchSchemas();
   },
   computed: {
     ...mapResultGetters(["find"]),
+    ...mapAuthGetters(["issuer"]),
     ...mapSchemaGetters(["schemas", "properties", "schemaPath"])
   },
   methods: {
