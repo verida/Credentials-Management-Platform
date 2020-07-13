@@ -13,11 +13,7 @@
             @schema-update="v => init(v)"
           />
           <v-col cols="12">
-            <form-field
-              ref="fields"
-              :fields="fields"
-              :excluded="['dateOfBirth', 'dob']"
-            />
+            <form-field ref="fields" :fields="fields" :excluded="excluded" />
             <v-col>
               <div>{{ issues.timestamp }}</div>
               <div class="mt-2">{{ issues.by }}</div>
@@ -74,6 +70,7 @@ export default {
       processing: false,
       fields: null,
 
+      excluded: ["dateOfBirth", "dob"],
       issues: {
         timestamp: "Issues timestamp: 1st May 2020",
         by: "Issued by: SA Pathology, Adelaide City"
@@ -91,6 +88,16 @@ export default {
     ...mapSchemaActions(["fetchSchemas"]),
     ...mapSystemMutations(["openModal", "closeModal"]),
     ...mapCredentialActions(["createCredential"]),
+    setDateOfBirth(form, data) {
+      const dob = _.chain(this.fields)
+        .pick(this.excluded)
+        .keys()
+        .value();
+
+      _.each(dob, item => {
+        form[item] = data.dob;
+      });
+    },
     async send() {
       this.processing = true;
       const validated = await Promise.all([
@@ -103,12 +110,15 @@ export default {
         return;
       }
 
-      const form = this.$refs.fields.form;
       const data = this.$refs.credential.main;
+      const form = this.$refs.fields.form;
+
+      this.setDateOfBirth(form, data);
+
       const credential = {
         ...data,
         data: {
-          name: form.fullName + " " + form.testType,
+          name: form.fullName + ": " + form.testType,
           schema: this.schemaPath(this.$refs.credential.schema),
           ...form
         }
