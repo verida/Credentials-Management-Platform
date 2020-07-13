@@ -13,7 +13,8 @@
             @schema-update="v => init(v)"
           />
           <v-col cols="12">
-            <form-field ref="fields"
+            <form-field
+              ref="fields"
               :fields="fields"
               :excluded="excluded"
               :processing="processing"
@@ -21,6 +22,13 @@
             <v-col>
               <div>{{ issues.timestamp }}</div>
               <div class="mt-2">{{ issues.by }}</div>
+            </v-col>
+            <v-col>
+              <v-messages
+                v-if="error"
+                :value="[error]"
+                class="error--text mt-2"
+              />
             </v-col>
             <v-card-actions class="justify-center mt-10">
               <v-btn
@@ -76,6 +84,7 @@ export default {
       fields: null,
 
       excluded: ["dateOfBirth", "dob"],
+      error: null,
       issues: {
         timestamp: `Issues timestamp: ${moment().format("Do MMM YYYY")}`,
         by: null
@@ -106,6 +115,7 @@ export default {
       });
     },
     async send() {
+      this.error = null;
       this.processing = true;
       const validated = await Promise.all([
         this.$refs.fields.validate(),
@@ -118,8 +128,10 @@ export default {
       }
 
       const data = this.$refs.credential.main;
+      const mobile = this.$refs.credential.mobile;
       const form = this.$refs.fields.form;
 
+      data.mobile = mobile.formatInternational;
       this.setDateOfBirth(form, data);
 
       const credential = {
@@ -131,14 +143,19 @@ export default {
         }
       };
 
-      await this.createCredential(credential);
-      this.processing = false;
-      this.closeModal();
+      try {
+        await this.createCredential(credential);
+        this.processing = false;
+        this.closeModal();
+      } catch (e) {
+        this.processing = false;
+        this.error = e.response.statusText;
+      }
     },
     async init(schema) {
       this.title = "New Result";
-
       this.fields = this.properties(schema);
+
       await this.$nextTick();
       this.$refs.fields && this.$refs.fields.init();
     }
