@@ -1,11 +1,20 @@
 <template>
   <ValidationObserver ref="validator">
     <v-col cols="12">
-      <v-phone-number
-        label="Mobile phone"
-        v-model="main.mobile"
-        :disabled="processing"
-      />
+      <ValidationProvider
+        :rules="{ required: true, mobile: { valid: main.mobile && mobile.isValid } }"
+        name="Mobile phone"
+        v-slot="{ errors }"
+      >
+        <v-phone-number
+          class="mb-5"
+          label="Mobile phone"
+          v-model="main.mobile"
+          :disabled="processing"
+          @update="v => (mobile = v)"
+        />
+        <v-messages :value="errors" class="error--text mt-2" />
+      </ValidationProvider>
       <ValidationProvider
         rules="required"
         name="Document Type"
@@ -68,11 +77,15 @@ export default {
     return {
       schema: null,
       datepicker: false,
+      mobile: null,
       main: {
         dob: null,
         mobile: null
       }
     };
+  },
+  mounted() {
+    this.$refs.validator.reset();
   },
   methods: {
     reset() {

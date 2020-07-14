@@ -20,6 +20,10 @@ const actions = {
     const data = await this._vm.axios.post("/issuer", payload);
     commit("addIssuer", data.data);
     return data.data;
+  },
+  async fetchIssuerByUrl({ commit }, payload) {
+    const data = await this._vm.axios.get(`/issuer/lookup?urlName=${payload}`);
+    return data.data;
   }
 };
 

@@ -14,6 +14,7 @@ module.exports = {
     "object-property-newline": 0,
   },
   globals: {
-    _: true
+    _: true,
+    moment: true
   }
 };

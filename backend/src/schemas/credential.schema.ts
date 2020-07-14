@@ -30,5 +30,4 @@ export const CredentialSchema =  new Schema({
         type: Object,
         required: true
     }
-    
-});
+}, { timestamps: { createdAt: 'insertedAt' } });

@@ -16,8 +16,19 @@ export class UserService {
         return record.save();
     }
 
-    async findOne(email: string): Promise<User | undefined> {
-        return this.userModel.findOne({ email })
+    async findOne(email: string): Promise<any> {
+        const [ user ] = await this.userModel.aggregate([
+            { $match: { email } },
+            { $lookup: {
+                'from': 'issuers',
+                'localField': 'issuerId',
+                'foreignField': '_id',
+                'as': 'issuer'
+              }
+            },
+            { $unwind: '$issuer' },
+        ]);
+        return user;
     }
 
     async findOneById(userId: string): Promise<User | undefined> {

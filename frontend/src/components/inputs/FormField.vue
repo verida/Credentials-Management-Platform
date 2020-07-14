@@ -38,13 +38,15 @@ export default {
     fields: {
       default: () => ({})
     },
-    excluded: {}
+    excluded: {},
+    processing: {
+      default: false
+    }
   },
   data() {
     return {
       form: {},
-      attributes: {},
-      processing: false
+      attributes: {}
     };
   },
   methods: {

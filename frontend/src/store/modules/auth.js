@@ -13,6 +13,10 @@ const mutations = {
   }
 };
 
+const getters = {
+  issuer: ({ user }) => user && user.issuer
+};
+
 const actions = {
   async login({ commit }, payload) {
     const result = await this._vm.axios.post("/login", payload);
@@ -34,5 +38,6 @@ export default {
   namespaced: true,
   state,
   mutations,
-  actions
+  actions,
+  getters
 };

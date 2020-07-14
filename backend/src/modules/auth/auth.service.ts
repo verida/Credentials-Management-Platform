@@ -19,9 +19,8 @@ export class AuthService {
     async find (admin: boolean, email): Promise<UserIdentity|AdminIdentity> {
         const service = (admin && this.adminService) || this.userService;
         let user = await service.findOne(email) as (UserIdentity|AdminIdentity);
-
         if (user) {
-            const data = user.toObject();
+            const data = user.toObject ? user.toObject() : user;
             data['isAdmin'] = Boolean(admin);
             user = data;
         }
@@ -54,10 +53,6 @@ export class AuthService {
 
     async restore(@Headers() headers) {
         const { __v, passwordHash, ...user } = await this.userByToken(headers);
-        return {
-            isAdmin: user.isAdmin,
-            email: user.email,
-            id: user._id
-        }
+        return { ...user }
     }
 }
