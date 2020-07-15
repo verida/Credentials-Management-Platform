@@ -1,70 +1,68 @@
 <template>
-  <v-col cols="12">
-    <v-text-field
-      v-if="type === 'text-field'"
-      v-model="value"
-      :label="label"
-      :readonly="readonly"
-    />
-    <v-select
-      v-if="type === 'select'"
-      v-model="value"
-      :items="options"
-      :label="label"
-      :readonly="readonly"
-      chips
-    />
-  </v-col>
+  <ValidationObserver ref="validator">
+    <ValidationProvider
+      v-for="(value, key) in form"
+      rules="required"
+      :key="`provider-${key}`"
+      :name="attributes[key].title"
+      v-slot="{ errors }"
+    >
+      <v-autocomplete
+        v-if="attributes[key].enum"
+        v-model="form[key]"
+        chips
+        :key="key"
+        :items="attributes[key].enum"
+        :label="attributes[key].title"
+        :disabled="processing"
+        :error="Boolean(errors.length)"
+        :error-messages="errors"
+      />
+      <v-text-field
+        v-else
+        v-model="form[key]"
+        :key="key"
+        :disabled="processing"
+        :label="attributes[key].title"
+        :error="Boolean(errors.length)"
+        :error-messages="errors"
+      />
+    </ValidationProvider>
+  </ValidationObserver>
 </template>
 
 <script>
 export default {
   name: "FormField",
   props: {
-    label: {
-      type: String
+    fields: {
+      default: () => ({})
     },
-    model: {
-      required: true
-    },
-    readonly: {
-      type: Boolean,
+    excluded: {},
+    processing: {
       default: false
     }
   },
   data() {
     return {
-      type: null,
-      options: null,
-      value: this.model
+      form: {},
+      attributes: {}
     };
   },
-  beforeMount() {
-    this.type = this.el();
-    this.options = this.items();
-  },
   methods: {
-    el() {
-      switch (this.label) {
-        case "Test type":
-        case "Test result":
-          return "select";
-        default:
-          return "text-field";
-      }
+    init() {
+      this.form = {};
+      this.attributes = {};
+
+      const keys = _.keys(this.fields).filter(k => !this.excluded.includes(k));
+
+      _.each(keys, key => {
+        this.$set(this.form, key, null);
+        this.$set(this.attributes, key, this.fields[key]);
+      });
     },
-    items() {
-      switch (this.label) {
-        case "Test type":
-          return ["COVID-19 PCR"];
-        case "Test result":
-          return ["COVID-19 Negative"];
-      }
-    }
-  },
-  watch: {
-    value() {
-      this.$emit("update", this.value);
+    async validate() {
+      return this.$refs.validator.validate();
     }
   }
 };

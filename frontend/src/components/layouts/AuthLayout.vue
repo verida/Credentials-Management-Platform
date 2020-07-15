@@ -1,12 +1,18 @@
 <template>
-  <v-container fluid fill-height>
-    <v-row justify="center" align-items="center">
-      <v-form ref="auth-form" class="auth-form">
-        <h1 class="text-center auth-form__title success--text text--darken-1">
-          {{ title }}
-        </h1>
+  <v-container fluid class="auth" fill-height>
+    <v-row justify="center">
+      <snackbar v-model="error.shown" :msg="error.msg" />
+      <v-form
+        ref="auth-form"
+        class="auth-form text-center"
+        @keyup.native.enter="submit"
+      >
+        <div class="auth-form__title">
+          <span v-if="!loading">{{ title }}</span>
+          <beat-loader v-else />
+        </div>
         <div class="auth-form__body">
-          <ValidationObserver ref="validator" slo>
+          <ValidationObserver ref="validator">
             <ValidationProvider
               name="Email"
               rules="email|required"
@@ -15,7 +21,7 @@
               <v-text-field
                 v-model="user.email"
                 label="Email"
-                color="success"
+                color="white"
                 :error="Boolean(errors.length)"
                 :error-messages="errors"
               />
@@ -27,42 +33,51 @@
             >
               <v-text-field
                 type="password"
+                autocomplete="new-password"
                 v-model="user.password"
                 label="Password"
-                color="success"
+                color="white"
                 :error="Boolean(errors.length)"
                 :error-messages="errors"
               />
             </ValidationProvider>
           </ValidationObserver>
+          <v-btn
+            text
+            class="auth-form__submit"
+            @click="submit"
+            :loading="processing"
+            :disabled="processing"
+          >
+            <img src="../../assets/img/medical-logo.png" width="30" />
+          </v-btn>
         </div>
-        <v-btn
-          color="success"
-          @click="submit"
-          class="float-right"
-          :loading="processing"
-          :disabled="processing"
-        >
-          Login
-        </v-btn>
       </v-form>
     </v-row>
   </v-container>
 </template>
 
 <script>
+import Snackbar from "../notifications/Snackbar";
+import BeatLoader from "vue-spinner/src/BeatLoader";
+
 import { createNamespacedHelpers } from "vuex";
 const { mapActions: mapAuthActions } = createNamespacedHelpers("auth");
 
-import { DASHBOARD } from "../../constants/route";
-
 export default {
   name: "Auth",
+  components: {
+    Snackbar,
+    BeatLoader
+  },
   props: {
     title: {
       required: true
     },
     isAdmin: {
+      default: false
+    },
+    loading: {
       default: false
     }
   },
@@ -70,26 +85,44 @@ export default {
     return {
       user: {
         email: null,
-        password: null,
-        isAdmin: true
+        password: null
       },
-      processing: false
+      processing: false,
+      error: {
+        shown: false,
+        msg: "Incorrect email or password"
+      }
     };
   },
   methods: {
     ...mapAuthActions(["login"]),
     async submit() {
+      this.error.shown = false;
       this.processing = true;
-      const validated = this.$refs.validator.validate();
+      const validated = await this.$refs.validator.validate();
 
       if (!validated) {
         this.processing = false;
         return;
       }
 
-      await this.login(this.user);
-      this.processing = false;
-      await this.$router.push({ name: DASHBOARD });
+      try {
+        await this.login({ ...this.user, isAdmin: this.isAdmin });
+        this.processing = false;
+        await this.$router.push({ name: this.$route.meta.go });
+      } catch (e) {
+        this.processing = false;
+
+        this.error.msg = (() => {
+          switch (e.response.status) {
+            case 401:
+              return "Incorrect email or password";
+            default:
+              return "Something went wrong. Please, try again";
+          }
+        })();
+        this.error.shown = true;
+      }
     }
   }
 };

@@ -1,11 +1,38 @@
+.auth-form {
+  position: relative;
+  box-shadow: 0 0 1rem 0 rgba(0, 0, 0, .2);
+  border-radius: 2px;
+  background-color: rgba(255, 255, 255, .15);
+  backdrop-filter: blur(7px);
+  max-width: 420px;
+  margin-top: 40px;
+}
+
 .auth-form__title {
-  font-size: 42px;
+  font-size: 28px;
+  color: #0b8382;
+  padding: 10px 0 0;
+  border-radius: 2px;
+  font-weight: 600;
 }
 
 .auth-form__body {
-  margin: 50px 0;
+  padding: 20px;
 
   @media (min-width: 700px) {
-    width: 500px;
+    width: 420px;
   }
+}
+
+.auth {
+  background: url("../assets/img/auth-bg.jpg") center no-repeat;
+}
+
+.auth-form__submit {
+  margin-top: 20px;
+  background-color: #0b8382;
+  border-radius: 50%;
+  height: 64px !important;
+  box-shadow: 0 0 2px 0 rgba(21, 21, 21, 0.75);
+  border: 1px solid #2e2e2e;
 }

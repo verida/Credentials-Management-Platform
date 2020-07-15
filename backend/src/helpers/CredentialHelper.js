@@ -1,10 +1,12 @@
 import * as _ from "lodash";
 import Verida from '@verida/datastore'
 
+const { CREDENTIAL_DB } = process.env
+
 /**
  *
  */
-export class CredentialHelper {
+export default class CredentialHelper {
   /**
    * Take an existing database item with an embedded credential
    * and return the URI to a public credential.
@@ -66,7 +68,7 @@ export class CredentialHelper {
   }
 
   static getCredentialUri (vid, itemId, params) {
-    let uri = 'verida://' + vid + '/credential_public/' + itemId
+    let uri = 'verida://' + vid + '/' + CREDENTIAL_DB + '/' + itemId
 
     let encryptionKey = Buffer.from(params.key).toString('hex')
     if (params && params.key) {

@@ -7,7 +7,6 @@ import { UserSchema } from '../../schemas/user.schema';
 import {AuthService} from "../auth/auth.service";
 import {UserService} from "../user/user.service";
 import {JwtModule} from "@nestjs/jwt";
-import {JWT_SECRET} from "../../configs";
 
 @Module({
     imports: [
@@ -16,7 +15,7 @@ import {JWT_SECRET} from "../../configs";
             { name: 'User', schema: UserSchema }
         ]),
         JwtModule.register({
-            secret: JWT_SECRET,
+            secret: process.env.JWT_SECRET,
             signOptions: { expiresIn: '3600s' },
         })
     ],

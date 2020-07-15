@@ -1,13 +1,33 @@
 import { Schema } from 'mongoose';
 
 export const CredentialSchema =  new Schema({
-    data: {
-        type: Object,
+    name: {
+        type: String,
         required: true
     },
 
-    dob: {
+    mobile: {
         type: String,
         required: true
+    },
+
+    issuerId: {
+        type: Schema.Types.ObjectId,
+        required: true
+    },
+
+    credentialId: {
+        type: String,
+        required: true
+    },
+
+    revoked: {
+        type: Boolean,
+        required: true
+    },
+
+    data: {
+        type: Object,
+        required: true
     }
-});
+}, { timestamps: { createdAt: 'insertedAt' } });

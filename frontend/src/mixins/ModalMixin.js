@@ -5,18 +5,20 @@ const {
 } = createNamespacedHelpers("system");
 
 export default {
+  data() {
+    return {
+      dialog: false
+    };
+  },
   computed: {
-    ...mapSystemState(["modal"]),
-    dialog: {
-      get() {
-        return this.modal && this.modal.type === this.$options.name;
-      },
-      set() {
-        this.closeModal();
-      }
-    }
+    ...mapSystemState(["modal"])
   },
   methods: {
     ...mapSystemMutations(["closeModal"])
+  },
+  watch: {
+    modal() {
+      this.dialog = this.modal && this.modal.type === this.$options.name;
+    }
   }
 };

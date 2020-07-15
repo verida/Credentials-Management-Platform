@@ -1,5 +1,5 @@
 
-export class BaseHelper {
+export default class BaseHelper {
 
     // Source: https://stackoverflow.com/a/55011290
     static convertBase(str: String, fromBase: Number, toBase: Number): String {
@@ -62,6 +62,11 @@ export class BaseHelper {
         let out = '';
         for (let i = outArray.length - 1; i >= 0; i--)
             out += DIGITS[outArray[i]];
+        
+        // Avoid losing leading zeros
+        if (str.substring(0,1) === '0') {
+            return '0' + out
+        }
     
         return out;
     }

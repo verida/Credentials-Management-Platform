@@ -1,11 +1,12 @@
 import {Body, Headers, Injectable} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
-import { AdminService } from "../admin/admin.service";
-import { UserService } from "../user/user.service";
+import { AdminService } from '../admin/admin.service';
+import { UserService } from '../user/user.service';
+
+import { AdminIdentity, Identity, UserIdentity } from '../../models/User';
 
 import * as bcrypt from 'bcrypt';
-import { Identity } from "../../models/User";
 
 @Injectable()
 export class AuthService {
@@ -15,20 +16,33 @@ export class AuthService {
         private jwtService: JwtService
     ) {}
 
-    async find (admin: boolean, email) {
+    async find (admin: boolean, email): Promise<UserIdentity|AdminIdentity> {
         const service = (admin && this.adminService) || this.userService;
-        return service.findOne(email);
+        let user = await service.findOne(email) as (UserIdentity|AdminIdentity);
+        if (user) {
+            const data = user.toObject ? user.toObject() : user;
+            data['isAdmin'] = Boolean(admin);
+            user = data;
+        }
+
+        return user;
     }
 
-    async validateUser(@Body() identity: Identity): Promise<any> {
+    async validateUser(@Body() identity: Identity) {
         const user = await this.find(identity.isAdmin, identity.email);
         return user && bcrypt.compareSync(identity.password, user.passwordHash);
     }
 
+    async userByToken(@Headers() headers): Promise<UserIdentity|AdminIdentity> {
+        const token = headers.authorization.replace('Bearer ', '');
+        const data = await this.jwtService.verifyAsync(token);
+        return this.find(data.isAdmin, data.email);
+    }
+
     async login(@Body() identity) {
-        const user = await this.find(identity.isAdmin, identity.email);
+        const { __v, passwordHash, ...user } = await this.find(identity.isAdmin, identity.email);
         return {
-            user: { email: user.email, id: user._id },
+            user,
             access_token: this.jwtService.sign({
                 email: user.email,
                 sub: user._id,
@@ -38,12 +52,7 @@ export class AuthService {
     }
 
     async restore(@Headers() headers) {
-        const token = headers.authorization.replace('Bearer ', '');
-        const data = await this.jwtService.verifyAsync(token);
-        const user = await this.find(data.isAdmin, data.email);
-        return {
-            email: user.email,
-            id: user._id
-        }
+        const { __v, passwordHash, ...user } = await this.userByToken(headers);
+        return { ...user }
     }
 }

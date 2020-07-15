@@ -3,20 +3,15 @@ import { AdminService } from './admin.service';
 
 import { CreateAdminDto } from './dto';
 import { Admin } from './interfaces/admin.interface';
-import { AuthGuard } from "@nestjs/passport";
 import { AuthService } from "../auth/auth.service";
+import { AuthGuard } from "@nestjs/passport";
 
+@UseGuards(AuthGuard('jwt'))
 @Controller('admin')
 export class AdminController {
     constructor(private adminService: AdminService, private authService: AuthService) {}
 
-    @UseGuards(AuthGuard('local'))
-    @Post('login')
-    async login(@Req() request) {
-        return this.authService.login(request)
-    }
-
-    @Post('create')
+    @Post()
     async create(@Body() data: CreateAdminDto): Promise<Admin> {
         return this.adminService.create(data)
     }

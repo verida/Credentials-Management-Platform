@@ -5,12 +5,15 @@
         New Issuer
       </v-btn>
     </v-row>
-    <v-row justify="center">
+    <v-row justify="center" class="mt-5" v-if="!list || !list.length">
+      There are no issuers yet
+    </v-row>
+    <v-row justify="center" v-else>
       <issue
         class="mx-2 my-5"
-        v-for="issue in issues"
-        :key="`issue-${issue.id}`"
-        :issue="issue"
+        v-for="issuer in list"
+        :key="`issue-${issuer._id}`"
+        :issue="issuer"
       />
     </v-row>
   </v-container>
@@ -20,21 +23,24 @@
 import Issue from "../components/cards/Issue";
 
 import { createNamespacedHelpers } from "vuex";
+const {
+  mapState: mapIssuerState,
+  mapActions: mapIssuerActions
+} = createNamespacedHelpers("issuer");
 const { mapMutations: mapSystemMutations } = createNamespacedHelpers("system");
 
 export default {
   name: "Issuers",
   components: { Issue },
-  data() {
-    return {
-      issues: [
-        { id: 1, name: "SA Pathology" },
-        { id: 2, name: "QLD Health" }
-      ]
-    };
+  computed: {
+    ...mapIssuerState(["list"])
+  },
+  async beforeMount() {
+    await this.fetchIssuers();
   },
   methods: {
     ...mapSystemMutations(["openModal"]),
+    ...mapIssuerActions(["fetchIssuers"]),
     open() {
       this.openModal({
         type: "NewCredentialIssuerDialog"

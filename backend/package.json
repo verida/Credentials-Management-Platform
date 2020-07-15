@@ -30,8 +30,10 @@
     "@nestjs/passport": "^7.1.0",
     "@nestjs/platform-express": "^7.0.0",
     "@typegoose/typegoose": "^7.2.0",
-    "@verida/datastore": "git+https://github.com/verida/datastore.git",
+    "@verida/datastore": "^0.5.0",
+    "@verida/wallet-utils": "^1.0.0",
     "bcrypt": "^5.0.0",
+    "class-transformer": "^0.2.3",
     "class-validator": "^0.11.1",
     "dotenv": "^8.2.0",
     "ethers": "^5.0.2",
@@ -45,8 +47,8 @@
     "regenerator-runtime": "^0.13.5",
     "rimraf": "^3.0.2",
     "rxjs": "^6.5.5",
-    "tweetnacl-util": "^0.15.1",
-    "twilio": "^3.46.0"
+    "twilio": "^3.46.0",
+    "underscore": "^1.10.2"
   },
   "devDependencies": {
     "@babel/plugin-transform-runtime": "^7.10.3",

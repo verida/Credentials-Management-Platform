@@ -7,23 +7,34 @@ export const IssuerSchema =  new Schema({
         required: true
     },
 
-    seed: {
+    urlName: {
         type: String,
-        required: false
+        unqiue: true,
+        required: true
+    },
+
+    privateKey: {
+        type: String,
+        required: true
+    },
+
+    publicKey: {
+        type: String,
+        required: true
     },
 
     did: {
         type: String,
-        required: false
+        required: true
     },
 
     chain: {
         type: String,
-        required: false
+        required: true
     },
 
     address: {
         type: String,
-        required: false
-    }
+        required: true
+    },
 });

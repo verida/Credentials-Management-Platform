@@ -1,27 +1,55 @@
 <template>
-  <v-dialog v-model="dialog" max-width="500">
+  <v-dialog v-model="dialog" max-width="500" persistent>
     <v-card class="modal text-center" v-if="dialog">
       <small class="modal-receiver">
         {{ title }}
       </small>
       <div class="modal-contour">
-        <form-field
-          v-for="field in form"
-          :key="field.label"
-          :label="field.label"
-          :model="field.model"
-          :readonly="field.readonly"
-          @update="value => (field.model = value)"
-        />
-        <v-col>
-          <div>{{ issues.timestamp }}</div>
-          <div class="mt-2">{{ issues.by }}</div>
-          <v-card-actions class="justify-center">
-            <v-btn @click="send" class="mt-10 float-right" color="info">
-              Send Credential
-            </v-btn>
-          </v-card-actions>
-        </v-col>
+        <ValidationObserver ref="validator">
+          <credential-header
+            :schemas="schemas"
+            :processing="processing"
+            ref="credential"
+            @schema-update="v => init(v)"
+          />
+          <v-col cols="12">
+            <form-field
+              ref="fields"
+              :fields="fields"
+              :excluded="excluded"
+              :processing="processing"
+            />
+            <v-col>
+              <div>{{ issues.timestamp }}</div>
+              <div class="mt-2">{{ issues.by }}</div>
+            </v-col>
+            <v-col>
+              <v-messages
+                v-if="error"
+                :value="[error]"
+                class="error--text mt-2"
+              />
+            </v-col>
+            <v-card-actions class="justify-center mt-10">
+              <v-btn
+                @click="closeModal"
+                color="info"
+                outlined
+                :disabled="processing"
+              >
+                Close
+              </v-btn>
+              <v-btn
+                @click="send"
+                color="info"
+                :disabled="processing"
+                v-if="fields"
+              >
+                Send Credential
+              </v-btn>
+            </v-card-actions>
+          </v-col>
+        </ValidationObserver>
       </div>
     </v-card>
   </v-dialog>
@@ -33,83 +61,110 @@ import FormField from "../inputs/FormField";
 import ModalMixin from "../../mixins/ModalMixin";
 
 import { createNamespacedHelpers } from "vuex";
+import CredentialHeader from "../particles/CredentialHeader";
 const { mapGetters: mapResultGetters } = createNamespacedHelpers("result");
+const { mapGetters: mapAuthGetters } = createNamespacedHelpers("auth");
 const { mapMutations: mapSystemMutations } = createNamespacedHelpers("system");
+const { mapActions: mapCredentialActions } = createNamespacedHelpers(
+  "credential"
+);
+const {
+  mapGetters: mapSchemaGetters,
+  mapActions: mapSchemaActions
+} = createNamespacedHelpers("schema");
 
 export default {
   name: "ResultDialog",
-  components: { FormField },
+  components: { CredentialHeader, FormField },
   mixins: [FormMixin, ModalMixin],
   data() {
     return {
-      form: {},
       title: null,
-      fields: [
-        "Full name",
-        "Date of birth",
-        "Health number",
-        "Mobile number",
-        "DID",
-        "Test type",
-        "Test result"
-      ],
+      processing: false,
+      fields: null,
+
+      excluded: ["dateOfBirth", "dob"],
+      error: null,
       issues: {
-        timestamp: "Issues timestamp: 1st May 2020",
-        by: "Issued by: SA Pathology, Adelaide City"
+        timestamp: `Timestamp: ${moment().format("Do MMM YYYY h:mm:ss a")}`,
+        by: null
       }
     };
   },
+  async beforeMount() {
+    this.issues.by = `Issued by: ${this.issuer && this.issuer.name}`;
+    await this.fetchSchemas();
+  },
   computed: {
-    ...mapResultGetters(["find"])
+    ...mapResultGetters(["find"]),
+    ...mapAuthGetters(["issuer"]),
+    ...mapSchemaGetters(["schemas", "properties", "schemaPath"])
   },
   methods: {
+    ...mapSchemaActions(["fetchSchemas"]),
     ...mapSystemMutations(["openModal", "closeModal"]),
-    send() {
-      const { fullName, healthNumber } = this.form;
-      this.openModal({
-        type: "SentDialog",
-        patient: fullName.model,
-        number: healthNumber.model
+    ...mapCredentialActions(["createCredential"]),
+    setDateOfBirth(form, data) {
+      const dob = _.chain(this.fields)
+        .pick(this.excluded)
+        .keys()
+        .value();
+
+      _.each(dob, item => {
+        form[item] = data.dob;
       });
     },
-    init() {
-      let result = this.find(this.modal && this.modal.id);
-      let editable = [];
+    async send() {
+      this.error = null;
+      this.processing = true;
+      const validated = await Promise.all([
+        this.$refs.fields.validate(),
+        this.$refs.credential.validate()
+      ]);
 
-      this.form = {};
-
-      if (result) {
-        this.title = "Send Result";
-        editable = ["Test type", "Test result"];
-      } else {
-        this.title = "New Result";
+      if (validated.includes(false)) {
+        this.processing = false;
+        return;
       }
 
-      this.fields.forEach(field => {
-        const key = this.fieldToKey(field);
-        const readonly = editable.length && !editable.includes(field);
+      const data = this.$refs.credential.main;
+      const mobile = this.$refs.credential.mobile;
+      const form = this.$refs.fields.form;
 
-        this.$set(this.form, key, {
-          model: (result && result[key]) || null,
-          readonly: Boolean(readonly),
-          label: field
-        });
-      });
+      data.mobile = mobile.formatInternational;
+      this.setDateOfBirth(form, data);
+
+      const credential = {
+        ...data,
+        data: {
+          name: form.fullName + ": " + form.testType,
+          schema: this.schemaPath(this.$refs.credential.schema),
+          ...form
+        }
+      };
+
+      try {
+        await this.createCredential(credential);
+        this.processing = false;
+        this.closeModal();
+      } catch (e) {
+        this.processing = false;
+        this.error = e.response.statusText;
+      }
     },
-    fieldToKey(field) {
-      return field
-        .toLowerCase()
-        .split(/ /)
-        .map((item, index) =>
-          index !== 0 ? item.charAt(0).toUpperCase() + item.slice(1) : item
-        )
-        .join("");
+    async init(schema) {
+      this.title = "New Result";
+      this.fields = this.properties(schema);
+
+      await this.$nextTick();
+      this.$refs.fields && this.$refs.fields.init();
     }
   },
   watch: {
     dialog() {
       if (this.dialog) {
-        this.init();
+        this.fields = null;
+        this.$refs.credential && this.$refs.credential.reset();
       }
     }
   }

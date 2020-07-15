@@ -7,12 +7,10 @@ import { SeederService } from './seeder.service';
 import { AdminModule } from '../modules/admin/admin.module';
 import { AdminSchema } from '../schemas/admin.schema';
 
-import { DB_URL } from "../configs";
-
 @Module({
     imports: [
         ConfigModule.forRoot(),
-        MongooseModule.forRoot(DB_URL),
+        MongooseModule.forRoot(process.env.DB_URL),
         MongooseModule.forFeature([
             { name: 'Admin', schema: AdminSchema }
         ]),

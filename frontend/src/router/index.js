@@ -1,39 +1,51 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 
-import { isAuth } from "../helpers/RouteGuard";
-import { DASHBOARD } from "../constants/route";
+import { isAuth, isAdminRole } from "../helpers/RouteGuard";
+import { ADMIN_LOGIN, DASHBOARD, ISSUERS, LOGIN } from "../constants/route";
 
 Vue.use(VueRouter);
 
 const routes = [
   {
     path: "/",
-    redirect: "login/sa-pathology"
+    redirect: "login"
   },
   {
-    path: "/login/:type",
-    name: "Login",
+    path: "/login/:type?",
+    name: LOGIN,
     component: () => import("../views/login/Login"),
-    meta: { guest: true }
+    meta: { guest: true, go: DASHBOARD },
+    beforeEnter: (from, to, next) => isAuth(from, to, next)
   },
   {
     path: "/admin/login",
-    name: "AdminLogin",
+    name: ADMIN_LOGIN,
     component: () => import("../views/login/AdminLogin"),
-    meta: { guest: true }
+    meta: { guest: true, go: ISSUERS },
+    beforeEnter: (from, to, next) => isAuth(from, to, next)
   },
   {
     path: "/dashboard",
     name: DASHBOARD,
     component: () => import("../views/Dashboard"),
-    meta: { saPathology: true }
+    meta: { user: true, home: LOGIN },
+    beforeEnter: async (from, to, next) => {
+      const isAdmin = await isAdminRole(to, next);
+      isAdmin && next({ name: ISSUERS });
+      next();
+    }
   },
   {
     path: "/issuers",
-    name: "Issuers",
+    name: ISSUERS,
     component: () => import("../views/Issuers"),
-    meta: { admin: true }
+    meta: { admin: true, home: ADMIN_LOGIN },
+    beforeEnter: async (from, to, next) => {
+      const isAdmin = await isAdminRole(to, next);
+      !isAdmin && next({ name: DASHBOARD });
+      next();
+    }
   }
 ];
 

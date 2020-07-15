@@ -5,7 +5,6 @@ import { User } from './interfaces/user.interface';
 import { CreateUserDto } from './dto';
 
 import * as bcrypt from 'bcrypt';
-import { SALT } from "../../configs";
 
 @Injectable()
 export class UserService {
@@ -13,12 +12,27 @@ export class UserService {
 
     async create(user: CreateUserDto): Promise<User> {
         const record = new this.userModel(user);
-        record.passwordHash = bcrypt.hashSync(user.password, SALT);
+        record.passwordHash = bcrypt.hashSync(user.password, process.env.SALT);
         return record.save();
     }
 
-    async findOne(email: string): Promise<User | undefined> {
-        return this.userModel.findOne({ email })
+    async findOne(email: string): Promise<any> {
+        const [ user ] = await this.userModel.aggregate([
+            { $match: { email } },
+            { $lookup: {
+                'from': 'issuers',
+                'localField': 'issuerId',
+                'foreignField': '_id',
+                'as': 'issuer'
+              }
+            },
+            { $unwind: '$issuer' },
+        ]);
+        return user;
+    }
+
+    async findOneById(userId: string): Promise<User | undefined> {
+        return this.userModel.findOne({ _id: userId })
     }
 
     async findAll(): Promise<User[]> {
