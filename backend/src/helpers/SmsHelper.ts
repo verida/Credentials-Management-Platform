@@ -2,7 +2,7 @@ const twilio = require('twilio')
 
 export default class SmsHelper {
 
-    async sendSmsCredential(fetchUrl, mobile) {
+    static async sendSmsCredential(fetchUrl, mobile) {
         const {
             TWILIO_SID,
             TWILIO_TOKEN,
@@ -14,7 +14,7 @@ export default class SmsHelper {
             lazyLoading: true 
         });
 
-        const infoMessage = await twilioClient.messages.create({body: 'Please download your credential:', from: TWILIO_FROM_ADDRESS, to: mobile})
+        const infoMessage = await twilioClient.messages.create({body: 'Please download your health credential:', from: TWILIO_FROM_ADDRESS, to: mobile})
         console.log(infoMessage)
         const credMessage = await twilioClient.messages.create({body: fetchUrl, from: TWILIO_FROM_ADDRESS, to: mobile})
         console.log(credMessage)

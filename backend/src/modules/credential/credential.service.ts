@@ -5,6 +5,7 @@ import { Credential } from './interfaces/credential.interface';
 import { Issuer } from '../issuer/interfaces/issuer.interface';
 
 import VeridaHelper from '../../helpers/VeridaHelper'
+import SmsHelper from '../../helpers/SmsHelper'
 
 export class CredentialService {
     constructor(@InjectModel('Credential') private readonly credentialModel: Model<Credential>) {}
@@ -23,7 +24,7 @@ export class CredentialService {
         await record.save();
 
         // SMS credential to the recipient
-        //SmsHelper.sendSmsCredential(url, mobile)
+        SmsHelper.sendSmsCredential(url, mobile)
 
         return record
     }
