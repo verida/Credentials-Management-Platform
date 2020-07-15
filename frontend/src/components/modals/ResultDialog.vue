@@ -86,7 +86,7 @@ export default {
       excluded: ["dateOfBirth", "dob"],
       error: null,
       issues: {
-        timestamp: `Issues timestamp: ${moment().format("Do MMM YYYY")}`,
+        timestamp: `Timestamp: ${moment().format("Do MMM YYYY h:mm:ss a")}`,
         by: null
       }
     };

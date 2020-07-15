@@ -32,7 +32,7 @@ export default {
     label() {
       switch (true) {
         case this.mode.user:
-          return "SA Pathology";
+          return this.issuer.name;
         case this.mode.admin:
           return "Admin";
       }

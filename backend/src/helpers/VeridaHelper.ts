@@ -29,12 +29,13 @@ export default class VeridaHelper {
      * @param createIssuerDto 
      */
     static async createIssuer(createIssuerDto: CreateIssuerDto) {
-        const account = utils.createAccount(createIssuerDto.chain)
+        const chain = 'vechain' // createIssuerDto.chain
+        const account = utils.createAccount(chain)
 
         // Create issuer instance populated with new account details
         const issuer = new IssuerDto()
         issuer.name = createIssuerDto.name
-        issuer.chain = account['chain']
+        issuer.chain = chain
         issuer.did = account['did']
         issuer.privateKey = account['privateKey']
         issuer.publicKey = account['publicKey']
