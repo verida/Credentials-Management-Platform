@@ -10,6 +10,7 @@
           class="mb-5"
           label="Mobile phone"
           v-model="main.mobile"
+          default-country-code="SG"
           :disabled="processing"
           @update="v => (mobile = v)"
         />
