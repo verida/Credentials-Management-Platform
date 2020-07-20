@@ -18,6 +18,14 @@
         :error="Boolean(errors.length)"
         :error-messages="errors"
       />
+      <v-datetime-picker
+        v-else-if="attributes[key].format === 'date-time'"
+        v-model="form[key]"
+        :label="attributes[key].title"
+        :disabled="processing"
+        :error="Boolean(errors.length)"
+        :error-messages="errors"
+      />
       <v-text-field
         v-else
         v-model="form[key]"
