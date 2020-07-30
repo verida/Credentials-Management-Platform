@@ -21,12 +21,11 @@ const state = {
 
 const getters = {
   cards: state =>
-    state.list.map(({ id, fullName, dateOfBirth, healthNumber, did }) => ({
+    state.list.map(({ id, fullName, dateOfBirth, did }) => ({
       id,
       patient: fullName,
       info: {
         DOB: dateOfBirth,
-        "Health Number": healthNumber,
         DID: did
       }
     })),
