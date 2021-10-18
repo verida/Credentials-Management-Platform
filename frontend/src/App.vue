@@ -20,7 +20,7 @@ export default {
   components: {
     NewCredentialIssuerDialog,
     SentDialog,
-    AppNavigation
-  }
+    AppNavigation,
+  },
 };
 </script>

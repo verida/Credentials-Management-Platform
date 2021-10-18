@@ -12,6 +12,7 @@ import { CreateIssuerDto } from '../modules/issuer/dto';
 import { IssuerDto } from '../modules/issuer/dto';
 import { Issuer } from '../modules/issuer/interfaces/issuer.interface';
 import { IssueCredentialDto } from '../modules/credential/dto';
+import { SendMessageResponse } from 'src/models/User';
 
 const {
   VERIDA_APP_NAME,
@@ -65,10 +66,10 @@ export default class VeridaHelper {
     }
   }
 
-  static async issueCredential(issuer: Issuer, cred: IssueCredentialDto) {
+  static async issueCredentialV1(issuer: Issuer, cred: IssueCredentialDto) {
     // Convert the DOB to numeric only and fetch the mobile number
-    const dob = cred.dob.replace(/\-/g, '');
-    const mobile = cred.mobile;
+    const dob = cred['dob'].replace(/\-/g, '');
+    const mobile = cred.data['did'];
 
     // Generate an encryption key for the credential that combines a
     // partial random key with the user's date of birth
@@ -113,6 +114,39 @@ export default class VeridaHelper {
       mobile: mobile,
       credentialId: credentialId,
     };
+  }
+
+  /**
+   *
+   * @param issuer
+   * @param cred
+   * @returns
+   *
+   *  Credential Issuer without data encryption
+   */
+
+  static async issueCredential(
+    issuer: Issuer,
+    cred: IssueCredentialDto,
+  ): Promise<SendMessageResponse> {
+    const type = 'inbox/type/dataSend';
+
+    const data = {
+      data: [cred.data],
+    };
+
+    const config = {
+      recipientContextName: 'Verida: Vault',
+    };
+    const title = cred.data['title'];
+    const context = await VeridaHelper.connect(issuer);
+    const messaging = await context.getMessaging();
+
+    const did = cred.did;
+
+    const response = await messaging.send(did, type, data, title, config);
+
+    return response as SendMessageResponse;
   }
 
   static async _issueEncryptedCredential(

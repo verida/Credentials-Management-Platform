@@ -5,8 +5,8 @@
         <v-col cols="auto">
           <h2>{{ result.patient }}</h2>
           <div class="credential__subtext">
-            <span class="font-weight-bold">Mobile number:&nbsp;</span>
-            <span class="info--text">{{ result.mobile }}</span>
+            <span class="font-weight-bold">Recepient Did:&nbsp;</span>
+            <span class="info--text">{{ result.did }}</span>
           </div>
           <div
             class="mb-2"
@@ -37,9 +37,9 @@ export default {
       this.openModal({
         id: this.result.id,
         type: "ResultDialog",
-        edit: true
+        edit: true,
       });
-    }
-  }
+    },
+  },
 };
 </script>
