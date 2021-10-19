@@ -6,7 +6,7 @@
 [travis-url]: https://travis-ci.org/nestjs/nest
 [linux-image]: https://img.shields.io/travis/nestjs/nest/master.svg?label=linux
 [linux-url]: https://travis-ci.org/nestjs/nest
-  
+
   <p align="center">A progressive <a href="http://nodejs.org" target="blank">Node.js</a> framework for building efficient and scalable server-side applications, heavily inspired by <a href="https://angular.io" target="blank">Angular</a>.</p>
     <p align="center">
 <a href="https://www.npmjs.com/~nestjscore"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
@@ -26,13 +26,39 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Verida Health Credential Management (Server-Side)
+
+Developed with [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
 ## Installation
 
 ```bash
 $ npm install
 ```
+
+## setting up database connection
+
+- Install MongDB compass Desktop on your machine
+
+- To Connect with MongoDb Compass enter this url `mongodb://localhost:27017/verida-health` in the HostName input field.
+
+## Create an admin account
+
+```bash
+# development
+$ npm run seed
+```
+
+This will create a super admin that can create other issuers
+
+> Login Details
+
+- email: admin@verida.com
+- password: admin
+
+1.  you can login as an admin from this url :[admin login ](http://localhost:8080/admin/login) after starting the vue App by navigating to the `frontend` project folder.
+
+2.  Login Url for an issuer [admin login](http://localhost:8080/login)
 
 ## Running the app
 
@@ -72,4 +98,4 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 
 ## License
 
-  Nest is [MIT licensed](LICENSE).
+Nest is [MIT licensed](LICENSE).
