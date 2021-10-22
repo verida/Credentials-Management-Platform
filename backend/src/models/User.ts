@@ -18,7 +18,7 @@ export interface Issuer {
 
 export interface UserIdentity extends User {
   isAdmin: boolean;
-  issuer: Issuer;
+  issuer: IssuerData;
 }
 
 export interface AdminIdentity extends Admin {
@@ -29,4 +29,15 @@ export interface SendMessageResponse {
   ok: boolean;
   id: string;
   rev: string;
+}
+
+export interface IssuerData {
+  _id?: string;
+  name: string;
+  urlName: string;
+  privateKey: string;
+  publicKey: string;
+  did: string;
+  chain: string;
+  address: string;
 }

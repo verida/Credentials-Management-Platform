@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/camelcase */
 import { Body, Headers, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
@@ -5,7 +6,12 @@ import { JwtService } from '@nestjs/jwt';
 import { AdminService } from '../admin/admin.service';
 import { UserService } from '../user/user.service';
 
-import { AdminIdentity, Identity, UserIdentity } from '../../models/User';
+import {
+  AdminIdentity,
+  Identity,
+  IssuerData,
+  UserIdentity,
+} from '../../models/User';
 
 import * as bcrypt from 'bcrypt';
 

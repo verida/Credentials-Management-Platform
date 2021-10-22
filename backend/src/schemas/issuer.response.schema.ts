@@ -1,35 +1,41 @@
 import { Schema } from 'mongoose';
 
-export const IssuerResponseSchema =  new Schema({
+export const IssuerResponseSchema = new Schema(
+  {
     name: {
-        type: String,
-        unique: true,
-        required: true
+      type: String,
+      unique: true,
+      required: true,
     },
 
     urlName: {
-        type: String
+      type: String,
     },
 
     publicKey: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
-
+    privateKey: {
+      type: String,
+      required: true,
+    },
     did: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
 
     chain: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
 
     address: {
-        type: String,
-        required: true
-    }
-}, {
-    collection: 'issuers'
-});
+      type: String,
+      required: true,
+    },
+  },
+  {
+    collection: 'issuers',
+  },
+);

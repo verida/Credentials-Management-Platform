@@ -21,6 +21,10 @@ const {
   CREDENTIAL_DOWNLOAD_URL,
 } = process.env;
 
+type TestI = {
+  title: string;
+  $id: string;
+};
 export default class VeridaHelper {
   /**
    *
@@ -48,8 +52,12 @@ export default class VeridaHelper {
   static async setIssuerName(issuer: IssuerDto) {
     const context = await VeridaHelper.connect(issuer);
     const profileContext = await context.openProfile('public');
-    const profile = await profileContext.set('name', issuer.name);
-    return profile;
+
+    // const schemas = SCHEMAS.map(
+    //   async schema => await context.getClient().getSchema(schema),
+    // );
+
+    return await profileContext.set('name', issuer.name);
   }
 
   static async generateAccount() {
@@ -224,5 +232,17 @@ export default class VeridaHelper {
     });
 
     return context;
+  }
+
+  static async getSchemaJSon(
+    issuer: IssuerDto,
+    schemaTitle: string,
+  ): Promise<any> {
+    const context = await VeridaHelper.connect(issuer);
+
+    const schemas = await context.getClient().getSchema(schemaTitle);
+    const json = await schemas.getSchemaJson();
+
+    return json;
   }
 }
