@@ -10,6 +10,15 @@
         />
         <v-messages :value="errors" class="error--text mt-2" />
       </ValidationProvider>
+      <ValidationProvider rules="required" name="Full Name" v-slot="{ errors }">
+        <v-text-field
+          class="mb-5"
+          label="Full Name"
+          v-model="main.name"
+          :disabled="processing"
+        />
+        <v-messages :value="errors" class="error--text mt-2" />
+      </ValidationProvider>
       <ValidationProvider
         rules="required"
         name="Document Type"
@@ -77,6 +86,7 @@ export default {
       main: {
         dob: null,
         did: null,
+        name: "",
       },
     };
   },

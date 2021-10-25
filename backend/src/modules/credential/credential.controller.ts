@@ -33,8 +33,6 @@ export class CredentialController {
     @Body() data: IssueCredentialDto,
     @Req() request,
   ): Promise<object> {
-    console.log(data);
-
     await validate(data).then(errors => {
       // errors is an array of validation errors
       if (errors.length > 0) {
