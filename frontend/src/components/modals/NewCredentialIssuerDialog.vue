@@ -169,12 +169,12 @@ export default {
           const issuer = await this.createIssuer(this.issuer);
           this.admin.issuerId = issuer._id;
         }
-
         await this.createUser(this.admin);
         this.processing = false;
         this.closeModal();
       } catch (e) {
-        this.error = e.response && e.response.statusText;
+        const error = { e };
+        this.error = error?.e?.response?.data?.message[0];
         this.processing = false;
       }
     },
