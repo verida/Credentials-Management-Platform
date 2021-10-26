@@ -14,6 +14,7 @@ import { IssuerDto } from '../modules/issuer/dto';
 import { Issuer } from '../modules/issuer/interfaces/issuer.interface';
 import { IssueCredentialDto } from '../modules/credential/dto';
 import { SendMessageResponse } from 'src/models/User';
+import { BLOCK_CHAIN, DURATION_TTL } from '../constants/constant.config';
 
 const {
   VERIDA_APP_NAME,
@@ -21,11 +22,6 @@ const {
   VERIDA_TESTNET_DEFAULT_SERVER,
   CREDENTIAL_DOWNLOAD_URL,
 } = process.env;
-
-type TestI = {
-  title: string;
-  $id: string;
-};
 
 const CacheManager = new NodeCache();
 
@@ -35,8 +31,6 @@ export default class VeridaHelper {
    * @param createIssuerDto
    */
   static async createIssuer(createIssuerDto: CreateIssuerDto) {
-    const CHAIN = 'ethr';
-
     const account = await VeridaHelper.generateAccount();
     const utils = new Utils(CERAMIC_URL);
     const ceramic = await utils.createAccount('3id', account.mnemonic.phrase);
@@ -44,7 +38,7 @@ export default class VeridaHelper {
 
     const issuer = new IssuerDto();
     issuer.name = createIssuerDto.name;
-    issuer.chain = CHAIN;
+    issuer.chain = BLOCK_CHAIN;
     issuer.did = did;
     issuer.privateKey = account.privateKey;
     issuer.publicKey = account.publicKey;
@@ -215,8 +209,7 @@ export default class VeridaHelper {
 
   static async init(issuer: IssuerDto) {
     // initialize verida server user using issuer
-    const DURATION_TTL = 60 * 60 * 24;
-    const CHAIN = 'ethr';
+
     const context = Network.connect({
       context: {
         name: VERIDA_APP_NAME,
@@ -236,7 +229,7 @@ export default class VeridaHelper {
           },
         },
         {
-          chain: CHAIN,
+          chain: BLOCK_CHAIN,
           privateKey: issuer.privateKey,
         },
       ),
