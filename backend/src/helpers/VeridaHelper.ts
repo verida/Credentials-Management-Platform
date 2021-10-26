@@ -53,10 +53,6 @@ export default class VeridaHelper {
     const context = await VeridaHelper.connect(issuer);
     const profileContext = await context.openProfile('public');
 
-    // const schemas = SCHEMAS.map(
-    //   async schema => await context.getClient().getSchema(schema),
-    // );
-
     return await profileContext.set('name', issuer.name);
   }
 
@@ -65,7 +61,6 @@ export default class VeridaHelper {
   }
 
   static async validateCredential(cred: IssueCredentialDto) {
-    // Validate the credential
     const schema = await Verida.getSchema(cred.data['schema']);
     const valid = await schema.validate(cred.data);
 
@@ -162,7 +157,6 @@ export default class VeridaHelper {
     cred: IssueCredentialDto,
     encryptionKey: Uint8Array,
   ): Promise<object> {
-    // @todo: Locate issuer based on current logged in user
     const app = await VeridaHelper.connect(issuer);
 
     // Issue a new public, encrypted verida credential
