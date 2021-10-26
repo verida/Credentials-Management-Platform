@@ -1,18 +1,12 @@
 <template>
   <ValidationObserver ref="validator">
     <v-col cols="12">
-      <ValidationProvider
-        :rules="{ required: true, mobile: { valid: main.mobile && mobile.isValid } }"
-        name="Mobile phone"
-        v-slot="{ errors }"
-      >
-        <v-phone-number
+      <ValidationProvider rules="required" name="Did" v-slot="{ errors }">
+        <v-text-field
           class="mb-5"
-          label="Mobile phone"
-          v-model="main.mobile"
-          default-country-code="SG"
+          label="Recepient's Did"
+          v-model="main.did"
           :disabled="processing"
-          @update="v => (mobile = v)"
         />
         <v-messages :value="errors" class="error--text mt-2" />
       </ValidationProvider>
@@ -82,8 +76,8 @@ export default {
       mobile: null,
       main: {
         dob: null,
-        mobile: null
-      }
+        did: null,
+      },
     };
   },
   mounted() {
@@ -93,13 +87,13 @@ export default {
     reset() {
       this.schema = null;
       const dataKeys = _.keys(this.main);
-      _.each(dataKeys, dk => {
+      _.each(dataKeys, (dk) => {
         this.$set(this.main, dk, null);
       });
     },
     async validate() {
       return this.$refs.validator.validate();
-    }
-  }
+    },
+  },
 };
 </script>

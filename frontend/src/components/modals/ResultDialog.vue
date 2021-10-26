@@ -10,7 +10,7 @@
             :schemas="schemas"
             :processing="processing"
             ref="credential"
-            @schema-update="v => init(v)"
+            @schema-update="(v) => init(v)"
           />
           <v-col cols="12">
             <form-field
@@ -65,13 +65,10 @@ import CredentialHeader from "../particles/CredentialHeader";
 const { mapGetters: mapResultGetters } = createNamespacedHelpers("result");
 const { mapGetters: mapAuthGetters } = createNamespacedHelpers("auth");
 const { mapMutations: mapSystemMutations } = createNamespacedHelpers("system");
-const { mapActions: mapCredentialActions } = createNamespacedHelpers(
-  "credential"
-);
-const {
-  mapGetters: mapSchemaGetters,
-  mapActions: mapSchemaActions
-} = createNamespacedHelpers("schema");
+const { mapActions: mapCredentialActions } =
+  createNamespacedHelpers("credential");
+const { mapGetters: mapSchemaGetters, mapActions: mapSchemaActions } =
+  createNamespacedHelpers("schema");
 
 export default {
   name: "ResultDialog",
@@ -87,8 +84,8 @@ export default {
       error: null,
       issues: {
         timestamp: `Timestamp: ${moment().format("Do MMM YYYY h:mm:ss a")}`,
-        by: null
-      }
+        by: null,
+      },
     };
   },
   async beforeMount() {
@@ -98,19 +95,21 @@ export default {
   computed: {
     ...mapResultGetters(["find"]),
     ...mapAuthGetters(["issuer"]),
-    ...mapSchemaGetters(["schemas", "properties", "schemaPath"])
+    ...mapSchemaGetters([
+      "schemas",
+      "properties",
+      "schemaPath",
+      "schemasTitle",
+    ]),
   },
   methods: {
     ...mapSchemaActions(["fetchSchemas"]),
     ...mapSystemMutations(["openModal", "closeModal"]),
     ...mapCredentialActions(["createCredential"]),
     setDateOfBirth(form, data) {
-      const dob = _.chain(this.fields)
-        .pick(this.excluded)
-        .keys()
-        .value();
+      const dob = _.chain(this.fields).pick(this.excluded).keys().value();
 
-      _.each(dob, item => {
+      _.each(dob, (item) => {
         form[item] = data.dob;
       });
     },
@@ -119,7 +118,7 @@ export default {
       this.processing = true;
       const validated = await Promise.all([
         this.$refs.fields.validate(),
-        this.$refs.credential.validate()
+        this.$refs.credential.validate(),
       ]);
 
       if (validated.includes(false)) {
@@ -128,19 +127,18 @@ export default {
       }
 
       const data = this.$refs.credential.main;
-      const mobile = this.$refs.credential.mobile;
       const form = this.$refs.fields.form;
 
-      data.mobile = mobile.formatInternational;
       this.setDateOfBirth(form, data);
 
       const credential = {
         ...data,
         data: {
+          title: this.$refs.credential.schema,
           name: form.fullName + ": " + form.testType,
           schema: this.schemaPath(this.$refs.credential.schema),
-          ...form
-        }
+          ...form,
+        },
       };
 
       try {
@@ -158,7 +156,7 @@ export default {
 
       await this.$nextTick();
       this.$refs.fields && this.$refs.fields.init();
-    }
+    },
   },
   watch: {
     dialog() {
@@ -166,7 +164,7 @@ export default {
         this.fields = null;
         this.$refs.credential && this.$refs.credential.reset();
       }
-    }
-  }
+    },
+  },
 };
 </script>

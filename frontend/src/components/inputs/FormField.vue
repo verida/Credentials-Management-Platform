@@ -44,34 +44,37 @@ export default {
   name: "FormField",
   props: {
     fields: {
-      default: () => ({})
+      default: () => ({}),
     },
     excluded: {},
     processing: {
-      default: false
-    }
+      default: false,
+    },
   },
   data() {
     return {
       form: {},
-      attributes: {}
+      attributes: {},
     };
   },
   methods: {
     init() {
       this.form = {};
+
       this.attributes = {};
 
-      const keys = _.keys(this.fields).filter(k => !this.excluded.includes(k));
+      const keys = _.keys(this.fields).filter(
+        (k) => !this.excluded.includes(k)
+      );
 
-      _.each(keys, key => {
+      _.each(keys, (key) => {
         this.$set(this.form, key, null);
         this.$set(this.attributes, key, this.fields[key]);
       });
     },
     async validate() {
       return this.$refs.validator.validate();
-    }
-  }
+    },
+  },
 };
 </script>

@@ -29,9 +29,7 @@
                 :result="card"
               />
             </template>
-            <template v-else>
-              Credential List is empty
-            </template>
+            <template v-else> Credential List is empty </template>
           </v-tab-item>
         </v-tabs>
       </v-row>
@@ -47,20 +45,18 @@ import NewResultDialog from "../components/modals/ResultDialog";
 import { createNamespacedHelpers } from "vuex";
 const { mapMutations: mapSystemMutations } = createNamespacedHelpers("system");
 const { mapActions: mapAuthActions } = createNamespacedHelpers("auth");
-const {
-  mapGetters: mapCredentialGetters,
-  mapActions: mapCredentialActions
-} = createNamespacedHelpers("credential");
+const { mapGetters: mapCredentialGetters, mapActions: mapCredentialActions } =
+  createNamespacedHelpers("credential");
 
 export default {
   name: "Dashboard",
   components: {
     NewResultDialog,
-    Result
+    Result,
   },
   data() {
     return {
-      tabs: ["Sent"]
+      tabs: ["Sent"],
     };
   },
   async beforeMount() {
@@ -68,7 +64,7 @@ export default {
     await this.fetchCredentials();
   },
   computed: {
-    ...mapCredentialGetters(["cards"])
+    ...mapCredentialGetters(["cards"]),
   },
   methods: {
     ...mapCredentialActions(["fetchCredentials"]),
@@ -76,9 +72,9 @@ export default {
     ...mapSystemMutations(["openModal"]),
     openResultDialog() {
       this.openModal({
-        type: "ResultDialog"
+        type: "ResultDialog",
       });
-    }
-  }
+    },
+  },
 };
 </script>

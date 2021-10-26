@@ -24,3 +24,9 @@ export interface UserIdentity extends User {
 export interface AdminIdentity extends Admin {
   isAdmin: boolean;
 }
+
+export interface SendMessageResponse {
+  ok: boolean;
+  id: string;
+  rev: string;
+}
