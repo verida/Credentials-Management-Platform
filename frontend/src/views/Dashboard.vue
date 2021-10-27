@@ -30,7 +30,7 @@
               </v-btn>
             </v-col>
           </v-row>
-          <v-tab-item class="py-5">
+          <v-tab-item class="py-5  my-3">
             <template v-if="cards && cards.length">
               <v-data-table
                 :headers="headers"
@@ -42,7 +42,7 @@
             </template>
             <template v-else> Credential List is empty </template>
           </v-tab-item>
-          <v-tab-item class="py-5">
+          <v-tab-item class="py-5 my-3">
             <template v-if="allSchemas && allSchemas.length">
               <schema-list
                 class="mb-4"
@@ -103,7 +103,7 @@ export default {
         },
         { text: "Date", value: "date" },
         { text: "Name", value: "schema.name" },
-        { text: "DID", value: "did" },
+        { text: "DID", value: "didAbrv" },
       ],
     };
   },
@@ -133,8 +133,6 @@ export default {
     },
     openCredentialDialog(item, data) {
       this.credential = item;
-      // console.log(item, data);
-      // console.log("d;l;sl");
       this.openModal({
         type: "CredentialDetails",
       });

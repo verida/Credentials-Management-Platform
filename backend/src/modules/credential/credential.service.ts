@@ -33,6 +33,7 @@ export class CredentialService {
       .find({
         issuerId: issuer._id,
       })
+      .sort({ insertedAt: 1 })
       .exec();
   }
 }

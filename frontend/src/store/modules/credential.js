@@ -14,15 +14,12 @@ const mutations = {
 const getters = {
   cards: ({ list }, getters, rootState, rootGetters) => {
     return list.map(({ credentialId, did, data, insertedAt }) => {
-      // const properties = rootGetters["schema/properties"](data.schema, "view");
-
       const stub = "-- // --";
-
-      // const keys = _.keys(properties);
 
       return {
         id: credentialId,
-        did: `${did.slice(0, 10)}...`,
+        did: did,
+        didAbrv: `${did.slice(0, 7)}...`,
         schema: {
           ...data,
         },
