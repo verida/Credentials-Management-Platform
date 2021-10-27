@@ -1,6 +1,6 @@
 <template>
   <v-app-bar app color="success" dense dark>
-    <h3 class="v-app-bar font-weight-regular">
+    <h3 class="v-app-bar font-weight-regular text-capitalize">
       {{ label() }}
     </h3>
     <v-spacer />
@@ -21,7 +21,7 @@ const { mapGetters: mapAuthGetters } = createNamespacedHelpers("auth");
 export default {
   name: "AppNavigation",
   components: {
-    Search
+    Search,
   },
   methods: {
     logout() {
@@ -36,13 +36,13 @@ export default {
         case this.mode.admin:
           return "Admin";
       }
-    }
+    },
   },
   computed: {
     ...mapAuthGetters(["issuer"]),
     mode() {
       return this.$route.meta;
-    }
-  }
+    },
+  },
 };
 </script>

@@ -232,11 +232,15 @@ export default class VeridaHelper {
     issuer: IssuerDto,
     schemaTitle: string,
   ): Promise<any> {
-    const context = await VeridaHelper.connect(issuer);
+    try {
+      const context = await VeridaHelper.connect(issuer);
 
-    const schemas = await context.getClient().getSchema(schemaTitle);
-    const json = await schemas.getSchemaJson();
+      const schemas = await context.getClient().getSchema(schemaTitle);
+      const json = await schemas.getSchemaJson();
 
-    return json;
+      return json;
+    } catch (error) {
+      console.log({ error });
+    }
   }
 }

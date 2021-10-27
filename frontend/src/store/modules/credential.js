@@ -14,26 +14,19 @@ const mutations = {
 const getters = {
   cards: ({ list }, getters, rootState, rootGetters) => {
     return list.map(({ credentialId, did, data, insertedAt }) => {
-      const properties = rootGetters["schema/properties"](data.schema, "view");
+      // const properties = rootGetters["schema/properties"](data.schema, "view");
 
       const stub = "-- // --";
 
-      const keys = _.keys(properties);
-      const info = _.map(keys, (key) => ({
-        title: properties[key].title,
-        value: data[key] || stub,
-      }));
-
-      info.unshift({
-        title: "Inserted at",
-        value: (insertedAt && moment(insertedAt).format("DD/MM/YYYY")) || stub,
-      });
+      // const keys = _.keys(properties);
 
       return {
         id: credentialId,
-        patient: data.fullName,
-        did,
-        info,
+        did: `${did.slice(0, 10)}...`,
+        schema: {
+          ...data,
+        },
+        date: (insertedAt && moment(insertedAt).format("DD/MM/YYYY")) || stub,
       };
     });
   },
