@@ -23,10 +23,17 @@ const getters = {
     const schema = schemas.default.find(
       (schema) => schema.title === selected || schema.$id === selected
     );
+
     if (!schema) return [];
 
     const { [mode]: visible } = criteria[schema.$id];
-    return _.pick(schema.properties, visible);
+
+    const schemaProps = schema.allOf.filter((item) => item["properties"]);
+    const properties = schemaProps[0].properties;
+
+    const createFields = schema?.layouts?.create || visible || [];
+
+    return _.pick(properties, createFields);
   },
 };
 

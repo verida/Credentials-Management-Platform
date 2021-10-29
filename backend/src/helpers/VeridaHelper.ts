@@ -1,9 +1,10 @@
 import { BadRequestException } from '@nestjs/common';
+import NodeCache from 'node-cache';
 
 import Verida from '@verida/datastore';
 import { Wallet } from 'ethers';
 import BaseHelper from './BaseHelper';
-import { Network } from '@verida/client-ts';
+import { Context, Network } from '@verida/client-ts';
 import { Utils } from '@verida/3id-utils-node';
 import { AutoAccount } from '@verida/account-node';
 import CredentialHelper from './CredentialHelper';
@@ -13,6 +14,7 @@ import { IssuerDto } from '../modules/issuer/dto';
 import { Issuer } from '../modules/issuer/interfaces/issuer.interface';
 import { IssueCredentialDto } from '../modules/credential/dto';
 import { SendMessageResponse } from 'src/models/User';
+import { BLOCK_CHAIN, DURATION_TTL } from '../constants/constant.config';
 
 const {
   VERIDA_APP_NAME,
@@ -21,17 +23,14 @@ const {
   CREDENTIAL_DOWNLOAD_URL,
 } = process.env;
 
-type TestI = {
-  title: string;
-  $id: string;
-};
+const CacheManager = new NodeCache();
+
 export default class VeridaHelper {
   /**
    *
    * @param createIssuerDto
    */
   static async createIssuer(createIssuerDto: CreateIssuerDto) {
-    const chain = 'ethr';
     const account = await VeridaHelper.generateAccount();
     const utils = new Utils(CERAMIC_URL);
     const ceramic = await utils.createAccount('3id', account.mnemonic.phrase);
@@ -39,7 +38,7 @@ export default class VeridaHelper {
 
     const issuer = new IssuerDto();
     issuer.name = createIssuerDto.name;
-    issuer.chain = chain;
+    issuer.chain = BLOCK_CHAIN;
     issuer.did = did;
     issuer.privateKey = account.privateKey;
     issuer.publicKey = account.publicKey;
@@ -197,7 +196,16 @@ export default class VeridaHelper {
     return result;
   }
 
-  static async connect(issuer: IssuerDto) {
+  static async connect(issuer: IssuerDto): Promise<Context> {
+    const cachedContext = CacheManager.get(issuer.publicKey);
+    if (cachedContext) {
+      return cachedContext as Context;
+    }
+    const context = await VeridaHelper.init(issuer);
+    return context;
+  }
+
+  static async init(issuer: IssuerDto) {
     // initialize verida server user using issuer
 
     const context = Network.connect({
@@ -219,11 +227,13 @@ export default class VeridaHelper {
           },
         },
         {
-          chain: 'ethr',
+          chain: BLOCK_CHAIN,
           privateKey: issuer.privateKey,
         },
       ),
     });
+
+    CacheManager.set(issuer.publicKey, context, DURATION_TTL);
 
     return context;
   }

@@ -15,6 +15,8 @@ import { SchemaModel } from '../../models/Schemas';
 import { UserService } from '../user/user.service';
 import VeridaHelper from 'src/helpers/VeridaHelper';
 import { UserIdentity } from 'src/models/User';
+// import Verida from '@verida/datastore';
+// import { SCHEMAS } from 'src/utils/schemas';
 
 @UseGuards(AuthGuard('jwt'))
 @Controller('schema')
@@ -36,6 +38,10 @@ export class SchemaController {
         VeridaHelper.getSchemaJSon(user.issuer, schema.schemaUrl),
       ),
     );
+
+    // const test = SCHEMAS.map(schema => Verida.getSchema(schema, true));
+    // return Promise.all(test);
+
     return schemas;
   }
 
@@ -50,11 +56,13 @@ export class SchemaController {
   @UseGuards(AuthGuard('jwt'))
   @Post()
   async addNew(@Headers() headers, @Body() data): Promise<SchemaModel[]> {
-    const userId = await this.authService.userByToken(headers);
-
+    const user = (await this.authService.userByToken(headers)) as UserIdentity;
     const schemaUrl = data.schemaUrl;
-    const issuer = await this.userService.findOneById(userId._id);
-    const response = await this.schemaService.saveSchema(issuer, schemaUrl);
+
+    const response = await this.schemaService.saveSchema(
+      user.issuer,
+      schemaUrl,
+    );
     return response;
   }
 
