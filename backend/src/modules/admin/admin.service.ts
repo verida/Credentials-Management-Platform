@@ -8,22 +8,25 @@ import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AdminService {
-    constructor(@InjectModel('Admin') private userModel: Model<Admin>) {}
+  constructor(@InjectModel('Admin') private userModel: Model<Admin>) {}
 
-    async create(createSADto: CreateAdminDto): Promise<Admin> {
-        const passwordHash = bcrypt.hashSync(createSADto.password, process.env.SALT);
-        const record = new this.userModel({
-            email: createSADto.email,
-            passwordHash
-        });
-        return record.save();
-    }
+  async create(createSADto: CreateAdminDto): Promise<Admin> {
+    const passwordHash = bcrypt.hashSync(
+      createSADto.password,
+      process.env.SALT,
+    );
+    const record = new this.userModel({
+      email: createSADto.email,
+      passwordHash,
+    });
+    return record.save();
+  }
 
-    async findAll(): Promise<Admin[]> {
-        return this.userModel.find().exec();
-    }
+  async findAll(): Promise<Admin[]> {
+    return this.userModel.find().exec();
+  }
 
-    async findOne(email: string): Promise<Admin> {
-        return this.userModel.findOne({ email })
-    }
+  async findOne(email: string): Promise<Admin> {
+    return this.userModel.findOne({ email });
+  }
 }

@@ -129,24 +129,24 @@ export default {
       issuer: {
         name: null,
         urlName: null,
-        chain: "ethr"
+        chain: "ethr",
       },
       admin: {
         email: null,
         password: null,
         passwordConfirmation: null,
         role: "admin",
-        issuerId: null
+        issuerId: null,
       },
-      error: ""
+      error: "",
     };
   },
   methods: {
     ...mapIssuerActions(["createIssuer"]),
     ...mapUserActions(["createUser"]),
     async init() {
-      Object.keys(this.issuer).forEach(k => (this.issuer[k] = null));
-      Object.keys(this.admin).forEach(k => (this.admin[k] = null));
+      Object.keys(this.issuer).forEach((k) => (this.issuer[k] = null));
+      Object.keys(this.admin).forEach((k) => (this.admin[k] = null));
 
       this.issuer.chain = "ethr";
       this.admin.role = "admin";
@@ -177,13 +177,13 @@ export default {
         this.error = e.response && e.response.statusText;
         this.processing = false;
       }
-    }
+    },
   },
   watch: {
     dialog() {
       this.dialog && this.init();
       this.error = "";
-    }
-  }
+    },
+  },
 };
 </script>

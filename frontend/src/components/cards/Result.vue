@@ -5,7 +5,7 @@
         <v-col cols="auto">
           <h2>{{ result.patient }}</h2>
           <div class="credential__subtext">
-            <span class="font-weight-bold">Recepient Did:&nbsp;</span>
+            <span class="font-weight-bold">Recepient Did: &nbsp;</span>
             <span class="info--text">{{ result.did }}</span>
           </div>
           <div

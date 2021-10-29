@@ -7,7 +7,7 @@
       <div class="modal-contour">
         <ValidationObserver ref="validator">
           <credential-header
-            :schemas="schemas"
+            :schemas="defaultSchemas"
             :processing="processing"
             ref="credential"
             @schema-update="(v) => init(v)"
@@ -65,10 +65,13 @@ import CredentialHeader from "../particles/CredentialHeader";
 const { mapGetters: mapResultGetters } = createNamespacedHelpers("result");
 const { mapGetters: mapAuthGetters } = createNamespacedHelpers("auth");
 const { mapMutations: mapSystemMutations } = createNamespacedHelpers("system");
-const { mapActions: mapCredentialActions } =
-  createNamespacedHelpers("credential");
-const { mapGetters: mapSchemaGetters, mapActions: mapSchemaActions } =
-  createNamespacedHelpers("schema");
+const { mapActions: mapCredentialActions } = createNamespacedHelpers(
+  "credential"
+);
+const {
+  mapGetters: mapSchemaGetters,
+  mapActions: mapSchemaActions,
+} = createNamespacedHelpers("schema");
 
 export default {
   name: "ResultDialog",
@@ -96,7 +99,8 @@ export default {
     ...mapResultGetters(["find"]),
     ...mapAuthGetters(["issuer"]),
     ...mapSchemaGetters([
-      "schemas",
+      "defaultSchemas",
+      "customSchemas",
       "properties",
       "schemaPath",
       "schemasTitle",
@@ -107,7 +111,10 @@ export default {
     ...mapSystemMutations(["openModal", "closeModal"]),
     ...mapCredentialActions(["createCredential"]),
     setDateOfBirth(form, data) {
-      const dob = _.chain(this.fields).pick(this.excluded).keys().value();
+      const dob = _.chain(this.fields)
+        .pick(this.excluded)
+        .keys()
+        .value();
 
       _.each(dob, (item) => {
         form[item] = data.dob;

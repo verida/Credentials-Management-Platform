@@ -1,17 +1,26 @@
 import { schemas as criteria } from "../../config/map";
 
 const state = {
-  list: [],
+  schemas: {
+    default: [],
+    custom: [],
+  },
 };
 
 const getters = {
-  schemas: ({ list }) => list.map((schema) => schema.title),
-  schemaPath: ({ list }) => (schema) => {
-    const found = list.find((item) => item.title === schema);
+  allSchemas: ({ schemas }) => {
+    return schemas.custom;
+  },
+  defaultSchemas: ({ schemas }) => {
+    return schemas.default.map((schema) => schema.title);
+  },
+  customSchemas: ({ schemas }) => schemas.custom.map((schema) => schema.title),
+  schemaPath: ({ schemas }) => (schema) => {
+    const found = schemas.default.find((item) => item.title === schema);
     return found && found.$id;
   },
-  properties: ({ list }) => (selected, mode = "create") => {
-    const schema = list.find(
+  properties: ({ schemas }) => (selected, mode = "create") => {
+    const schema = schemas.default.find(
       (schema) => schema.title === selected || schema.$id === selected
     );
     if (!schema) return [];
@@ -22,15 +31,32 @@ const getters = {
 };
 
 const mutations = {
-  setList(state, list) {
-    state.list = list;
+  setSchemas(state, { type, list }) {
+    state.schemas[type] = list;
+  },
+  addSchemas(state, { type, list }) {
+    state.schemas[type].push(list);
   },
 };
 
 const actions = {
   async fetchSchemas({ commit }) {
     const data = await this._vm.axios.get("/schema");
-    commit("setList", data.data);
+    commit("setSchemas", { list: data.data, type: "default" });
+  },
+
+  async fetchSchemasWithId({ commit }) {
+    const data = await this._vm.axios.get("/schema/list");
+    commit("setSchemas", { list: data.data, type: "custom" });
+  },
+
+  async addNewSchemas({ commit }, payload) {
+    const data = await this._vm.axios.post("/schema", payload);
+    commit("addSchemas", { list: data.data, type: "custom" });
+  },
+
+  async deleteSchema({ commit }, payload) {
+    await this._vm.axios.delete(`/schema/${payload.id}`);
   },
 };
 

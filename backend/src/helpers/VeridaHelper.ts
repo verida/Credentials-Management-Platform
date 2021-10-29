@@ -21,6 +21,10 @@ const {
   CREDENTIAL_DOWNLOAD_URL,
 } = process.env;
 
+type TestI = {
+  title: string;
+  $id: string;
+};
 export default class VeridaHelper {
   /**
    *
@@ -48,8 +52,8 @@ export default class VeridaHelper {
   static async setIssuerName(issuer: IssuerDto) {
     const context = await VeridaHelper.connect(issuer);
     const profileContext = await context.openProfile('public');
-    const profile = await profileContext.set('name', issuer.name);
-    return profile;
+
+    return await profileContext.set('name', issuer.name);
   }
 
   static async generateAccount() {
@@ -57,7 +61,6 @@ export default class VeridaHelper {
   }
 
   static async validateCredential(cred: IssueCredentialDto) {
-    // Validate the credential
     const schema = await Verida.getSchema(cred.data['schema']);
     const valid = await schema.validate(cred.data);
 
@@ -154,7 +157,6 @@ export default class VeridaHelper {
     cred: IssueCredentialDto,
     encryptionKey: Uint8Array,
   ): Promise<object> {
-    // @todo: Locate issuer based on current logged in user
     const app = await VeridaHelper.connect(issuer);
 
     // Issue a new public, encrypted verida credential
@@ -224,5 +226,17 @@ export default class VeridaHelper {
     });
 
     return context;
+  }
+
+  static async getSchemaJSon(
+    issuer: IssuerDto,
+    schemaTitle: string,
+  ): Promise<any> {
+    const context = await VeridaHelper.connect(issuer);
+
+    const schemas = await context.getClient().getSchema(schemaTitle);
+    const json = await schemas.getSchemaJson();
+
+    return json;
   }
 }
