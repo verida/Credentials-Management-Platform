@@ -25,9 +25,6 @@ export class CredentialService {
     record.data = cred.data;
     await record.save();
 
-    // SMS credential to the recipient
-    // SmsHelper.sendSmsCredential(url, mobile)
-
     return record;
   }
 

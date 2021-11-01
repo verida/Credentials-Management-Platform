@@ -11,7 +11,7 @@ export class IssueCredentialDto {
   @Length(10, 10)
   @IsNotEmpty()
   @Matches(/[0-9]{4}-[0-9]{2}-[0-9]{2}/, null, {
-    message: 'dob must be YYYY-MM-DD',
+    message: 'Date of Birth must be YYYY-MM-DD',
   })
   dob: string;
 

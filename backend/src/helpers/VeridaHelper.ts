@@ -59,7 +59,6 @@ export default class VeridaHelper {
   }
 
   static async validateCredential(cred: IssueCredentialDto) {
-    // Validate the credential
     const schema = await Verida.getSchema(cred.data['schema']);
     const valid = await schema.validate(cred.data);
 

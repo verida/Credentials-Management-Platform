@@ -18,17 +18,12 @@ export class IssuerService {
   async create(
     createIssuerDto: CreateIssuerDto,
   ): Promise<{ issuerResponse: IssuerResponse; issuerRecord: Issuer }> {
-    // Create a new blockchain account for the issuer
     const issuer = await VeridaHelper.createIssuer(createIssuerDto);
 
     await VeridaHelper.setIssuerName(issuer);
 
     const issuerRecord = new this.issuerModel(issuer);
     const issuerModel = await issuerRecord.save();
-
-    // Set the public profile name of the issuer to match that of the account
-    // (Do this after saving issuer to local database to ensure unique names)
-    // Create an issuer respnse that hides the privateKey
 
     const issuerResponse = new this.issuerResponse(issuerModel);
 
