@@ -1,5 +1,11 @@
 export const token = () => localStorage.getItem(process.env.VUE_APP_TOKEN);
 export const logout = () => {
   localStorage.removeItem("VeridaAccess");
-  window.location.href = "/";
+  const location = window.location;
+
+  const paths = ["/login", "/admin/login"];
+
+  if (!paths.includes(location.pathname)) {
+    window.location.href = "/";
+  }
 };
