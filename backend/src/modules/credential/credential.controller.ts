@@ -36,7 +36,7 @@ export class CredentialController {
     await validate(data).then(errors => {
       // errors is an array of validation errors
       if (errors.length > 0) {
-        console.log('validation failed. errors: ', errors);
+        return errors;
       }
     });
 
