@@ -5,7 +5,7 @@
       <v-form
         ref="auth-form"
         class="auth-form text-center"
-        @keyup.native.enter="submit"
+        @submit.prevent="submit"
       >
         <div class="auth-form__title">
           <span v-if="!loading">{{ title }}</span>
@@ -45,7 +45,7 @@
           <v-btn
             text
             class="auth-form__submit"
-            @click="submit"
+            type="submit"
             :loading="processing"
             :disabled="processing"
           >
@@ -68,30 +68,30 @@ export default {
   name: "Auth",
   components: {
     Snackbar,
-    BeatLoader
+    BeatLoader,
   },
   props: {
     title: {
-      required: true
+      required: true,
     },
     isAdmin: {
-      default: false
+      default: false,
     },
     loading: {
-      default: false
-    }
+      default: false,
+    },
   },
   data() {
     return {
       user: {
         email: null,
-        password: null
+        password: null,
       },
       processing: false,
       error: {
         shown: false,
-        msg: "Incorrect email or password"
-      }
+        msg: "Sorry those account details are incorrect. Please try again",
+      },
     };
   },
   methods: {
@@ -112,18 +112,17 @@ export default {
         await this.$router.push({ name: this.$route.meta.go });
       } catch (e) {
         this.processing = false;
-
         this.error.msg = (() => {
           switch (e.response.status) {
             case 401:
-              return "Incorrect email or password";
+              return "Sorry those account details are incorrect. Please try again";
             default:
               return "Something went wrong. Please, try again";
           }
         })();
         this.error.shown = true;
       }
-    }
-  }
+    },
+  },
 };
 </script>
