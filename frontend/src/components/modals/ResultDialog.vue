@@ -142,7 +142,7 @@ export default {
         ...data,
         data: {
           title: this.$refs.credential.schema,
-          name: form.fullName + ": " + form.testType,
+          name: data.name,
           schema: this.schemaPath(this.$refs.credential.schema),
           ...form,
         },
@@ -159,6 +159,7 @@ export default {
     },
     async init(schema) {
       this.title = "New Result";
+
       this.fields = this.properties(schema);
 
       await this.$nextTick();

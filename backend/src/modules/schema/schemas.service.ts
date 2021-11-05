@@ -4,7 +4,7 @@ import { SchemaModel } from 'src/models/Schemas';
 import { InjectModel } from '@nestjs/mongoose';
 import VeridaHelper from 'src/helpers/VeridaHelper';
 import { SCHEMAS } from 'src/utils/schemas';
-import { SchemaUser } from './interfaces/schema.interface';
+import { IssuerData } from 'src/models/User';
 
 @Injectable()
 export class SchemaService {
@@ -13,12 +13,12 @@ export class SchemaService {
   ) {}
 
   async saveSchema(
-    user: SchemaUser,
+    user: IssuerData,
     schemaUrl: string,
   ): Promise<SchemaModel[]> {
     const schemaExist = await this.schemasModel.findOne({
       schemaUrl,
-      userId: user.id,
+      userId: user._id,
     });
 
     if (schemaExist) throw new Error('Schema Url  already exists!');
@@ -36,7 +36,7 @@ export class SchemaService {
     return this.getSchemas(user._id);
   }
 
-  async saveDefaultSchema(user: SchemaUser): Promise<SchemaModel[]> {
+  async saveDefaultSchema(user: IssuerData): Promise<SchemaModel[]> {
     const schemas = await Promise.all(
       SCHEMAS.map(schema => VeridaHelper.getSchemaJSon(user, schema)),
     );

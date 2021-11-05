@@ -10,6 +10,14 @@ export const schemas = {
       "acceptable",
     ],
   },
+  // "https://27tqk.csb.app/schemas/health-prescription.json": {
+  //   view: ["name", "medication", "issueDate"],
+  //   create: ["name", "notes", "medication", "dateOfBirth", "purpose"],
+  // },
+  "https://27tqk.csb.app/schemas/health-prescription.json": {
+    view: ["name", "medication", "issueDate"],
+    create: ["name", "notes", "medication", "dateOfBirth", "purpose"],
+  },
   "https://schemas.verida.io/health/pathology/tests/covid19/pcr/schema.json": {
     view: ["testType", "testResult"],
     create: ["fullName", "dateOfBirth", "patientId", "testTimestamp", "result"],

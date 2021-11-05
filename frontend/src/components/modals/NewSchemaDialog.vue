@@ -74,7 +74,11 @@ export default {
   },
   computed: {},
   methods: {
-    ...mapSchemaActions(["addNewSchemas", "fetchSchemasWithId"]),
+    ...mapSchemaActions([
+      "addNewSchemas",
+      "fetchSchemasWithId",
+      "fetchSchemas",
+    ]),
     ...mapSystemMutations(["openModal", "closeModal"]),
 
     async send() {
@@ -89,6 +93,7 @@ export default {
         };
         await this.addNewSchemas(data);
         await this.fetchSchemasWithId();
+        await this.fetchSchemas();
         this.schemaUrl = "";
         this.closeModal();
       } catch (error) {

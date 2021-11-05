@@ -1,10 +1,10 @@
 import { BadRequestException } from '@nestjs/common';
+import NodeCache from 'node-cache';
 
 import Verida from '@verida/datastore';
 import { Wallet } from 'ethers';
 import BaseHelper from './BaseHelper';
-import { Network } from '@verida/client-ts';
-import { Utils } from '@verida/3id-utils-node';
+import { Context, EnvironmentType, Network } from '@verida/client-ts';
 import { AutoAccount } from '@verida/account-node';
 import CredentialHelper from './CredentialHelper';
 
@@ -13,33 +13,31 @@ import { IssuerDto } from '../modules/issuer/dto';
 import { Issuer } from '../modules/issuer/interfaces/issuer.interface';
 import { IssueCredentialDto } from '../modules/credential/dto';
 import { SendMessageResponse } from 'src/models/User';
+import { BLOCK_CHAIN, DURATION_TTL } from '../constants/constant.config';
 
 const {
   VERIDA_APP_NAME,
-  CERAMIC_URL,
   VERIDA_TESTNET_DEFAULT_SERVER,
   CREDENTIAL_DOWNLOAD_URL,
 } = process.env;
 
-type TestI = {
-  title: string;
-  $id: string;
-};
+const VERIDA_ENVIRONMENT = EnvironmentType.TESTNET;
+
+const CacheManager = new NodeCache();
+
 export default class VeridaHelper {
   /**
    *
    * @param createIssuerDto
    */
   static async createIssuer(createIssuerDto: CreateIssuerDto) {
-    const chain = 'ethr';
-    const account = await VeridaHelper.generateAccount();
-    const utils = new Utils(CERAMIC_URL);
-    const ceramic = await utils.createAccount('3id', account.mnemonic.phrase);
-    const did = ceramic.did.id;
-
     const issuer = new IssuerDto();
+    const account = await VeridaHelper.generateAccount();
+    const context = await VeridaHelper.connect(account.privateKey);
+    const did = await context.getAccount().did();
+
     issuer.name = createIssuerDto.name;
-    issuer.chain = chain;
+    issuer.chain = BLOCK_CHAIN;
     issuer.did = did;
     issuer.privateKey = account.privateKey;
     issuer.publicKey = account.publicKey;
@@ -50,13 +48,13 @@ export default class VeridaHelper {
   }
 
   static async setIssuerName(issuer: IssuerDto) {
-    const context = await VeridaHelper.connect(issuer);
+    const context = await VeridaHelper.connect(issuer.privateKey);
     const profileContext = await context.openProfile('public');
 
     return await profileContext.set('name', issuer.name);
   }
 
-  static async generateAccount() {
+  private static async generateAccount() {
     return Wallet.createRandom();
   }
 
@@ -142,7 +140,7 @@ export default class VeridaHelper {
       recipientContextName: 'Verida: Vault',
     };
     const title = cred.data['title'];
-    const context = await VeridaHelper.connect(issuer);
+    const context = await VeridaHelper.connect(issuer.privateKey);
     const messaging = await context.getMessaging();
 
     const did = cred.did;
@@ -157,7 +155,8 @@ export default class VeridaHelper {
     cred: IssueCredentialDto,
     encryptionKey: Uint8Array,
   ): Promise<object> {
-    const app = await VeridaHelper.connect(issuer);
+    // @todo: Locate issuer based on current logged in user
+    const app = await VeridaHelper.connect(issuer.privateKey);
 
     // Issue a new public, encrypted verida credential
     const now = new Date();
@@ -197,15 +196,28 @@ export default class VeridaHelper {
     return result;
   }
 
-  static async connect(issuer: IssuerDto) {
-    // initialize verida server user using issuer
+  private static async connect(issuerPrivateKey: string): Promise<Context> {
+    const cachedContext = CacheManager.get(issuerPrivateKey);
+    if (cachedContext) {
+      return cachedContext as Context;
+    }
+    const context = await VeridaHelper.init(issuerPrivateKey);
+    return context;
+  }
 
+  /**
+   *
+   * @param issuerPrivateKey
+   * @returns context instance
+   */
+
+  private static async init(issuerPrivateKey: string) {
     const context = Network.connect({
       context: {
         name: VERIDA_APP_NAME,
       },
       client: {
-        ceramicUrl: CERAMIC_URL,
+        environment: VERIDA_ENVIRONMENT,
       },
       account: new AutoAccount(
         {
@@ -219,21 +231,30 @@ export default class VeridaHelper {
           },
         },
         {
-          chain: 'ethr',
-          privateKey: issuer.privateKey,
+          privateKey: issuerPrivateKey,
+          environment: VERIDA_ENVIRONMENT,
         },
       ),
     });
 
+    CacheManager.set(issuerPrivateKey, context, DURATION_TTL);
+
     return context;
   }
+
+  /**
+   *
+   * @param issuer
+   * @param schemaTitle
+   * @returns
+   */
 
   static async getSchemaJSon(
     issuer: IssuerDto,
     schemaTitle: string,
   ): Promise<any> {
     try {
-      const context = await VeridaHelper.connect(issuer);
+      const context = await VeridaHelper.connect(issuer.privateKey);
 
       const schemas = await context.getClient().getSchema(schemaTitle);
       const json = await schemas.getSchemaJson();
