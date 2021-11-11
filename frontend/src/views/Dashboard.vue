@@ -1,7 +1,6 @@
 <template>
   <div>
     <v-container>
-      <!-- <button color="success" @click="addNewSchemasTest()">Test aadding</button> -->
       <v-row justify="center">
         <v-tabs color="info" class="dashboard-navigation" :show-arrows="false">
           <v-row justify="space-between">
@@ -31,18 +30,19 @@
               </v-btn>
             </v-col>
           </v-row>
-          <v-tab-item class="py-5">
+          <v-tab-item class="py-5  my-3">
             <template v-if="cards && cards.length">
-              <message-list
-                class="mb-4"
-                v-for="card in cards"
-                :key="card.id"
-                :result="card"
-              />
+              <v-data-table
+                :headers="headers"
+                :items="cards"
+                @click:row="openCredentialDialog"
+                :items-per-page="10"
+                class="elevation-1"
+              ></v-data-table>
             </template>
             <template v-else> Credential List is empty </template>
           </v-tab-item>
-          <v-tab-item class="py-5">
+          <v-tab-item class="py-5 my-3">
             <template v-if="allSchemas && allSchemas.length">
               <schema-list
                 class="mb-4"
@@ -58,11 +58,12 @@
     </v-container>
     <new-result-dialog />
     <add-new-schema-dialog />
+    <credential-details :result="credential" />
   </div>
 </template>
 
 <script>
-import MessageList from "../components/cards/Result";
+import CredentialDetails from "../components/modals/CredentialDetails.vue";
 import NewResultDialog from "../components/modals/ResultDialog";
 import AddNewSchemaDialog from "../components/modals/NewSchemaDialog";
 import SchemaList from "../components/cards/SchemaList.vue";
@@ -84,14 +85,26 @@ export default {
   name: "Dashboard",
   components: {
     SchemaList,
-    MessageList,
     NewResultDialog,
     AddNewSchemaDialog,
+    CredentialDetails,
   },
   data() {
     return {
       tabs: ["Sent", "Schemas"],
       activeTab: "Sent",
+      credential: {},
+      headers: [
+        {
+          text: "Credential Type",
+          align: "start",
+          sortable: false,
+          value: "schema.title",
+        },
+        { text: "Date", value: "date" },
+        { text: "Name", value: "schema.name" },
+        { text: "DID", value: "didAbrv" },
+      ],
     };
   },
   async beforeMount() {
@@ -116,6 +129,12 @@ export default {
     openAddSchemaDialog() {
       this.openModal({
         type: "NewSchemaDialog",
+      });
+    },
+    openCredentialDialog(item, data) {
+      this.credential = item;
+      this.openModal({
+        type: "CredentialDetails",
       });
     },
     setTab(tab) {

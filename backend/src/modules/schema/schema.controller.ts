@@ -39,9 +39,6 @@ export class SchemaController {
       ),
     );
 
-    // const test = SCHEMAS.map(schema => Verida.getSchema(schema, true));
-    // return Promise.all(test);
-
     return schemas;
   }
 
