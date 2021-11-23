@@ -1,5 +1,5 @@
 export const schemas = {
-  "https://schemas.verida.io/health/pathology/tests/cholesterol/total/schema.json": {
+  "https://common.schemas.verida.io/health/pathology/tests/cholesterol/total/v0.1.0/schema.json": {
     view: ["testType", "testResult"],
     create: [
       "fullName",
@@ -10,19 +10,15 @@ export const schemas = {
       "acceptable",
     ],
   },
-  // "https://27tqk.csb.app/schemas/health-prescription.json": {
-  //   view: ["name", "medication", "issueDate"],
-  //   create: ["name", "notes", "medication", "dateOfBirth", "purpose"],
-  // },
   "https://27tqk.csb.app/schemas/health-prescription.json": {
     view: ["name", "medication", "issueDate"],
     create: ["name", "notes", "medication", "dateOfBirth", "purpose"],
   },
-  "https://schemas.verida.io/health/pathology/tests/covid19/pcr/schema.json": {
+  "https://common.schemas.verida.io/health/pathology/tests/covid19/pcr/v0.1.0/schema.json": {
     view: ["testType", "testResult"],
     create: ["fullName", "dateOfBirth", "patientId", "testTimestamp", "result"],
   },
-  "https://schemas.verida.io/health/pathology/tests/glucose/fasting/schema.json": {
+  "https://common.schemas.verida.io/health/pathology/tests/glucose/fasting/v0.1.0/schema.json": {
     view: ["testType", "testResult"],
     create: [
       "fullName",
@@ -33,7 +29,7 @@ export const schemas = {
       "acceptable",
     ],
   },
-  "https://schemas.verida.io/health/pathology/tests/haemoglobin/schema.json": {
+  "https://common.schemas.verida.io/health/pathology/tests/haemoglobin/v0.1.0/schema.json": {
     view: ["testType", "testResult"],
     create: [
       "fullName",
@@ -44,7 +40,7 @@ export const schemas = {
       "acceptable",
     ],
   },
-  "https://schemas.verida.io/health/pathology/tests/syphilis/ab/schema.json": {
+  "https://common.schemas.verida.io/health/pathology/tests/syphilis/ab/v0.1.0/schema.json": {
     view: ["testType", "testResult"],
     create: ["fullName", "dateOfBirth", "patientId", "testTimestamp", "result"],
   },
