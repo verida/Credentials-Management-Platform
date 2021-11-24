@@ -49,7 +49,7 @@ export default class VeridaHelper {
 
   static async setIssuerName(issuer: IssuerDto) {
     const context = await VeridaHelper.connect(issuer.privateKey);
-    const profileContext = await context.openProfile('public');
+    const profileContext = await context.openProfile('basicProfile');
 
     return await profileContext.set('name', issuer.name);
   }
@@ -132,10 +132,6 @@ export default class VeridaHelper {
   ): Promise<SendMessageResponse> {
     const type = 'inbox/type/dataSend';
 
-    const data = {
-      data: [cred.data],
-    };
-
     const config = {
       recipientContextName: 'Verida: Vault',
     };
@@ -144,6 +140,21 @@ export default class VeridaHelper {
     const messaging = await context.getMessaging();
 
     const did = cred.did;
+
+    const contextName = VERIDA_APP_NAME;
+
+    const jwtDID = await context
+      .getAccount()
+      .createDidJwt(contextName, cred.data);
+
+    const data = {
+      data: [
+        {
+          ...cred.data,
+          didJwtVc: jwtDID,
+        },
+      ],
+    };
 
     const response = await messaging.send(did, type, data, title, config);
 
@@ -202,7 +213,7 @@ export default class VeridaHelper {
       return cachedContext as Context;
     }
     const context = await VeridaHelper.init(issuerPrivateKey);
-    return context;
+    return context as Context;
   }
 
   /**
@@ -255,6 +266,7 @@ export default class VeridaHelper {
   ): Promise<any> {
     try {
       const context = await VeridaHelper.connect(issuer.privateKey);
+      console.log(schemaTitle);
 
       const schemas = await context.getClient().getSchema(schemaTitle);
       const json = await schemas.getSchemaJson();
