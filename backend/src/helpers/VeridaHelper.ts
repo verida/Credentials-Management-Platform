@@ -49,7 +49,7 @@ export default class VeridaHelper {
 
   static async setIssuerName(issuer: IssuerDto) {
     const context = await VeridaHelper.connect(issuer.privateKey);
-    const profileContext = await context.openProfile('public');
+    const profileContext = await context.openProfile('basicProfile');
 
     return await profileContext.set('name', issuer.name);
   }
@@ -266,6 +266,7 @@ export default class VeridaHelper {
   ): Promise<any> {
     try {
       const context = await VeridaHelper.connect(issuer.privateKey);
+      console.log(schemaTitle);
 
       const schemas = await context.getClient().getSchema(schemaTitle);
       const json = await schemas.getSchemaJson();

@@ -79,7 +79,7 @@ export default {
   mixins: [FormMixin, ModalMixin],
   data() {
     return {
-      title: null,
+      title: "",
       processing: false,
       fields: null,
 

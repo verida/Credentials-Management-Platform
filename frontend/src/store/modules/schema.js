@@ -12,7 +12,9 @@ const getters = {
     return schemas.custom;
   },
   defaultSchemas: ({ schemas }) => {
-    return schemas.default.map((schema) => schema.title);
+    return schemas.default
+      .filter((item) => item !== null)
+      .map((schema) => schema.title);
   },
   customSchemas: ({ schemas }) => schemas.custom.map((schema) => schema.title),
   schemaPath: ({ schemas }) => (schema) => {
