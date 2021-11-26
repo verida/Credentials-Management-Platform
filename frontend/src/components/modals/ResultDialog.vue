@@ -141,8 +141,11 @@ export default {
       const credential = {
         ...data,
         data: {
-          title: this.$refs.credential.schema,
           name: data.name,
+          title: this.$refs.credential.schema,
+          fullName: data.name,
+          dateOfBirth: data.dob,
+          testTimestamp: new Date().toISOString(),
           schema: this.schemaPath(this.$refs.credential.schema),
           ...form,
         },
