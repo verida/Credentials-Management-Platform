@@ -27,6 +27,16 @@
         :error-messages="errors"
       />
       <v-text-field
+        v-else-if="attributes[key].type === 'integer'"
+        v-model.number="form[key]"
+        type="number"
+        :key="key"
+        :disabled="processing"
+        :label="attributes[key].title"
+        :error="Boolean(errors.length)"
+        :error-messages="errors"
+      />
+      <v-text-field
         v-else
         v-model="form[key]"
         :key="key"
