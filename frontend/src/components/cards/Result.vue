@@ -42,8 +42,6 @@ export default {
       });
     },
   },
-  mounted() {
-    console.log(this.result);
-  },
+  mounted() {},
 };
 </script>
