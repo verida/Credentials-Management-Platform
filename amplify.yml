@@ -4,19 +4,19 @@ applications:
     env:
       variables:
         VUE_APP_API_URL: https://credentials-backend.demos.verida.io
-  frontend:
-    phases:
-      preBuild:
-        commands:
-          - nvm install
-          - nvm use
-      build:
-        commands:
-          - npm run build
-    artifacts:
-      baseDirectory: dist
-      files:
-        - '**/*'
-    cache:
-      paths:
+    frontend:
+      phases:
+        preBuild:
+          commands:
+            - nvm install
+            - nvm use
+        build:
+          commands:
+            - npm run build
+      artifacts:
+        baseDirectory: dist
+        files:
+          - '**/*'
+      cache:
+        paths:
         - node_modules/**/*
