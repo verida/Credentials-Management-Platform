@@ -4,6 +4,7 @@ applications:
     env:
       variables:
         VUE_APP_API_URL: https://credentials-backend.demos.verida.io
+        NODE_ENV: development
     frontend:
       phases:
         preBuild:
