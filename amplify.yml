@@ -4,7 +4,6 @@ applications:
     env:
       variables:
         VUE_APP_API_URL: https://credentials-backend.demos.verida.io
-        NODE_ENV: development
     frontend:
       phases:
         preBuild:
@@ -13,6 +12,8 @@ applications:
             - nvm use
         build:
           commands:
+            - npm install
+            - npm install -g @vue/cli-service
             - npm run build
       artifacts:
         baseDirectory: dist
