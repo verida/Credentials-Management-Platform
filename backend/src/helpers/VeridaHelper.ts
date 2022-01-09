@@ -1,7 +1,8 @@
 import { BadRequestException } from '@nestjs/common';
 import NodeCache from 'node-cache';
 
-import Verida from '@verida/datastore';
+import Verida from '@verida/client-ts';
+import EncryptionUtils from '@verida/encryption-utils';
 import { Wallet } from 'ethers';
 import BaseHelper from './BaseHelper';
 import { Context, EnvironmentType, Network } from '@verida/client-ts';
@@ -59,7 +60,7 @@ export default class VeridaHelper {
   }
 
   static async validateCredential(cred: IssueCredentialDto) {
-    const schema = await Verida.getSchema(cred.data['schema']);
+    const schema = await new Verida.Client().getSchema(cred.data['schema']);
     const valid = await schema.validate(cred.data);
 
     if (!valid) {
@@ -76,7 +77,7 @@ export default class VeridaHelper {
     // partial random key with the user's date of birth
 
     // 6 digit alpha string + credential DOB
-    const randomKey = Verida.Helpers.encryption.randomKey(24);
+    const randomKey = EncryptionUtils.randomKey(24);
     const randomKeyHex = Buffer.from(randomKey).toString('hex');
     const dobHex = Buffer.from(dob).toString('hex');
     const encryptionKey = new Uint8Array(
