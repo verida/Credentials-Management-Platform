@@ -162,6 +162,8 @@ export default class VeridaHelper {
     return response as SendMessageResponse;
   }
 
+  // Verifiable Credential package not completely working at the moment
+
   static async _issueEncryptedCredential(
     issuer: Issuer,
     cred: IssueCredentialDto,
@@ -172,7 +174,7 @@ export default class VeridaHelper {
 
     // Issue a new public, encrypted verida credential
     const now = new Date();
-    const credIssuer = await Verida.Helpers.credentials.createIssuer(app);
+    // const credIssuer = await Verida.Helpers.credentials.createIssuer(app);
     const credential = {
       '@context': [
         'https://www.w3.org/2018/credentials/v1',
@@ -191,13 +193,13 @@ export default class VeridaHelper {
       },
     };
 
-    const didJwtVc = await Verida.Helpers.credentials.createVerifiableCredential(
-      credential,
-      credIssuer,
-    );
+    // const didJwtVc = await Verida.Helpers.credentials.createVerifiableCredential(
+    //   credential,
+    //   // credIssuer,
+    // );
 
     const item = {
-      didJwtVc: didJwtVc,
+      // didJwtVc: didJwtVc,
       ...cred.data,
     };
 
