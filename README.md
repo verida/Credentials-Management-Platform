@@ -1,4 +1,6 @@
-# Verida Health Credential Management Demo 
+# Verida Credentials Management Platform
+
+Deployed here: https://credentials.demos.verida.io/
 
 ## Backend
 
