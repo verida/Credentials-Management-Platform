@@ -1,5 +1,4 @@
 import * as _ from 'lodash';
-import Verida from '@verida/datastore';
 
 const { CREDENTIAL_DB } = process.env;
 
@@ -22,7 +21,7 @@ export default class CredentialHelper {
   static async issuePublicCredential(app, item, options) {
     const defaults = {
       encrypt: true,
-      key: Verida.Helpers.encryption.randomKey(),
+      // key: Verida.Helpers.encryption.randomKey(),
       permissions: {
         read: 'public',
         write: 'owner',
@@ -48,10 +47,10 @@ export default class CredentialHelper {
     if (options.encrypt) {
       const key = new Uint8Array(options.key);
 
-      const content = Verida.Helpers.encryption.symEncrypt(item.didJwtVc, key);
+      // const content = Verida.Helpers.encryption.symEncrypt(item.didJwtVc, key);
 
       item = {
-        content: content,
+        // content: content,
         schema: options.schema,
       };
     }
