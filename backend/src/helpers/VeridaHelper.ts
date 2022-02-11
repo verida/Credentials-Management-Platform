@@ -269,7 +269,6 @@ export default class VeridaHelper {
   ): Promise<any> {
     try {
       const context = await VeridaHelper.connect(issuer.privateKey);
-      console.log(schemaTitle);
 
       const schemas = await context.getClient().getSchema(schemaTitle);
       const json = await schemas.getSchemaJson();

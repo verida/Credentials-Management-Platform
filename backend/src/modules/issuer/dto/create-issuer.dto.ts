@@ -9,7 +9,7 @@ export class CreateIssuerDto {
   @IsOptional()
   @IsString({ message: 'Must be a string!' })
   @Unique({ message: 'This issuer URL name is already in use' })
-  @IsUrl(undefined, { message: 'urlName  is not valid url' })
+  @IsString({ message: 'urlName  must be a string' })
   urlName: string;
 
   @Length(3, 10)

@@ -7,20 +7,18 @@ import AuthLayout from "../../components/layouts/AuthLayout";
 import { ADMIN_LOGIN } from "../../constants/route";
 
 import { createNamespacedHelpers } from "vuex";
-const {
-  mapState: mapIssueState,
-  mapActions: mapIssuerActions
-} = createNamespacedHelpers("issuer");
-
+const { mapState: mapIssueState, mapActions: mapIssuerActions } =
+  createNamespacedHelpers("issuer");
+const { VUE_APP_NAME } = process.env;
 export default {
   name: "Login",
   components: {
-    AuthLayout
+    AuthLayout,
   },
   data() {
     return {
-      title: "Verida Health: Credential Management",
-      processing: true
+      title: VUE_APP_NAME,
+      processing: true,
     };
   },
   async beforeMount() {
@@ -45,7 +43,7 @@ export default {
         this.processing = false;
         console.log(e);
       }
-    }
-  }
+    },
+  },
 };
 </script>
