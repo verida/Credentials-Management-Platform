@@ -38,7 +38,12 @@
                 @click:row="openCredentialDialog"
                 :items-per-page="10"
                 class="elevation-1"
-              ></v-data-table>
+                :custom-sort="customSort"
+              >
+                <template v-slot:item.date="{ item }">
+                  <span>{{ formatDate(item.date) }}</span>
+                </template>
+              </v-data-table>
             </template>
             <template v-else> Credential List is empty </template>
           </v-tab-item>
@@ -139,6 +144,31 @@ export default {
     },
     setTab(tab) {
       this.activeTab = tab;
+    },
+    formatDate(date) {
+      return moment(date).format("DD/MM/YYYY");
+    },
+    customSort(items, index, isDesc) {
+      items.sort((a, b) => {
+        if (index[0] === "date") {
+          return isDesc[0]
+            ? moment(a[index]) - moment(b[index])
+            : moment(b[index]) - moment(a[index]);
+        } else {
+          if (typeof a[index] !== "undefined") {
+            if (!isDesc[0]) {
+              return a[index]
+                .toLowerCase()
+                .localeCompare(b[index].toLowerCase());
+            } else {
+              return b[index]
+                .toLowerCase()
+                .localeCompare(a[index].toLowerCase());
+            }
+          }
+        }
+      });
+      return items;
     },
   },
 };
