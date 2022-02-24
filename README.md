@@ -2,6 +2,8 @@
 
 Deployed here: https://credentials.demos.verida.io/
 
+See the READMEs available in both `/backend` and '/frontend' for further documentation. 
+
 ## Backend
 
 run using `npm run start`
