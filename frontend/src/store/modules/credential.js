@@ -23,7 +23,7 @@ const getters = {
         schema: {
           ...data,
         },
-        date: (insertedAt && moment(insertedAt).format("DD/MM/YYYY")) || stub,
+        date: insertedAt || stub,
       };
     });
   },
