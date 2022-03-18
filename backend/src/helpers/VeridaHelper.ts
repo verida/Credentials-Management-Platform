@@ -121,13 +121,13 @@ export default class VeridaHelper {
    */
 
   private static async init(issuerPrivateKey: string) {
-    const context = Network.connect({
-      context: {
-        name: VERIDA_APP_NAME,
-      },
+
+
+    const context = await Network.connect({
       client: {
         environment: EnvironmentType.TESTNET,
       },
+      //@ts-ignore
       account: new AutoAccount(
         {
           defaultDatabaseServer: {
@@ -144,6 +144,9 @@ export default class VeridaHelper {
           environment: EnvironmentType.TESTNET,
         },
       ),
+      context: {
+        name: VERIDA_APP_NAME,
+      },
     });
 
     CacheManager.set(issuerPrivateKey, context, DURATION_TTL);
