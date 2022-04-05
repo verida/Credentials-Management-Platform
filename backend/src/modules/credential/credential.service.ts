@@ -10,7 +10,7 @@ export class CredentialService {
   constructor(
     @InjectModel('Credential')
     private readonly credentialModel: Model<Credential>,
-  ) {}
+  ) { }
 
   async issue(issuer: Issuer, cred: IssueCredentialDto): Promise<object> {
     const issuedCred = await VeridaHelper.issueCredential(issuer, cred);
