@@ -66,10 +66,11 @@ export default class VeridaHelper {
   ): Promise<any> {
     const context = await VeridaHelper.connect(issuer.privateKey);
 
-    const credentials = new Credentials(context);
+    const credentials = new Credentials();
     const credentialData = await credentials.createCredentialJWT(
       credentialItem.did,
-      credentialItem.data
+      credentialItem.data,
+      context as any
     );
 
     const data = await VeridaHelper.sendMessage(credentialData, context, credentialItem.did);
