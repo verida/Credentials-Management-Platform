@@ -9,7 +9,7 @@
 	},
 	"dependencies": {
 		"@mdi/js": "^6.3.95",
-		"axios": "^0.19.2",
+		"axios": "^0.21.2",
 		"core-js": "^3.6.4",
 		"luxon": "^1.24.1",
 		"material-design-icons-iconfont": "^5.0.1",
