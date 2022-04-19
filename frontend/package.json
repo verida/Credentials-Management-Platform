@@ -13,7 +13,7 @@
 		"core-js": "^3.6.4",
 		"luxon": "^1.24.1",
 		"material-design-icons-iconfont": "^5.0.1",
-		"moment": "^2.27.0",
+		"moment": "^2.29.2",
 		"roboto-fontface": "*",
 		"underscore": "^1.10.2",
 		"vee-validate": "^3.3.7",
