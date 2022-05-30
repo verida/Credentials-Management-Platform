@@ -23,11 +23,11 @@ jobs:
           node-version: '${{ steps.nvmrc.outputs.node_version }}'
           cache: 'yarn'
       - name: Frontend Build
-      - working-directory: ./frontend
-      - run: yarn install
-      - run: yarn build
+        working-directory: ./frontend
+        run: yarn install
+        run: yarn build
       - name: Backend Build
-      - working-directory: ./backend
-      - run: yarn install
-      - run: yarn build
+        working-directory: ./backend
+        run: yarn install
+        run: yarn build
 
