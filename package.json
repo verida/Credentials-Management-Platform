@@ -1,7 +1,5 @@
 {
   "dependencies": {
-    "@verida/account-node": "^1.1.9",
-    "@verida/client-ts": "^1.1.15",
-    "@verida/verifiable-credentials": "^0.1.6"
+    "@verida/account-node": "^1.1.9"
   }
 }

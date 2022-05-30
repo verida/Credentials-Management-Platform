@@ -64,10 +64,15 @@ export default class VeridaHelper {
     issuer: Issuer,
     credentialItem: IssueCredentialDto,
   ): Promise<any> {
-    const context = await VeridaHelper.connect(issuer.privateKey) as any;
+    const context = await VeridaHelper.connect(issuer.privateKey);
 
     const credentials = new Credentials();
-    const credentialData = await credentials.createCredentialJWT({ context: context, data: credentialItem.data, subjectId: credentialItem.did });
+    const credentialData = await credentials.createCredentialJWT(
+      credentialItem.did,
+      credentialItem.data,
+      context as any
+    );
+
     const data = await VeridaHelper.sendMessage(credentialData, context, credentialItem.did);
 
     return data;
