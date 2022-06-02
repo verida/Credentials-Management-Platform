@@ -15,8 +15,6 @@ import { SchemaModel } from '../../models/Schemas';
 import { UserService } from '../user/user.service';
 import VeridaHelper from 'src/helpers/VeridaHelper';
 import { UserIdentity } from 'src/models/User';
-// import Verida from '@verida/datastore';
-// import { SCHEMAS } from 'src/utils/schemas';
 
 @UseGuards(AuthGuard('jwt'))
 @Controller('schema')
@@ -25,7 +23,7 @@ export class SchemaController {
     private authService: AuthService,
     private schemaService: SchemaService,
     private userService: UserService,
-  ) {}
+  ) { }
 
   @UseGuards(AuthGuard('jwt'))
   @Get()
@@ -33,9 +31,11 @@ export class SchemaController {
     const user = (await this.authService.userByToken(headers)) as UserIdentity;
     const response = await this.schemaService.getSchemas(user['issuerId']);
 
+    const schemaTitles = response.map(res => res.schemaUrl)
+
     const schemas = await Promise.all(
-      response.map(schema =>
-        VeridaHelper.getSchemaJSon(user.issuer, schema.schemaUrl),
+      schemaTitles.map(schema =>
+        VeridaHelper.getSchemaJSon(user.issuer, schema),
       ),
     );
 
