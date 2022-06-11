@@ -7,7 +7,7 @@
       <div class="modal-contour">
         <ValidationObserver ref="validator">
           <credential-header
-            :schemas="defaultSchemas"
+            :schemas="defaultSchemas.schemaTitles"
             :processing="processing"
             ref="credential"
             @schema-update="(v) => init(v)"
@@ -59,19 +59,17 @@
 import FormMixin from "../../mixins/FormMixin";
 import FormField from "../inputs/FormField";
 import ModalMixin from "../../mixins/ModalMixin";
+import { getSchemaSpecs } from "../../helpers/VeridaClient";
 
 import { createNamespacedHelpers } from "vuex";
 import CredentialHeader from "../particles/CredentialHeader";
 const { mapGetters: mapResultGetters } = createNamespacedHelpers("result");
 const { mapGetters: mapAuthGetters } = createNamespacedHelpers("auth");
 const { mapMutations: mapSystemMutations } = createNamespacedHelpers("system");
-const { mapActions: mapCredentialActions } = createNamespacedHelpers(
-  "credential"
-);
-const {
-  mapGetters: mapSchemaGetters,
-  mapActions: mapSchemaActions,
-} = createNamespacedHelpers("schema");
+const { mapActions: mapCredentialActions } =
+  createNamespacedHelpers("credential");
+const { mapGetters: mapSchemaGetters, mapActions: mapSchemaActions } =
+  createNamespacedHelpers("schema");
 
 export default {
   name: "ResultDialog",
@@ -100,10 +98,10 @@ export default {
     ...mapAuthGetters(["issuer"]),
     ...mapSchemaGetters([
       "defaultSchemas",
-      "customSchemas",
       "properties",
       "schemaPath",
       "schemasTitle",
+      "clientContext",
     ]),
   },
   methods: {
@@ -111,10 +109,7 @@ export default {
     ...mapSystemMutations(["openModal", "closeModal"]),
     ...mapCredentialActions(["createCredential"]),
     setDateOfBirth(form, data) {
-      const dob = _.chain(this.fields)
-        .pick(this.excluded)
-        .keys()
-        .value();
+      const dob = _.chain(this.fields).pick(this.excluded).keys().value();
 
       _.each(dob, (item) => {
         form[item] = data.dob;
@@ -137,13 +132,12 @@ export default {
       const form = this.$refs.fields.form;
 
       this.setDateOfBirth(form, data);
-
+      data.name = form.fullName;
       const credential = {
         ...data,
         data: {
           name: this.$refs.credential.schema,
           title: this.$refs.credential.schema,
-          fullName: data.name,
           dateOfBirth: data.dob,
           summary: `New ${this.$refs.credential.schema} test result is available`,
           testTimestamp: new Date().toISOString(),
@@ -164,7 +158,18 @@ export default {
     async init(schema) {
       this.title = "New Result";
 
-      this.fields = this.properties(schema);
+      const schemas = this.defaultSchemas.schemaObj.find(
+        (sc) => sc.title === schema || sc.$id === schema
+      );
+
+      if (schemas && schemas.schemaUrl) {
+        const schemaJson = await getSchemaSpecs(
+          schemas.schemaUrl,
+          this.clientContext
+        );
+
+        this.fields = _.pick(schemaJson.properties, schemaJson.layouts.create);
+      }
 
       await this.$nextTick();
       this.$refs.fields && this.$refs.fields.init();

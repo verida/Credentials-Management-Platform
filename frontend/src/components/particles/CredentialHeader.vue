@@ -10,7 +10,7 @@
         />
         <v-messages :value="errors" class="error--text mt-2" />
       </ValidationProvider>
-      <ValidationProvider rules="required" name="Full Name" v-slot="{ errors }">
+      <!-- <ValidationProvider rules="required" name="Full Name" v-slot="{ errors }">
         <v-text-field
           class="mb-5"
           label="Full Name"
@@ -18,7 +18,7 @@
           :disabled="processing"
         />
         <v-messages :value="errors" class="error--text mt-2" />
-      </ValidationProvider>
+      </ValidationProvider> -->
       <ValidationProvider
         rules="required"
         name="Document Type"
