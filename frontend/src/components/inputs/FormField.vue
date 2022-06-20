@@ -19,7 +19,7 @@
         :error-messages="errors"
       />
       <v-datetime-picker
-        v-else-if="attributes[key].format === 'date-time'"
+        v-else-if="attributes[key].format === 'date'"
         v-model="form[key]"
         :label="attributes[key].title"
         :disabled="processing"
