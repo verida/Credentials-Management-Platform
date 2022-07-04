@@ -145,14 +145,13 @@ export default {
           ...form,
         },
       };
-
       try {
         await this.createCredential(credential);
         this.processing = false;
         this.closeModal();
       } catch (e) {
         this.processing = false;
-        this.error = e.response.statusText;
+        this.error = e.response?.data?.error;
       }
     },
     async init(schema) {
@@ -169,6 +168,8 @@ export default {
         );
 
         this.fields = _.pick(schemaJson.properties, schemaJson.layouts.create);
+
+        console.log(this.fields);
       }
 
       await this.$nextTick();

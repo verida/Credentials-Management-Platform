@@ -15,6 +15,10 @@ export class CredentialService {
   async issue(issuer: Issuer, cred: IssueCredentialDto): Promise<object> {
     const issuedCred = await VeridaHelper.issueCredential(issuer, cred);
 
+    if (issuedCred.error) {
+      return issuedCred
+    }
+
     // Save the credential to the local database
     const record = new this.credentialModel();
     record.name = cred.data['name'];

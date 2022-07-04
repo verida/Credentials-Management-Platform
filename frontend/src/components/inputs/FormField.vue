@@ -26,6 +26,14 @@
         :error="Boolean(errors.length)"
         :error-messages="errors"
       />
+      <v-datetime-picker
+        v-else-if="attributes[key].format === 'date-time'"
+        v-model="form[key]"
+        :label="attributes[key].title"
+        :disabled="processing"
+        :error="Boolean(errors.length)"
+        :error-messages="errors"
+      />
       <v-text-field
         v-else-if="attributes[key].type === 'integer'"
         v-model.number="form[key]"
@@ -67,6 +75,7 @@ export default {
       attributes: {},
     };
   },
+
   methods: {
     init() {
       this.form = {};
