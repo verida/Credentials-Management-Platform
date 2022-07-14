@@ -149,9 +149,21 @@ export default {
         await this.createCredential(credential);
         this.processing = false;
         this.closeModal();
+        this.$notify({
+          group: "notify",
+          type: "success",
+          title: "Notification message",
+          text: `succesfully sent credential to this ${data.did}`,
+        });
       } catch (e) {
         this.processing = false;
         this.error = e.response?.data?.error;
+        this.$notify({
+          group: "notify",
+          type: "error",
+          title: "Notification message",
+          text: `${e.response?.data?.error}`,
+        });
       }
     },
     async init(schema) {
@@ -168,8 +180,6 @@ export default {
         );
 
         this.fields = _.pick(schemaJson.properties, schemaJson.layouts.create);
-
-        console.log(this.fields);
       }
 
       await this.$nextTick();

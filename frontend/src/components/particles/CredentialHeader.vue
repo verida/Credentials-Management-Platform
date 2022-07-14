@@ -10,15 +10,6 @@
         />
         <v-messages :value="errors" class="error--text mt-2" />
       </ValidationProvider>
-      <!-- <ValidationProvider rules="required" name="Full Name" v-slot="{ errors }">
-        <v-text-field
-          class="mb-5"
-          label="Full Name"
-          v-model="main.name"
-          :disabled="processing"
-        />
-        <v-messages :value="errors" class="error--text mt-2" />
-      </ValidationProvider> -->
       <ValidationProvider
         rules="required"
         name="Document Type"
@@ -59,7 +50,7 @@
             />
           </ValidationProvider>
         </template>
-        <v-date-picker v-model="main.dob" scrollable>
+        <v-date-picker v-model="main.dob" scrollable max="2021-01-20">
           <v-spacer />
           <v-btn text color="primary" @click="datepicker = false">
             Cancel

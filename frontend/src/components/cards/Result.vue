@@ -6,7 +6,7 @@
         <div class="credential__subtext">
           <span class="font-weight-bold">Recepient Did: &nbsp;</span>
           <span class="info--text">{{ result.did }}</span>
-          <div v-for="(value, key) in result.schema" :key="value">
+          <div v-for="(value, key) in schemaProps" :key="key">
             <span class="font-weight-bold text-capitalize"
               >{{ key }}: &nbsp;</span
             >
@@ -32,6 +32,16 @@ const { mapMutations: mapSystemMutations } = createNamespacedHelpers("system");
 export default {
   name: "Result",
   props: ["result"],
+  data() {
+    return {
+      schemaProps: {},
+    };
+  },
+  mounted() {
+    if (this.result && this.result.schema) {
+      this.schemaProps = _.omit(this.result.schema, "didJwtVc");
+    }
+  },
   methods: {
     ...mapSystemMutations(["openModal"]),
     send() {
@@ -42,6 +52,5 @@ export default {
       });
     },
   },
-  mounted() {},
 };
 </script>

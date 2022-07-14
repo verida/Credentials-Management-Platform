@@ -1,5 +1,6 @@
 <template>
   <v-app>
+    <notifications group="notify" position="bottom left" />
     <v-main>
       <app-navigation v-if="!$route.meta.guest" />
       <router-view />
