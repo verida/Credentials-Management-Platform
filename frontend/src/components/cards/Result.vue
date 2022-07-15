@@ -37,11 +37,7 @@ export default {
       schemaProps: {},
     };
   },
-  mounted() {
-    if (this.result && this.result.schema) {
-      this.schemaProps = _.omit(this.result.schema, "didJwtVc");
-    }
-  },
+  mounted() {},
   methods: {
     ...mapSystemMutations(["openModal"]),
     send() {

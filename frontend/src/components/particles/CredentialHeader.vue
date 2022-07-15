@@ -50,7 +50,7 @@
             />
           </ValidationProvider>
         </template>
-        <v-date-picker v-model="main.dob" scrollable max="2021-01-20">
+        <v-date-picker v-model="main.dob" scrollable :max="maxDate">
           <v-spacer />
           <v-btn text color="primary" @click="datepicker = false">
             Cancel
@@ -70,6 +70,7 @@ export default {
   props: ["processing", "schemas"],
   data() {
     return {
+      maxDate: "",
       schema: null,
       datetime: "",
       datepicker: false,
@@ -82,6 +83,12 @@ export default {
     };
   },
   mounted() {
+    let date = new Date();
+    let day = date.getDate();
+    let month = date.getMonth();
+    let year = date.getFullYear();
+
+    this.maxDate = `${year}-${month}-${day}`;
     this.$refs.validator.reset();
   },
   methods: {
