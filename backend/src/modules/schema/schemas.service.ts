@@ -1,5 +1,5 @@
 import { Model } from 'mongoose';
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { SchemaModel } from 'src/models/Schemas';
 import { InjectModel } from '@nestjs/mongoose';
 import VeridaHelper from 'src/helpers/VeridaHelper';
@@ -10,7 +10,7 @@ import { IssuerData } from 'src/models/User';
 export class SchemaService {
   constructor(
     @InjectModel('veridaSchema') private schemasModel: Model<SchemaModel>,
-  ) {}
+  ) { }
 
   async saveSchema(
     user: IssuerData,
@@ -24,6 +24,14 @@ export class SchemaService {
     if (schemaExist) throw new Error('Schema Url  already exists!');
 
     const schema = await VeridaHelper.getSchemaJSon(user, schemaUrl);
+
+    if (!schema) {
+      throw new HttpException({
+        status: HttpStatus.BAD_REQUEST,
+        error: "unable to add schema url (ensure the url is a valid schema url",
+      }, HttpStatus.BAD_REQUEST);
+    }
+
 
     const data = {
       schemaUrl,

@@ -4,7 +4,7 @@
       <ValidationProvider rules="required" name="Did" v-slot="{ errors }">
         <v-text-field
           class="mb-5"
-          label="Recepient's Did"
+          label="Recipient's Did"
           v-model="main.did"
           :disabled="processing"
         />

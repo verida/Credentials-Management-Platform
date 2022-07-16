@@ -2,8 +2,8 @@
   <ValidationObserver ref="validator">
     <ValidationProvider
       v-for="(value, key) in form"
-      rules="required"
       :key="`provider-${key}`"
+      rules="required"
       :name="attributes[key].title"
       v-slot="{ errors }"
     >

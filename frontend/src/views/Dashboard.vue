@@ -107,7 +107,6 @@ export default {
           value: "schema.title",
         },
         { text: "Date", value: "date" },
-        { text: "Name", value: "schema.name" },
         { text: "DID", value: "didAbrv" },
       ],
     };

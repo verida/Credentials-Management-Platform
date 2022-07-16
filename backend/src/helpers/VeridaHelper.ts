@@ -183,7 +183,7 @@ export default class VeridaHelper {
 
       return json;
     } catch (error) {
-      console.log({ error });
+      throw new Error(error);
     }
   }
 }

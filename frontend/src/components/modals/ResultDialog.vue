@@ -122,7 +122,6 @@ export default {
         this.$refs.fields.validate(),
         this.$refs.credential.validate(),
       ]);
-
       if (validated.includes(false)) {
         this.processing = false;
         return;
@@ -132,14 +131,15 @@ export default {
       const form = this.$refs.fields.form;
 
       this.setDateOfBirth(form, data);
-      data.name = form.fullName;
+      form.lastName = "eriueiruieu";
+      data.name = form.fullName || form.name;
       const credential = {
         ...data,
         data: {
           name: this.$refs.credential.schema,
           title: this.$refs.credential.schema,
           dateOfBirth: data.dob,
-          summary: `New ${this.$refs.credential.schema} test result is available`,
+          summary: `New ${this.$refs.credential.schema.toLowerCase()} result is available`,
           testTimestamp: new Date().toISOString(),
           schema: this.schemaPath(this.$refs.credential.schema),
           ...form,

@@ -4,10 +4,10 @@
       <v-col cols="auto">
         <h2>{{ result.name }}</h2>
         <div class="credential__subtext">
-          <span class="font-weight-bold">Recepient Did: &nbsp;</span>
+          <span class="font-weight-bold">Recipient Did: &nbsp;</span>
           <span class="info--text">{{ result.did }}</span>
           <div v-for="(value, key) in schemaProps" :key="key">
-            <span class="font-weight-bold text-capitalize"
+            <span class="font-weight-bold text-capitalize text-align"
               >{{ key }}: &nbsp;</span
             >
             <a
@@ -37,7 +37,11 @@ export default {
       schemaProps: {},
     };
   },
-  mounted() {},
+  mounted() {
+    if (this.result && this.result.schema) {
+      this.schemaProps = _.omit(this.result.schema, "name");
+    }
+  },
   methods: {
     ...mapSystemMutations(["openModal"]),
     send() {
