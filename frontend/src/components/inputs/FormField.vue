@@ -2,8 +2,8 @@
   <ValidationObserver ref="validator">
     <ValidationProvider
       v-for="(value, key) in form"
-      rules="required"
       :key="`provider-${key}`"
+      rules="required"
       :name="attributes[key].title"
       v-slot="{ errors }"
     >
@@ -75,7 +75,6 @@ export default {
       attributes: {},
     };
   },
-
   methods: {
     init() {
       this.form = {};
@@ -83,7 +82,7 @@ export default {
       this.attributes = {};
 
       const keys = _.keys(this.fields).filter(
-        (k) => !this.excluded.includes(k)
+        (k) => !["dob", "dateOfBirth"].includes(k)
       );
 
       _.each(keys, (key) => {
@@ -91,6 +90,7 @@ export default {
         this.$set(this.attributes, key, this.fields[key]);
       });
     },
+
     async validate() {
       return this.$refs.validator.validate();
     },
