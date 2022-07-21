@@ -81,8 +81,6 @@ export default class VeridaHelper {
 
     } catch (error) {
       console.log({ error });
-
-      return { error }
     }
 
   }
