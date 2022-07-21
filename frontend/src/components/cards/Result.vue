@@ -38,7 +38,7 @@ export default {
     };
   },
   mounted() {
-    if (this.result && this.result.schema) {
+    if (this?.result?.schema) {
       this.schemaProps = _.omit(this.result.schema, "name");
     }
   },

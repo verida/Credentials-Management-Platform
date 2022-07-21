@@ -23,9 +23,6 @@ export default {
   props: ["result"],
   mixins: [ModalMixin],
   components: { SchemaDetails },
-  mounted() {
-    console.log(this.result);
-  },
   data() {
     return {
       text: "Credential Details",

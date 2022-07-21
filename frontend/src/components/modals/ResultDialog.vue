@@ -122,6 +122,7 @@ export default {
         this.$refs.fields.validate(),
         this.$refs.credential.validate(),
       ]);
+
       if (validated.includes(false)) {
         this.processing = false;
         return;
@@ -131,13 +132,12 @@ export default {
       const form = this.$refs.fields.form;
 
       this.setDateOfBirth(form, data);
-      form.lastName = "eriueiruieu";
-      data.name = form.fullName || form.name;
+
       const credential = {
-        ...data,
+        did: data.did,
         data: {
           name: this.$refs.credential.schema,
-          title: this.$refs.credential.schema,
+          title: `${this.$refs.credential.schema} available`,
           dateOfBirth: data.dob,
           summary: `New ${this.$refs.credential.schema.toLowerCase()} result is available`,
           testTimestamp: new Date().toISOString(),
@@ -145,6 +145,7 @@ export default {
           ...form,
         },
       };
+
       try {
         await this.createCredential(credential);
         this.processing = false;
@@ -153,11 +154,12 @@ export default {
           group: "notify",
           type: "success",
           title: "Notification message",
-          text: `succesfully sent credential to this ${data.did}`,
+          text: `succesfully sent credential to this ${credential.did}`,
         });
       } catch (e) {
         this.processing = false;
         this.error = e.response?.data?.error;
+
         this.$notify({
           group: "notify",
           type: "error",

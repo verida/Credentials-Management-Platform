@@ -1,3 +1,5 @@
+/*eslint-diasble */
+
 import { Client, EnvironmentType } from "@verida/client-ts";
 
 const { VUE_APP_VERIDA_TESTNET_DEFAULT_DID_SERVER } = process.env;

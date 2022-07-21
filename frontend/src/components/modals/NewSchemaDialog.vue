@@ -99,7 +99,7 @@ export default {
       } catch (error) {
         this.error = {
           message:
-            "unable to add schema url (ensure the url is a valid schema url",
+            "Unable to add schema url (ensure the url is a valid schema url",
         };
       } finally {
         this.processing = false;
