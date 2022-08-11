@@ -3,7 +3,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Issuer } from './interfaces/issuer.interface';
 import { IssuerResponse } from './interfaces/issuer.response.interface';
-import { CreateIssuerDto } from './dto';
+import { CreateIssuerDto, UpdateIssuerDto } from './dto';
+import { SchemaService } from '../schema/schemas.service';
 
 import VeridaHelper from '../../helpers/VeridaHelper';
 
@@ -13,21 +14,29 @@ export class IssuerService {
     @InjectModel('IssuerResponse')
     private issuerResponse: Model<IssuerResponse>,
     @InjectModel('Issuer') private issuerModel: Model<Issuer>,
+    private schemaService: SchemaService,
   ) {}
 
-  async create(
-    createIssuerDto: CreateIssuerDto,
-  ): Promise<{ issuerResponse: IssuerResponse; issuerRecord: Issuer }> {
-    const issuer = await VeridaHelper.createIssuer(createIssuerDto);
+  async create(createIssuerDto: CreateIssuerDto): Promise<IssuerResponse> {
+    const issuer = new this.issuerModel(createIssuerDto);
 
-    await VeridaHelper.setIssuerName(issuer);
+    const {
+      address,
+      chain,
+      did,
+      privateKey,
+      publicKey,
+    } = await VeridaHelper.createAccount(issuer.name, issuer.avatarUri);
+    issuer.chain = chain;
+    issuer.did = did;
+    issuer.privateKey = privateKey;
+    issuer.publicKey = publicKey;
+    issuer.address = address;
 
-    const issuerRecord = new this.issuerModel(issuer);
-    const issuerModel = await issuerRecord.save();
+    await issuer.save();
+    await this.schemaService.saveDefaultSchema(issuer);
 
-    const issuerResponse = new this.issuerResponse(issuerModel);
-
-    return { issuerResponse, issuerRecord };
+    return new this.issuerResponse(issuer);
   }
 
   async findAll(): Promise<IssuerResponse[]> {
