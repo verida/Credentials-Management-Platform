@@ -41,6 +41,15 @@ export default class VeridaHelper {
     };
   }
 
+  static async updateAccount(
+    privateKey: string,
+    name: string,
+    avatarUri?: string,
+  ) {
+    const context = await VeridaHelper.connect(privateKey);
+    this.setProfile(context, name, avatarUri);
+  }
+
   static async setProfile(context, name: string, avatarUri?: string) {
     const profile = await context.openProfile('basicProfile');
     await profile.set('name', name);

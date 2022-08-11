@@ -39,6 +39,26 @@ export class IssuerService {
     return new this.issuerResponse(issuer);
   }
 
+  async update(
+    id: string,
+    updateIssuerDto: UpdateIssuerDto,
+  ): Promise<IssuerResponse> {
+    const updatedIssuer = await this.issuerModel.findByIdAndUpdate(
+      id,
+      updateIssuerDto,
+      {
+        new: true,
+      },
+    );
+
+    await VeridaHelper.updateAccount(
+      updatedIssuer.privateKey,
+      updatedIssuer.name,
+      updatedIssuer.avatarUri,
+    );
+    return new this.issuerResponse(updatedIssuer);
+  }
+
   async findAll(): Promise<IssuerResponse[]> {
     return this.issuerResponse.find().exec();
   }
