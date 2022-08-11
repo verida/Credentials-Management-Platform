@@ -1,7 +1,8 @@
 import { IsOptional, IsString, IsUrl, Length } from 'class-validator';
 import { Unique } from '../../../validators/Unique';
 
-export class CreateIssuerDto {
+export class UpdateIssuerDto {
+  @IsOptional()
   @Length(2, 60)
   @Unique({ message: 'This issuer name is already in use' })
   name: string;
@@ -13,9 +14,9 @@ export class CreateIssuerDto {
   @IsOptional()
   @IsString({ message: 'Must be a string!' })
   @Unique({ message: 'This issuer URL name is already in use' })
-  @IsString({ message: 'urlName  must be a string' })
   urlName: string;
 
+  @IsOptional()
   @Length(3, 10)
   chain: string;
 }

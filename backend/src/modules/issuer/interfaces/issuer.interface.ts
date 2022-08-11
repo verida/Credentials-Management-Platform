@@ -3,9 +3,10 @@ import * as mongoose from 'mongoose';
 export interface Issuer extends mongoose.Document {
   name: string;
   urlName: string;
-  privateKey: string;
-  publicKey: string;
-  did: string;
+  avatarUri?: string;
   chain: string;
+  did: string;
+  publicKey: string;
+  privateKey: string;
   address: string;
 }
