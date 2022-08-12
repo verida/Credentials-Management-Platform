@@ -13,14 +13,14 @@
         class="pa-0 mx-2"
         cols="3"
       >
-        <issue :issue="issuer" />
+        <issuer :issue="issuer" />
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script>
-import Issue from "../components/cards/Issue";
+import Issuer from "../components/cards/Issuer";
 
 import { createNamespacedHelpers } from "vuex";
 const { mapState: mapIssuerState, mapActions: mapIssuerActions } =
@@ -29,7 +29,7 @@ const { mapMutations: mapSystemMutations } = createNamespacedHelpers("system");
 
 export default {
   name: "Issuers",
-  components: { Issue },
+  components: { Issuer },
   computed: {
     ...mapIssuerState(["list"]),
   },

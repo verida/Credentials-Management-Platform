@@ -22,7 +22,7 @@ import { createNamespacedHelpers } from "vuex";
 const { mapMutations: mapIssuerMutation } = createNamespacedHelpers("issuer");
 const { mapMutations: mapSystemMutations } = createNamespacedHelpers("system");
 export default {
-  name: "Issue",
+  name: "Issuer",
   props: ["issue"],
   methods: {
     ...mapSystemMutations(["openModal"]),

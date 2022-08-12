@@ -138,8 +138,6 @@ export default {
   mixins: [ModalMixin],
   data() {
     return {
-      image: "",
-      remoteUrl: "",
       text: "New Credential Issuer",
       processing: false,
       issuer: {

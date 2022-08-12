@@ -107,7 +107,13 @@ export default {
       };
       reader.readAsDataURL(fileObject);
     },
-    async sgitave() {
+    clearIssuerFields() {
+      this.issuerProfile = {
+        name: "",
+        avatarUri: "",
+      };
+    },
+    async save() {
       this.error = "";
       this.processing = true;
 
@@ -123,6 +129,7 @@ export default {
         });
         await this.fetchIssuers();
         this.processing = false;
+        this.clearIssuerFields();
         this.closeModal();
       } catch (e) {
         const error = { e };
@@ -132,7 +139,11 @@ export default {
     },
   },
   watch: {
-    dialog() {
+    dialog(_, isModalClosed) {
+      if (!isModalClosed) {
+        this.issuerProfile.name = this.issuer.name;
+        this.issuerProfile.avatarUri = this.issuer.avatarUri;
+      }
       this.error = "";
     },
   },
