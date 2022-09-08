@@ -12,14 +12,21 @@ export const IssuerResponseSchema = new Schema(
       type: String,
     },
 
+    avatarUri: {
+      type: String,
+      required: false,
+    },
+
     publicKey: {
       type: String,
       required: true,
     },
+
     privateKey: {
       type: String,
       required: true,
     },
+
     did: {
       type: String,
       required: true,
