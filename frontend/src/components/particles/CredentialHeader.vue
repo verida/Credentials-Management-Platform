@@ -4,17 +4,8 @@
       <ValidationProvider rules="required" name="Did" v-slot="{ errors }">
         <v-text-field
           class="mb-5"
-          label="Recepient's Did"
+          label="Recipient's Did"
           v-model="main.did"
-          :disabled="processing"
-        />
-        <v-messages :value="errors" class="error--text mt-2" />
-      </ValidationProvider>
-      <ValidationProvider rules="required" name="Full Name" v-slot="{ errors }">
-        <v-text-field
-          class="mb-5"
-          label="Full Name"
-          v-model="main.name"
           :disabled="processing"
         />
         <v-messages :value="errors" class="error--text mt-2" />
@@ -59,7 +50,7 @@
             />
           </ValidationProvider>
         </template>
-        <v-date-picker v-model="main.dob" scrollable>
+        <v-date-picker v-model="main.dob" scrollable :max="maxDate">
           <v-spacer />
           <v-btn text color="primary" @click="datepicker = false">
             Cancel
@@ -79,6 +70,7 @@ export default {
   props: ["processing", "schemas"],
   data() {
     return {
+      maxDate: "",
       schema: null,
       datetime: "",
       datepicker: false,
@@ -91,6 +83,12 @@ export default {
     };
   },
   mounted() {
+    let date = new Date();
+    let day = date.getDate();
+    let month = date.getMonth();
+    let year = date.getFullYear();
+
+    this.maxDate = `${year}-${month}-${day}`;
     this.$refs.validator.reset();
   },
   methods: {

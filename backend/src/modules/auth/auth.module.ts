@@ -1,18 +1,18 @@
 import { Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
-import { MongooseModule } from "@nestjs/mongoose";
+import { MongooseModule } from '@nestjs/mongoose';
 import { JwtModule } from '@nestjs/jwt';
 
 import { AuthService } from './auth.service';
-import { UserService } from "../user/user.service";
-import { AdminService } from "../admin/admin.service";
-import { AuthController } from "./auth.controller";
+import { UserService } from '../user/user.service';
+import { AdminService } from '../admin/admin.service';
+import { AuthController } from './auth.controller';
 
-import { JwtStrategy } from "../../strategies/jwt.strategy";
-import { LocalStrategy } from "../../strategies/local.strategy";
+import { JwtStrategy } from '../../strategies/jwt.strategy';
+import { LocalStrategy } from '../../strategies/local.strategy';
 
-import { UserSchema } from "../../schemas/user.schema";
-import { AdminSchema } from "../../schemas/admin.schema";
+import { UserSchema } from '../../schemas/user.schema';
+import { AdminSchema } from '../../schemas/admin.schema';
 
 @Module({
   providers: [
@@ -20,20 +20,20 @@ import { AdminSchema } from "../../schemas/admin.schema";
     LocalStrategy,
     AuthService,
     UserService,
-    AdminService
+    AdminService,
   ],
   controllers: [AuthController],
   exports: [AuthService],
   imports: [
     MongooseModule.forFeature([
       { name: 'User', schema: UserSchema },
-      { name: 'Admin', schema: AdminSchema }
+      { name: 'Admin', schema: AdminSchema },
     ]),
     PassportModule,
     JwtModule.register({
       secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '3600s' },
-    })
-  ]
+      // signOptions: { expiresIn: '3600s' }, // turning off expiration for the moment
+    }),
+  ],
 })
 export class AuthModule {}

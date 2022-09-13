@@ -6,11 +6,18 @@ export const IssuerSchema = new Schema({
     unique: true,
     required: true,
   },
+
   urlName: {
     type: String,
-    unqiue: true,
+    unique: true,
     required: true,
   },
+
+  avatarUri: {
+    type: String,
+    required: false,
+  },
+
   privateKey: {
     type: String,
     required: true,

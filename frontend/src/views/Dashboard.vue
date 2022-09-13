@@ -30,7 +30,7 @@
               </v-btn>
             </v-col>
           </v-row>
-          <v-tab-item class="py-5  my-3">
+          <v-tab-item class="py-5 my-3">
             <template v-if="cards && cards.length">
               <v-data-table
                 :headers="headers"
@@ -72,18 +72,18 @@ import CredentialDetails from "../components/modals/CredentialDetails.vue";
 import NewResultDialog from "../components/modals/ResultDialog";
 import AddNewSchemaDialog from "../components/modals/NewSchemaDialog";
 import SchemaList from "../components/cards/SchemaList.vue";
+import { getClientContext } from "../helpers/VeridaClient";
 
 import { createNamespacedHelpers } from "vuex";
 const { mapMutations: mapSystemMutations } = createNamespacedHelpers("system");
 const { mapActions: mapAuthActions } = createNamespacedHelpers("auth");
-const {
-  mapGetters: mapCredentialGetters,
-  mapActions: mapCredentialActions,
-} = createNamespacedHelpers("credential");
+const { mapGetters: mapCredentialGetters, mapActions: mapCredentialActions } =
+  createNamespacedHelpers("credential");
 
 const {
   mapGetters: mapSchemasGetters,
   mapActions: mapSchemasActions,
+  mapMutations: mapSchemaMutations,
 } = createNamespacedHelpers("schema");
 
 export default {
@@ -107,7 +107,6 @@ export default {
           value: "schema.title",
         },
         { text: "Date", value: "date" },
-        { text: "Name", value: "schema.name" },
         { text: "DID", value: "didAbrv" },
       ],
     };
@@ -116,16 +115,22 @@ export default {
     await this.fetchUser();
     await this.fetchCredentials();
     await this.fetchSchemasWithId();
+    this.loadVeridaContext();
   },
   computed: {
     ...mapCredentialGetters(["cards"]),
-    ...mapSchemasGetters(["allSchemas"]),
+    ...mapSchemasGetters(["allSchemas", "clientContext"]),
   },
   methods: {
-    ...mapSchemasActions(["fetchSchemasWithId"]),
+    ...mapSchemasActions(["fetchSchemasWithId", "loadVeridaContext"]),
     ...mapCredentialActions(["fetchCredentials"]),
     ...mapAuthActions(["fetchUser"]),
     ...mapSystemMutations(["openModal"]),
+    ...mapSchemaMutations(["setContext"]),
+    loadVeridaContext() {
+      const context = getClientContext();
+      this.setContext(context);
+    },
     openResultDialog() {
       this.openModal({
         type: "ResultDialog",

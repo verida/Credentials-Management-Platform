@@ -7,7 +7,7 @@
       <div class="modal-contour">
         <ValidationObserver ref="validator">
           <credential-header
-            :schemas="defaultSchemas"
+            :schemas="defaultSchemas.schemaTitles"
             :processing="processing"
             ref="credential"
             @schema-update="(v) => init(v)"
@@ -59,19 +59,17 @@
 import FormMixin from "../../mixins/FormMixin";
 import FormField from "../inputs/FormField";
 import ModalMixin from "../../mixins/ModalMixin";
+import { getSchemaSpecs } from "../../helpers/VeridaClient";
 
 import { createNamespacedHelpers } from "vuex";
 import CredentialHeader from "../particles/CredentialHeader";
 const { mapGetters: mapResultGetters } = createNamespacedHelpers("result");
 const { mapGetters: mapAuthGetters } = createNamespacedHelpers("auth");
 const { mapMutations: mapSystemMutations } = createNamespacedHelpers("system");
-const { mapActions: mapCredentialActions } = createNamespacedHelpers(
-  "credential"
-);
-const {
-  mapGetters: mapSchemaGetters,
-  mapActions: mapSchemaActions,
-} = createNamespacedHelpers("schema");
+const { mapActions: mapCredentialActions } =
+  createNamespacedHelpers("credential");
+const { mapGetters: mapSchemaGetters, mapActions: mapSchemaActions } =
+  createNamespacedHelpers("schema");
 
 export default {
   name: "ResultDialog",
@@ -100,10 +98,10 @@ export default {
     ...mapAuthGetters(["issuer"]),
     ...mapSchemaGetters([
       "defaultSchemas",
-      "customSchemas",
       "properties",
       "schemaPath",
       "schemasTitle",
+      "clientContext",
     ]),
   },
   methods: {
@@ -111,10 +109,7 @@ export default {
     ...mapSystemMutations(["openModal", "closeModal"]),
     ...mapCredentialActions(["createCredential"]),
     setDateOfBirth(form, data) {
-      const dob = _.chain(this.fields)
-        .pick(this.excluded)
-        .keys()
-        .value();
+      const dob = _.chain(this.fields).pick(this.excluded).keys().value();
 
       _.each(dob, (item) => {
         form[item] = data.dob;
@@ -139,13 +134,12 @@ export default {
       this.setDateOfBirth(form, data);
 
       const credential = {
-        ...data,
+        did: data.did,
         data: {
           name: this.$refs.credential.schema,
-          title: this.$refs.credential.schema,
-          fullName: data.name,
+          title: `${this.$refs.credential.schema} available`,
           dateOfBirth: data.dob,
-          summary: `New ${this.$refs.credential.schema} test result is available`,
+          summary: `New ${this.$refs.credential.schema.toLowerCase()} result is available`,
           testTimestamp: new Date().toISOString(),
           schema: this.schemaPath(this.$refs.credential.schema),
           ...form,
@@ -156,15 +150,39 @@ export default {
         await this.createCredential(credential);
         this.processing = false;
         this.closeModal();
+        this.$notify({
+          group: "notify",
+          type: "success",
+          title: "Notification message",
+          text: `succesfully sent credential to this ${credential.did}`,
+        });
       } catch (e) {
         this.processing = false;
-        this.error = e.response.statusText;
+        this.error = e.response?.data?.error;
+
+        this.$notify({
+          group: "notify",
+          type: "error",
+          title: "Notification message",
+          text: `${e.response?.data?.error}`,
+        });
       }
     },
     async init(schema) {
       this.title = "New Result";
 
-      this.fields = this.properties(schema);
+      const schemas = this.defaultSchemas.schemaObj.find(
+        (sc) => sc.title === schema || sc.$id === schema
+      );
+
+      if (schemas && schemas.schemaUrl) {
+        const schemaJson = await getSchemaSpecs(
+          schemas.schemaUrl,
+          this.clientContext
+        );
+
+        this.fields = _.pick(schemaJson.properties, schemaJson.layouts.create);
+      }
 
       await this.$nextTick();
       this.$refs.fields && this.$refs.fields.init();

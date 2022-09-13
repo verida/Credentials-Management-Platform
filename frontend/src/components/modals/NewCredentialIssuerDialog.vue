@@ -24,6 +24,15 @@
                 :error-messages="errors"
               />
             </ValidationProvider>
+            <ValidationProvider name="Avatar">
+              <v-file-input
+                show-size
+                label="Select Image"
+                accept="image/*"
+                placeholder="Please, enter the issuer image"
+                @change="createBase64Image"
+              ></v-file-input>
+            </ValidationProvider>
             <ValidationProvider
               name="URL"
               rules="required|min:2|max:60"
@@ -82,6 +91,11 @@
                 :error-messages="errors"
               />
             </ValidationProvider>
+            <v-img
+              max-height="150"
+              max-width="250"
+              :src="issuer.avatarUri"
+            ></v-img>
             <v-messages
               v-if="error"
               :value="[error]"
@@ -129,6 +143,7 @@ export default {
       issuer: {
         name: null,
         urlName: null,
+        avatarUri: "",
         chain: "ethr",
       },
       admin: {
@@ -144,6 +159,14 @@ export default {
   methods: {
     ...mapIssuerActions(["createIssuer"]),
     ...mapUserActions(["createUser"]),
+
+    createBase64Image(fileObject) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.issuer.avatarUri = e.target.result;
+      };
+      reader.readAsDataURL(fileObject);
+    },
     async init() {
       Object.keys(this.issuer).forEach((k) => (this.issuer[k] = null));
       Object.keys(this.admin).forEach((k) => (this.admin[k] = null));
