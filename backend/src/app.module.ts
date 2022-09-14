@@ -20,7 +20,7 @@ import { SchemaModule } from './modules/schema/schema.module';
           .default('development'),
         PORT: Joi.number().default(3000),
         ENABLE_CORS: Joi.boolean().default(true),
-        CORS_HOSTS: Joi.string().default(''),
+        CORS_HOSTS: Joi.string().default('*'),
         DB_URL: Joi.string().required(),
         SALT: Joi.string().required(),
         JWT_SECRET: Joi.string().required(),
