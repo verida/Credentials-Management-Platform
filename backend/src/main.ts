@@ -1,18 +1,32 @@
 import 'regenerator-runtime/runtime';
-import 'dotenv/config';
 
 import { NestFactory } from '@nestjs/core';
-import { ValidationPipe } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  const { PORT } = process.env;
-  const app = await NestFactory.create(AppModule);
-  app.useGlobalPipes(new ValidationPipe())
-  app.enableCors();
+  const logger = new Logger('Bootsrap');
 
-  await app.listen(PORT as string || 5020);
+  const app = await NestFactory.create(AppModule);
+  const configService = app.get(ConfigService);
+
+  app.useGlobalPipes(new ValidationPipe());
+
+  const enableCors = configService.get<boolean>('ENABLE_CORS');
+  if (enableCors) {
+    const corsHosts = configService.get<string>('CORS_HOSTS').split(';');
+    app.enableCors({
+      origin: corsHosts,
+    });
+    logger.log(`CORS is enabled for hosts: ${corsHosts}`);
+  } else {
+    logger.warn(`CORS is disabled`);
+  }
+
+  const port = configService.get<number>('PORT');
+  await app.listen(port);
+  logger.log(`Server is running on ${await app.getUrl()}`);
 }
 
-bootstrap();
-
+bootstrap().catch(console.log);
