@@ -9,11 +9,13 @@ import { CredentialModule } from './modules/credential/credential.module';
 import { IssuerModule } from './modules/issuer/issuer.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { SchemaModule } from './modules/schema/schema.module';
+import { config } from './config';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      load:[config],
       validationSchema: Joi.object({
         NODE_ENV: Joi.string()
           .valid('development', 'production', 'test')
@@ -25,13 +27,15 @@ import { SchemaModule } from './modules/schema/schema.module';
         SALT: Joi.string().required(),
         JWT_SECRET: Joi.string().required(),
         VERIDA_ENVIRONMENT: Joi.string().default('testnet'),
+        POLYGON_TESTNET_PRIVATE_KEY: Joi.string().required(),
+        POLYGON_TESTNET_RPC_URL: Joi.string().required(),
         VERIDA_APP_NAME: Joi.string().required(),
         VERIDA_TESTNET_DEFAULT_SERVER: Joi.string().default(
           'https://db.testnet.verida.io:5002/',
         ),
       }),
     }),
-    MongooseModule.forRoot(process.env.DB_URL, {
+    MongooseModule.forRoot(config().dbURL, {
       useUnifiedTopology: true,
       useNewUrlParser: true,
     }),
