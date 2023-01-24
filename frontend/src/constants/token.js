@@ -1,6 +1,8 @@
-export const token = () => localStorage.getItem(process.env.VUE_APP_TOKEN);
+import { config } from "../config";
+
+export const token = () => localStorage.getItem(config.tokenKey);
 export const logout = () => {
-  localStorage.removeItem("VeridaAccess");
+  localStorage.removeItem(config.tokenKey);
   const location = window.location;
 
   const paths = ["/login", "/admin/login"];
