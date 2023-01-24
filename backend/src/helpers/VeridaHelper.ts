@@ -1,21 +1,30 @@
 import NodeCache from 'node-cache';
 import { Wallet } from 'ethers';
-import { Context, EnvironmentType, Network } from '@verida/client-ts';
+import { Context, Network } from '@verida/client-ts';
 import { AutoAccount } from '@verida/account-node';
 import { Credentials } from '@verida/verifiable-credentials';
 import { IssuerDto } from '../modules/issuer/dto';
 import { Issuer } from '../modules/issuer/interfaces/issuer.interface';
 import { IssueCredentialDto } from '../modules/credential/dto';
 import { SendMessageResponse } from 'src/models/User';
-import { BLOCK_CHAIN, DURATION_TTL } from '../constants/constant.config';
+import { BLOCK_CHAIN, DURATION_TTL } from '../constants';
+import { config } from 'src/config';
 
-const { VERIDA_APP_NAME, VERIDA_TESTNET_DEFAULT_SERVER } = process.env;
+const appConfig = config()
 
 const CacheManager = new NodeCache();
 
+const VERIDA_TESTNET_DEFAULT_DID_SERVERS = [
+  appConfig.veridaTestnetDefaultDidServerNode1,
+];
+
 export default class VeridaHelper {
-  /**
-   */
+/**
+ * method to create a new issuer account 
+ * @param name 
+ * @param avatarUri 
+ * @returns 
+ */
   static async createAccount(
     name: string,
     avatarUri?: string,
@@ -27,11 +36,13 @@ export default class VeridaHelper {
     address: string;
   }> {
     const account = await VeridaHelper.generateAccount();
+
     const context = await VeridaHelper.connect(account.privateKey);
+
     const did = await context.getAccount().did();
 
     this.setProfile(context, name, avatarUri);
-
+    
     return {
       chain: BLOCK_CHAIN,
       did: did,
@@ -80,6 +91,9 @@ export default class VeridaHelper {
     try {
       const context = await VeridaHelper.connect(issuer.privateKey);
 
+      console.log(context);
+      
+
       const credentials = new Credentials();
 
       const credentialData = await credentials.createCredentialJWT({
@@ -88,11 +102,17 @@ export default class VeridaHelper {
         subjectId: credentialItem.did,
       });
 
+      console.log(credentialData);
+      
+
       const data = await VeridaHelper.sendMessage(
         credentialData,
         context,
         credentialItem.did,
       );
+
+      console.log(data);
+      
 
       return data;
     } catch (error) {
@@ -106,11 +126,14 @@ export default class VeridaHelper {
     did: string,
   ): Promise<SendMessageResponse> {
     const type = 'inbox/type/dataSend';
-
+    try {
     const config = {
       recipientContextName: 'Verida: Vault',
       did,
     };
+
+    console.log("did",did);
+    
 
     const title = data['title'];
     const messaging = await context.getMessaging();
@@ -128,6 +151,10 @@ export default class VeridaHelper {
     );
 
     return response as SendMessageResponse;
+    } catch (error) {
+      console.log({error});
+      
+    }
   }
 
   private static async connect(issuerPrivateKey: string): Promise<Context> {
@@ -146,29 +173,38 @@ export default class VeridaHelper {
    */
 
   private static async init(issuerPrivateKey: string) {
+
+    const defaultEndpoints = {
+      defaultDatabaseServer: {
+        type: 'VeridaDatabase',
+        endpointUri: [appConfig.veridaTestnetDefaultServer],
+      },
+      defaultMessageServer: {
+        type: 'VeridaMessage',
+        endpointUri: [appConfig.veridaTestnetDefaultServer],
+      },
+    };
+
+    const account = new AutoAccount(defaultEndpoints, {
+      privateKey: issuerPrivateKey,
+      environment: appConfig.veridaEnvironment,
+      didClientConfig: {
+        callType: 'web3',
+        web3Config: {
+          privateKey: appConfig.polygonTestnetPrivateKey,
+          rpcUrl: appConfig.polygonTestnetRpcURL,
+        },
+        didEndpoints: VERIDA_TESTNET_DEFAULT_DID_SERVERS,
+      }
+    })
+    
     const context = await Network.connect({
       client: {
-        environment: EnvironmentType.TESTNET,
+        environment: appConfig.veridaEnvironment
       },
-      //@ts-ignore
-      account: new AutoAccount(
-        {
-          defaultDatabaseServer: {
-            type: 'VeridaDatabase',
-            endpointUri: VERIDA_TESTNET_DEFAULT_SERVER,
-          },
-          defaultMessageServer: {
-            type: 'VeridaMessage',
-            endpointUri: VERIDA_TESTNET_DEFAULT_SERVER,
-          },
-        },
-        {
-          privateKey: issuerPrivateKey,
-          environment: EnvironmentType.TESTNET,
-        },
-      ),
+      account,
       context: {
-        name: VERIDA_APP_NAME,
+        name: appConfig.veridaAppName,
       },
     });
 
