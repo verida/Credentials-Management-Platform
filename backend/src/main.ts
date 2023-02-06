@@ -15,11 +15,8 @@ async function bootstrap() {
 
   const enableCors = configService.get<boolean>('ENABLE_CORS');
   if (enableCors) {
-    const corsHosts = configService.get<string>('CORS_HOSTS').split(';');
-    app.enableCors({
-      origin: corsHosts,
-    });
-    logger.log(`CORS is enabled for hosts: ${corsHosts}`);
+    app.enableCors();
+    logger.log(`CORS is enabled for all origins`);
   } else {
     logger.warn(`CORS is disabled`);
   }

@@ -14,9 +14,8 @@ const appConfig = config()
 
 const CacheManager = new NodeCache();
 
-const VERIDA_TESTNET_DEFAULT_DID_SERVERS = [
-  appConfig.veridaTestnetDefaultDidServerNode1,
-];
+const VERIDA_DEFAULT_DID_SERVERS = appConfig.veridaDefaultDidServers;
+const VERIDA_DEFAULT_STORAGE_NODES = appConfig.veridaDefaultStorageNodes;
 
 export default class VeridaHelper {
 /**
@@ -90,10 +89,6 @@ export default class VeridaHelper {
   ): Promise<any> {
     try {
       const context = await VeridaHelper.connect(issuer.privateKey);
-
-      console.log(context);
-      
-
       const credentials = new Credentials();
 
       const credentialData = await credentials.createCredentialJWT({
@@ -102,17 +97,14 @@ export default class VeridaHelper {
         subjectId: credentialItem.did,
       });
 
+      console.log('credentialData')
       console.log(credentialData);
-      
 
       const data = await VeridaHelper.sendMessage(
         credentialData,
         context,
         credentialItem.did,
       );
-
-      console.log(data);
-      
 
       return data;
     } catch (error) {
@@ -132,9 +124,6 @@ export default class VeridaHelper {
       did,
     };
 
-    console.log("did",did);
-    
-
     const title = data['title'];
     const messaging = await context.getMessaging();
 
@@ -153,7 +142,6 @@ export default class VeridaHelper {
     return response as SendMessageResponse;
     } catch (error) {
       console.log({error});
-      
     }
   }
 
@@ -177,11 +165,11 @@ export default class VeridaHelper {
     const defaultEndpoints = {
       defaultDatabaseServer: {
         type: 'VeridaDatabase',
-        endpointUri: [appConfig.veridaTestnetDefaultServer],
+        endpointUri: VERIDA_DEFAULT_STORAGE_NODES,
       },
       defaultMessageServer: {
         type: 'VeridaMessage',
-        endpointUri: [appConfig.veridaTestnetDefaultServer],
+        endpointUri: VERIDA_DEFAULT_STORAGE_NODES,
       },
     };
 
@@ -191,10 +179,10 @@ export default class VeridaHelper {
       didClientConfig: {
         callType: 'web3',
         web3Config: {
-          privateKey: appConfig.polygonTestnetPrivateKey,
-          rpcUrl: appConfig.polygonTestnetRpcURL,
+          privateKey: appConfig.polygonPrivateKey,
+          rpcUrl: appConfig.rpcUrl
         },
-        didEndpoints: VERIDA_TESTNET_DEFAULT_DID_SERVERS,
+        didEndpoints: VERIDA_DEFAULT_DID_SERVERS,
       }
     })
     

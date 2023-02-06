@@ -13,7 +13,7 @@ export class AdminService {
   async create(createSADto: CreateAdminDto): Promise<Admin> {
     const passwordHash = bcrypt.hashSync(
       createSADto.password,
-      process.env.SALT,
+      10,
     );
     const record = new this.userModel({
       email: createSADto.email,

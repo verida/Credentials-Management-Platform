@@ -5,6 +5,8 @@ import VueAxios from "vue-axios";
 import { token, logout } from "../constants/token";
 import { config } from "../config";
 
+console.log(config.apiServerURL)
+
 const service = axios.create({
   baseURL: config.apiServerURL
 });

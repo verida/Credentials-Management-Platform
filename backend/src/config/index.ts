@@ -1,4 +1,4 @@
-import { EnvironmentType } from '@verida/client-ts';
+import { EnvironmentType } from '@verida/types';
 
 const veridaEnvironment: EnvironmentType =
   process.env.VERIDA_ENVIRONMENT === 'local'
@@ -16,9 +16,16 @@ export const config = () => ({
   jwtSecret: process.env.JWT_SECRET,
   enableCors: process.env.ENABLE_CORS,
   veridaAppName: process.env.VERIDA_APP_NAME,
-  polygonTestnetRpcURL: process.env.POLYGON_TESTNET_RPC_URL,
-  polygonTestnetPrivateKey: process.env.POLYGON_TESTNET_PRIVATE_KEY,
-  veridaTestnetDefaultServer: process.env.VERIDA_TESTNET_DEFAULT_SERVER,
-  veridaTestnetDefaultDidServerNode1:
-    process.env.VERIDA_TESTNET_DEFAULT_DID_SERVERS_NODE1,
+  polygonPrivateKey: process.env.POLYGON_PRIVATE_KEY,
+  rpcUrl: process.env.RPC_URL,
+  veridaDefaultDidServers: [
+    process.env.VERIDA_DEFAULT_DID_SERVERS_NODE1,
+    process.env.VERIDA_DEFAULT_DID_SERVERS_NODE2,
+    process.env.VERIDA_DEFAULT_DID_SERVERS_NODE3
+  ],
+  veridaDefaultStorageNodes: [
+    process.env.VERIDA_DEFAULT_STORAGE_NODE1,
+    process.env.VERIDA_DEFAULT_STORAGE_NODE2,
+    process.env.VERIDA_DEFAULT_STORAGE_NODE3
+  ]
 });
