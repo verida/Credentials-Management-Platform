@@ -32,6 +32,7 @@
     "@typegoose/typegoose": "^7.2.0",
     "@verida/account-node": "^2.0.4",
     "@verida/client-ts": "^2.0.4",
+    "@verida/encryption-utils": "^2.0.4",
     "@verida/types": "^2.0.4",
     "@verida/verifiable-credentials": "^2.0.4",
     "bcrypt": "^5.0.0",

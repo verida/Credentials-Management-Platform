@@ -20,6 +20,26 @@ export class IssueCredentialDto {
   @IsNotEmpty()
   did: string;
 
+  @IsString()
+  @IsOptional()
+  name: string;
+
+  @IsString()
+  @IsOptional()
+  title: string;
+
+  @IsString()
+  @IsOptional()
+  summary: string;
+
+  @IsString()
+  @IsNotEmpty()
+  schema: string;
+
+  @IsObject()
+  @IsOptional()
+  proofs: Record<string, string[]>;
+
   @IsNotEmpty()
   @IsObject()
   data: object;
