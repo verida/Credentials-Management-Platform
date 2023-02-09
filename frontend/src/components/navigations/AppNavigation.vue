@@ -14,6 +14,7 @@
 
 <script>
 import Search from "../inputs/Search";
+import {config} from '../../config'
 
 import { createNamespacedHelpers } from "vuex";
 const { mapGetters: mapAuthGetters } = createNamespacedHelpers("auth");
@@ -25,7 +26,7 @@ export default {
   },
   methods: {
     logout() {
-      localStorage.removeItem(process.env.VUE_APP_TOKEN);
+      localStorage.removeItem(config.tokenKey);
       const params = this.issuer ? { type: this.issuer.urlName } : {};
       this.$router.push({ name: this.$route.meta.home, params });
     },

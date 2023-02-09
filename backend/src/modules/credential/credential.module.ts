@@ -1,3 +1,4 @@
+import { ConfigModule } from '@nestjs/config';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { CredentialController } from './credential.controller';
@@ -11,9 +12,11 @@ import { JwtModule } from '@nestjs/jwt';
 
 import { CredentialSchema } from '../../schemas/credential.schema';
 import { AdminSchema } from '../../schemas/admin.schema';
+import { config } from 'src/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),  
     UserModule,
     IssuerModule,
     MongooseModule.forFeature([
@@ -21,7 +24,7 @@ import { AdminSchema } from '../../schemas/admin.schema';
       { name: 'Admin', schema: AdminSchema },
     ]),
     JwtModule.register({
-      secret: process.env.JWT_SECRET,
+      secret: config().jwtSecret,
       signOptions: { expiresIn: '3600s' },
     }),
   ],

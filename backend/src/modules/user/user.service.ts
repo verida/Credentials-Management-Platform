@@ -12,7 +12,7 @@ export class UserService {
 
   async create(user: CreateUserDto): Promise<User> {
     const record = new this.userModel(user);
-    record.passwordHash = bcrypt.hashSync(user.password, process.env.SALT);
+    record.passwordHash = bcrypt.hashSync(user.password, 10);
     return record.save();
   }
 

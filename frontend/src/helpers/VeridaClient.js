@@ -1,21 +1,18 @@
-/*eslint-diasble */
-
-import { Client, EnvironmentType } from "@verida/client-ts";
-
-const { VUE_APP_VERIDA_TESTNET_DEFAULT_DID_SERVER } = process.env;
+import { Client } from "@verida/client-ts";
+import { config } from "../config";
 
 const clientConfig = {
-	environment: EnvironmentType.TESTNET,
-	didServerUrl: VUE_APP_VERIDA_TESTNET_DEFAULT_DID_SERVER,
+  environment: config.veridaEnvironment,
+  didServerUrl: config.veridaDefaultTestnetDidserver,
 };
 
 export const getClientContext = () => {
-	const context = new Client(clientConfig);
-	return context;
+  const context = new Client(clientConfig);
+  return context;
 };
 
 export const getSchemaSpecs = async (schemaId, context) => {
-	const schemas = await context.getSchema(schemaId);
-	const schemSpecs = await schemas.getSpecification();
-	return schemSpecs;
+  const schemas = await context.getSchema(schemaId);
+  const schemSpecs = await schemas.getSpecification();
+  return schemSpecs;
 };

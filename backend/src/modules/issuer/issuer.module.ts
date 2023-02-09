@@ -11,11 +11,11 @@ import { VeridaSchema } from 'src/schemas/verida.schema';
 @Module({
   imports: [
     SchemaModule,
-    MongooseModule.forFeature([{ name: 'Issuer', schema: IssuerSchema }]),
     MongooseModule.forFeature([
+      { name: 'Issuer', schema: IssuerSchema },
+      { name: 'veridaSchema', schema: VeridaSchema },
       { name: 'IssuerResponse', schema: IssuerResponseSchema },
     ]),
-    MongooseModule.forFeature([{ name: 'veridaSchema', schema: VeridaSchema }]),
   ],
   controllers: [IssuerController],
   providers: [IssuerService, SchemaService],

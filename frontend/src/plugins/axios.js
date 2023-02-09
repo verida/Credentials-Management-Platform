@@ -3,9 +3,12 @@ import axios from "axios";
 import VueAxios from "vue-axios";
 
 import { token, logout } from "../constants/token";
+import { config } from "../config";
+
+console.log(config.apiServerURL)
 
 const service = axios.create({
-  baseURL: process.env.VUE_APP_API_URL
+  baseURL: config.apiServerURL
 });
 
 service.interceptors.request.use(

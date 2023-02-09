@@ -21,15 +21,17 @@ export class CredentialService {
 
     // Save the credential to the local database
     const record = new this.credentialModel();
-    record.name = cred.data['name'];
+    record.name = cred.name;
     record.did = cred.did;
     record.issuerId = issuer._id;
-    record.credentialId = issuedCred.id;
+    record.credentialId = issuedCred.messageId;
     record.revoked = false;
-    record.data = cred.data;
+    record.data = issuedCred.generatedCredential;
+    record.proofStrings = issuedCred.proofStrings
+    delete record.data['didResolutionResult']
     await record.save();
 
-    return record;
+    return record
   }
 
   async findAll(issuer: Issuer): Promise<Credential[]> {

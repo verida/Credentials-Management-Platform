@@ -7,9 +7,10 @@ import AuthLayout from "../../components/layouts/AuthLayout";
 import { ADMIN_LOGIN } from "../../constants/route";
 
 import { createNamespacedHelpers } from "vuex";
-const { mapState: mapIssueState, mapActions: mapIssuerActions } =
+import { config } from '../../config';
+const { mapActions: mapIssuerActions } =
   createNamespacedHelpers("issuer");
-const { VUE_APP_NAME } = process.env;
+
 export default {
   name: "Login",
   components: {
@@ -17,7 +18,7 @@ export default {
   },
   data() {
     return {
-      title: VUE_APP_NAME,
+      title: config.veridaContextName,
       processing: true,
     };
   },

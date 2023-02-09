@@ -7,4 +7,5 @@ export interface Credential extends Document {
   credentialId: string;
   revoked: boolean;
   data: object;
+  proofStrings: object;
 }
