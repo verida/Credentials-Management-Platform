@@ -95,14 +95,23 @@ export default class VeridaHelper {
       const context = await VeridaHelper.connect(issuer.privateKey);
 
       let payload: any = {}
+      const proofStrings: any = {}
       if (credentialItem.proofs) {
         payload.proofs = {}
         
         for (let key in credentialItem.proofs) {
-          const proofItem = credentialItem.proofs[key]
-          const proofString = proofItem.join('-')
+          const proofItems = credentialItem.proofs[key]
+          for (let i in proofItems) {
+            const proofItem = proofItems[i]
+            if (proofItem.startsWith('$')) {
+              proofItems[i] = credentialItem.data[proofItem.substring(1)]
+            }
+          }
+
+          const proofString = proofItems.join('-')
           const sig = EncryptionUtils.signData(proofString, new Uint8Array(Buffer.from(issuer.privateKey.slice(2), 'hex')))
           payload.proofs[key] = sig
+          proofStrings[key] = proofString
         }
       }
 
@@ -136,7 +145,8 @@ export default class VeridaHelper {
 
       return {
         generatedCredential,
-        messageId: messageData.id
+        messageId: messageData.id,
+        proofStrings
       };
     } catch (error) {
       if (credentials.getErrors()) {
