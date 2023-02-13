@@ -73,7 +73,7 @@ $ npm run test:cov
     "summary": "KYC/AML Attestation in the format provided by Verite",
     "schema": "https://common.schemas.verida.io/identity/kyc/Verite/KYCAMLAttestation/latest/schema.json",
     "proofs": {
-        "uniqueId": ["type", "process", "approvalDate"]
+        "uniqueId": ["$type", "$process", "$approvalDate"]
     },
     "data": {
         "type": "KYCAMLAttestation",
@@ -90,4 +90,4 @@ Where:
 - `title` Subject of the inbox message that will be sent to the user with their credential
 - `summary` Short summary describing the credential in the user's Verida Wallet
 - `schema` Schema of the verifiable credential
-- `proofs` (Optional) Key/value of string array of proofs that are signed by the issuer private key and included in the credential payload. These can be efficiently used on chain, if required.
+- `proofs` (Optional) Key/value of string array of proofs that are signed by the issuer private key and included in the credential payload. The `key` is a unique label for the proof that will appear in the `payload.proofs` property of the created credential. Proofs prefixed with `$` will use the variable value sent in the request. For example, if there is a field `firstName: Chris` in the JSON `data`, then setting a proof = `["name", "$firstName"]` will create a proof string `name-Chris`. These proofs can be efficiently used on chain, if required.
