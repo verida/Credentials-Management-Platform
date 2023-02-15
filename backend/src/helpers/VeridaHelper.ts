@@ -10,7 +10,6 @@ import { IssueCredentialDto } from '../modules/credential/dto';
 import { SendMessageResponse } from 'src/models/User';
 import { BLOCK_CHAIN, DURATION_TTL } from '../constants';
 import { config } from 'src/config';
-import { ethers } from 'ethers'
 
 const appConfig = config()
 
@@ -227,10 +226,6 @@ export default class VeridaHelper {
       },
     };
 
-    const maxFeePerGas = ethers.BigNumber.from(40000000000); // fallback to 40 gwei
-    const maxPriorityFeePerGas = ethers.BigNumber.from(40000000000); // fallback to 40 gwei
-    const gasLimit = ethers.BigNumber.from(50000000000); // fallback to 50 gwei
-
     const account = new AutoAccount(defaultEndpoints, {
       privateKey: issuerPrivateKey,
       environment: appConfig.veridaEnvironment,
@@ -238,10 +233,7 @@ export default class VeridaHelper {
         callType: 'web3',
         web3Config: {
           privateKey: appConfig.polygonPrivateKey,
-          rpcUrl: appConfig.rpcUrl,
-          maxFeePerGas,
-          maxPriorityFeePerGas,
-          gasLimit
+          rpcUrl: appConfig.rpcUrl
         },
         didEndpoints: VERIDA_DEFAULT_DID_SERVERS,
       }
