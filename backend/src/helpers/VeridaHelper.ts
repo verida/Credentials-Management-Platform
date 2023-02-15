@@ -149,13 +149,16 @@ export default class VeridaHelper {
         proofStrings
       };
     } catch (error) {
-      if (credentials.getErrors()) {
-        console.log(credentials.getErrors())
+      const credErrors = credentials.getErrors()
+      if (credErrors.length) {
+        console.log(credErrors)
         return {
-          error: credentials.getErrors()
+          error: credErrors
         }
       }
+
       console.log({ error });
+      console.log(error.message)
       return {
         error: error.message
       }
