@@ -2,14 +2,13 @@ import NodeCache from 'node-cache';
 import { Wallet } from 'ethers';
 import { Context, Network } from '@verida/client-ts';
 import { AutoAccount } from '@verida/account-node';
-import { Credentials } from '@verida/verifiable-credentials';
-import EncryptionUtils from '@verida/encryption-utils'
 import { IssuerDto } from '../modules/issuer/dto';
 import { Issuer } from '../modules/issuer/interfaces/issuer.interface';
 import { IssueCredentialDto } from '../modules/credential/dto';
 import { SendMessageResponse } from 'src/models/User';
 import { BLOCK_CHAIN, DURATION_TTL } from '../constants';
 import { config } from 'src/config';
+import { Credentials, CreateCredentialOptions } from '@verida/verifiable-credentials';
 
 const appConfig = config()
 
@@ -94,45 +93,21 @@ export default class VeridaHelper {
     try {
       const context = await VeridaHelper.connect(issuer.privateKey);
 
-      let payload: any = {}
-      const proofStrings: any = {}
+      const options: CreateCredentialOptions = {}
       if (credentialItem.proofs) {
-        payload.proofs = {}
-        
-        for (let key in credentialItem.proofs) {
-          const proofItems = credentialItem.proofs[key]
-          for (let i in proofItems) {
-            const proofItem = proofItems[i]
-            if (proofItem.startsWith('$')) {
-              proofItems[i] = credentialItem.data[proofItem.substring(1)]
-            }
-          }
-
-          const proofString = proofItems.join('-')
-          const sig = EncryptionUtils.signData(proofString, new Uint8Array(Buffer.from(issuer.privateKey.slice(2), 'hex')))
-          payload.proofs[key] = sig
-          proofStrings[key] = proofString
-        }
+        options.proofStrings = credentialItem.proofs
       }
 
-      const didJwtVc = await credentials.createCredentialJWT({
+      const icon = undefined
+      const credentialRecord = await credentials.createVerifiableCredentialRecord({
         context: context as any,
         data: credentialItem.data,
         subjectId: credentialItem.did,
         schema: credentialItem.schema,
-        payload
-      });
+        options
+      }, credentialItem.title, credentialItem.summary, icon);
 
-      // @ts-ignore
-      const generatedCredential = await credentials.verifyCredential(didJwtVc, {})
-
-      // Credential record that could be saved into a database (or sent to a user)
-      const credentialRecord = {
-        schema: VERIDA_CREDENTIAL_SCHEMA,
-        name: credentialItem.name,
-        summary: credentialItem.summary,
-        didJwtVc
-      }
+      const generatedCredential = await credentials.verifyCredential(credentialRecord.didJwtVc, {})
 
       const messageData = await VeridaHelper.sendMessage(
         credentialItem.title,
@@ -144,9 +119,9 @@ export default class VeridaHelper {
       await context.close()
 
       return {
-        generatedCredential,
+        credentialRecord,
         messageId: messageData.id,
-        proofStrings
+        generatedCredential
       };
     } catch (error) {
       const credErrors = credentials.getErrors()
@@ -179,7 +154,6 @@ export default class VeridaHelper {
     };
 
     const messaging = await context.getMessaging();
-
     const messageData = {
       data: [credentialRecord],
     };

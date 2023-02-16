@@ -27,7 +27,6 @@ export class CredentialService {
     record.credentialId = issuedCred.messageId;
     record.revoked = false;
     record.data = issuedCred.generatedCredential;
-    record.proofStrings = issuedCred.proofStrings
     delete record.data['didResolutionResult']
     await record.save();
 
