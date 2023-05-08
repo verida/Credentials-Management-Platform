@@ -18,14 +18,16 @@ export const config = () => ({
   veridaAppName: process.env.VERIDA_APP_NAME,
   polygonPrivateKey: process.env.POLYGON_PRIVATE_KEY,
   rpcUrl: process.env.RPC_URL,
+  // TODO: Remove when not needed
   veridaDefaultDidServers: [
     process.env.VERIDA_DEFAULT_DID_SERVERS_NODE1,
     process.env.VERIDA_DEFAULT_DID_SERVERS_NODE2,
-    process.env.VERIDA_DEFAULT_DID_SERVERS_NODE3
+    process.env.VERIDA_DEFAULT_DID_SERVERS_NODE3,
   ],
+  // TODO: Remove when not needed
   veridaDefaultStorageNodes: [
     process.env.VERIDA_DEFAULT_STORAGE_NODE1,
     process.env.VERIDA_DEFAULT_STORAGE_NODE2,
-    process.env.VERIDA_DEFAULT_STORAGE_NODE3
-  ]
+    process.env.VERIDA_DEFAULT_STORAGE_NODE3,
+  ],
 });

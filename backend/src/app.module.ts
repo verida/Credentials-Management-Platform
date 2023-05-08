@@ -15,7 +15,7 @@ import { config } from './config';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load:[config],
+      load: [config],
       validationSchema: Joi.object({
         NODE_ENV: Joi.string()
           .valid('development', 'production', 'test')
@@ -29,12 +29,13 @@ import { config } from './config';
         POLYGON_PRIVATE_KEY: Joi.string().required(),
         RPC_URL: Joi.string().required(),
         VERIDA_APP_NAME: Joi.string().required(),
+        // TODO: Remove when not needed
         VERIDA_DEFAULT_DID_SERVERS_NODE1: Joi.string().required(),
         VERIDA_DEFAULT_DID_SERVERS_NODE2: Joi.string().required(),
         VERIDA_DEFAULT_DID_SERVERS_NODE3: Joi.string().required(),
         VERIDA_DEFAULT_STORAGE_NODE1: Joi.string().required(),
         VERIDA_DEFAULT_STORAGE_NODE2: Joi.string().required(),
-        VERIDA_DEFAULT_STORAGE_NODE3: Joi.string().required()
+        VERIDA_DEFAULT_STORAGE_NODE3: Joi.string().required(),
       }),
     }),
     MongooseModule.forRoot(config().dbURL, {

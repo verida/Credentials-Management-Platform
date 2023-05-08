@@ -8,24 +8,25 @@ import { IssueCredentialDto } from '../modules/credential/dto';
 import { SendMessageResponse } from 'src/models/User';
 import { BLOCK_CHAIN, DURATION_TTL } from '../constants';
 import { config } from 'src/config';
-import { Credentials, CreateCredentialOptions } from '@verida/verifiable-credentials';
+import {
+  Credentials,
+  CreateCredentialOptions,
+} from '@verida/verifiable-credentials';
 
-const appConfig = config()
+const appConfig = config();
 
 const CacheManager = new NodeCache();
 
-const VERIDA_DEFAULT_DID_SERVERS = appConfig.veridaDefaultDidServers;
-const VERIDA_DEFAULT_STORAGE_NODES = appConfig.veridaDefaultStorageNodes;
-
-const VERIDA_CREDENTIAL_SCHEMA = 'https://common.schemas.verida.io/credential/base/v0.2.0/schema.json'
+const VERIDA_CREDENTIAL_SCHEMA =
+  'https://common.schemas.verida.io/credential/base/v0.2.0/schema.json';
 
 export default class VeridaHelper {
-/**
- * method to create a new issuer account 
- * @param name 
- * @param avatarUri 
- * @returns 
- */
+  /**
+   * method to create a new issuer account
+   * @param name
+   * @param avatarUri
+   * @returns
+   */
   static async createAccount(
     name: string,
     avatarUri?: string,
@@ -43,7 +44,7 @@ export default class VeridaHelper {
     const did = await context.getAccount().did();
 
     this.setProfile(context, name, avatarUri);
-    
+
     return {
       chain: BLOCK_CHAIN,
       did: did,
@@ -93,21 +94,31 @@ export default class VeridaHelper {
     try {
       const context = await VeridaHelper.connect(issuer.privateKey);
 
-      const options: CreateCredentialOptions = {}
+      const options: CreateCredentialOptions = {};
       if (credentialItem.proofs) {
-        options.proofStrings = credentialItem.proofs
+        options.proofStrings = credentialItem.proofs;
       }
 
-      const icon = undefined
-      const credentialRecord = await credentials.createVerifiableCredentialRecord({
-        context: context as any,
-        data: credentialItem.data,
-        subjectId: credentialItem.did,
-        schema: credentialItem.schema,
-        options
-      }, credentialItem.title, credentialItem.summary, icon);
+      const icon = issuer.avatarUri;
+      const credentialRecord = await credentials.createVerifiableCredentialRecord(
+        {
+          context: context as any,
+          data: credentialItem.data,
+          subjectId: credentialItem.did,
+          schema: credentialItem.schema,
+          options,
+        },
+        credentialItem.title,
+        credentialItem.summary,
+        icon,
+      );
 
-      const generatedCredential = await credentials.verifyCredential(credentialRecord.didJwtVc, {})
+      const generatedCredential = await credentials.verifyCredential(
+        credentialRecord.didJwtVc,
+        {},
+      );
+
+      // TODO: Could update the record to replace credentialData with the generatedCredential
 
       const messageData = await VeridaHelper.sendMessage(
         credentialItem.title,
@@ -116,27 +127,27 @@ export default class VeridaHelper {
         credentialItem.did,
       );
 
-      await context.close()
+      await context.close();
 
       return {
         credentialRecord,
         messageId: messageData.id,
-        generatedCredential
+        generatedCredential,
       };
     } catch (error) {
-      const credErrors = credentials.getErrors()
+      const credErrors = credentials.getErrors();
       if (credErrors.length) {
-        console.log(credErrors)
+        console.log(credErrors);
         return {
-          error: credErrors
-        }
+          error: credErrors,
+        };
       }
 
       console.log({ error });
-      console.log(error.message)
+      console.log(error.message);
       return {
-        error: error.message
-      }
+        error: error.message,
+      };
     }
   }
 
@@ -148,27 +159,27 @@ export default class VeridaHelper {
   ): Promise<SendMessageResponse> {
     const type = 'inbox/type/dataSend';
     try {
-    const config = {
-      recipientContextName: 'Verida: Vault',
-      did,
-    };
+      const config = {
+        recipientContextName: 'Verida: Vault',
+        did,
+      };
 
-    const messaging = await context.getMessaging();
-    const messageData = {
-      data: [credentialRecord],
-    };
+      const messaging = await context.getMessaging();
+      const messageData = {
+        data: [credentialRecord],
+      };
 
-    const response = await messaging.send(
-      did,
-      type,
-      messageData,
-      subject,
-      config,
-    );
+      const response = await messaging.send(
+        did,
+        type,
+        messageData,
+        subject,
+        config,
+      );
 
-    return response as SendMessageResponse;
+      return response as SendMessageResponse;
     } catch (error) {
-      console.log({error});
+      console.log({ error });
     }
   }
 
@@ -188,34 +199,21 @@ export default class VeridaHelper {
    */
 
   private static async init(issuerPrivateKey: string) {
-
-    const defaultEndpoints = {
-      defaultDatabaseServer: {
-        type: 'VeridaDatabase',
-        endpointUri: VERIDA_DEFAULT_STORAGE_NODES,
-      },
-      defaultMessageServer: {
-        type: 'VeridaMessage',
-        endpointUri: VERIDA_DEFAULT_STORAGE_NODES,
-      },
-    };
-
-    const account = new AutoAccount(defaultEndpoints, {
+    const account = new AutoAccount({
       privateKey: issuerPrivateKey,
       environment: appConfig.veridaEnvironment,
       didClientConfig: {
         callType: 'web3',
         web3Config: {
           privateKey: appConfig.polygonPrivateKey,
-          rpcUrl: appConfig.rpcUrl
+          rpcUrl: appConfig.rpcUrl,
         },
-        didEndpoints: VERIDA_DEFAULT_DID_SERVERS,
-      }
-    })
-    
+      },
+    });
+
     const context = await Network.connect({
       client: {
-        environment: appConfig.veridaEnvironment
+        environment: appConfig.veridaEnvironment,
       },
       account,
       context: {
